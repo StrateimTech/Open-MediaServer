@@ -1,0 +1,28 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+    <PropertyGroup>
+        <TargetFramework>net5.0</TargetFramework>
+        <RootNamespace>Open_MediaServer</RootNamespace>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <Folder Include="Media\Cache" />
+      <Folder Include="Media\Image" />
+      <Folder Include="Media\Other" />
+      <Folder Include="Media\Video" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <Content Include="Assets\**">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="ImageSharp.AVCodecFormats" Version="2.2.5" />
+      <PackageReference Include="ImageSharp.AVCodecFormats.Native.linux-x64" Version="1.4.0" />
+      <PackageReference Include="SixLabors.ImageSharp" Version="1.0.4" />
+      <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
+    </ItemGroup>
+
+</Project>
