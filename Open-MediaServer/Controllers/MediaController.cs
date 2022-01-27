@@ -22,6 +22,7 @@ namespace Open_MediaServer.Controllers
                 Response.StatusCode = StatusCodes.Status400BadRequest;
                 return null;
             }
+            
             return Task.Factory.StartNew(() =>
             {
                 if (!MediaUtils.IsThumbnailCached(Path.GetFileName(mediaName)))
@@ -45,72 +46,18 @@ namespace Open_MediaServer.Controllers
             }).Result;
         }
 
-        [HttpGet("/api/media/images")]
-        public MediaSchema.MediaGetSchema GetImages()
+        [HttpGet("/api/media/{mediaType}")]
+        public MediaSchema.MediaGetSchema GetMedia(MediaType mediaType)
         {
+            Console.WriteLine($"MediaType: {mediaType}");
             return Task.Factory.StartNew(() =>
             {
-                var mediaNames = MediaUtils.GetAllMediaNames(MediaType.Image);
+                var mediaNames = MediaUtils.GetAllMediaNames(mediaType);
 
                 List<MediaSchema.Media> media = new List<MediaSchema.Media>();
                 foreach (var mediaName in mediaNames)
                 {
-                    var mediaBytes = MediaUtils.GetMedia(MediaType.Image, Path.GetFileName(mediaName));
-                    media.Add(new MediaSchema.Media
-                    {
-                        Name = Path.GetFileNameWithoutExtension(mediaName),
-                        Extension = Path.GetExtension(mediaName),
-                        Date = System.IO.File.GetCreationTime(mediaName),
-                        Size = mediaBytes.Length
-                    });
-                }
-
-                return new MediaSchema.MediaGetSchema
-                {
-                    Media = media
-                };
-            }).Result;
-        }
-
-
-        [HttpGet("/api/media/videos")]
-        public MediaSchema.MediaGetSchema GetVideos()
-        {
-            return Task.Factory.StartNew(() =>
-            {
-                var mediaNames = MediaUtils.GetAllMediaNames(MediaType.Video);
-
-                List<MediaSchema.Media> media = new List<MediaSchema.Media>();
-                foreach (var mediaName in mediaNames)
-                {
-                    var mediaBytes = MediaUtils.GetMedia(MediaType.Video, Path.GetFileName(mediaName));
-                    media.Add(new MediaSchema.Media
-                    {
-                        Name = Path.GetFileNameWithoutExtension(mediaName),
-                        Extension = Path.GetExtension(mediaName),
-                        Date = System.IO.File.GetCreationTime(mediaName),
-                        Size = mediaBytes.Length
-                    });
-                }
-
-                return new MediaSchema.MediaGetSchema
-                {
-                    Media = media
-                };
-            }).Result;
-        }
-
-        [HttpGet("/api/media/other")]
-        public MediaSchema.MediaGetSchema GetOther()
-        {
-            return Task.Factory.StartNew(() =>
-            {
-                var mediaNames = MediaUtils.GetAllMediaNames(MediaType.Other);
-
-                List<MediaSchema.Media> media = new List<MediaSchema.Media>();
-                foreach (var mediaName in mediaNames)
-                {
-                    var mediaBytes = MediaUtils.GetMedia(MediaType.Other, Path.GetFileName(mediaName));
+                    var mediaBytes = MediaUtils.GetMedia(mediaType, Path.GetFileName(mediaName));
                     media.Add(new MediaSchema.Media
                     {
                         Name = Path.GetFileNameWithoutExtension(mediaName),
@@ -132,12 +79,11 @@ namespace Open_MediaServer.Controllers
         {
             return Task.Factory.StartNew(() => new MediaSchema.MediaAmountGetSchema
             {
-                ImagesSize = MediaUtils.GetAllMediaNames(MediaType.Image).Count,
-                VideosSize = MediaUtils.GetAllMediaNames(MediaType.Video).Count,
+                ImagesSize = MediaUtils.GetAllMediaNames(MediaType.Images).Count,
+                VideosSize = MediaUtils.GetAllMediaNames(MediaType.Videos).Count,
                 OtherSize = MediaUtils.GetAllMediaNames(MediaType.Other).Count
             }).Result;
         }
-
 
         [HttpPost("/api/media/upload")]
         public ActionResult UploadFile(MediaSchema.MediaUploadSchema mediaUpload)

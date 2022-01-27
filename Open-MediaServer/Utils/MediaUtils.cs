@@ -109,11 +109,11 @@ namespace Open_MediaServer.Utils
         {
             switch (type)
             {
-                case MediaType.Image:
+                case MediaType.Images:
                     if (ImageExtensions.Contains(Path.GetExtension(name), StringComparer.OrdinalIgnoreCase))
                         return true;
                     break;
-                case MediaType.Video:
+                case MediaType.Videos:
                     if (VideoExtensions.Contains(Path.GetExtension(name), StringComparer.OrdinalIgnoreCase))
                         return true;
                     break;

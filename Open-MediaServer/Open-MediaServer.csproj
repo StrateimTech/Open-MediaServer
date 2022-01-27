@@ -7,9 +7,9 @@
 
     <ItemGroup>
       <Folder Include="Media\Cache" />
-      <Folder Include="Media\Image" />
+      <Folder Include="Media\Images" />
       <Folder Include="Media\Other" />
-      <Folder Include="Media\Video" />
+      <Folder Include="Media\Videos" />
     </ItemGroup>
 
     <ItemGroup>

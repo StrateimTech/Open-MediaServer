@@ -14,7 +14,7 @@ namespace Open_MediaServer
 {
     public class Startup
     {
-        private readonly MediaHandler MediaHandler = new();
+        private readonly MediaHandler _mediaHandler = new();
 
         public void ConfigureServices(IServiceCollection services)
         {
@@ -40,9 +40,9 @@ namespace Open_MediaServer
             {
                 endpoints.MapGet("/", RequestDelegate);
                 endpoints.MapGet("/404", RequestNotFound);
-                endpoints.MapGet("/img/{file}", MediaHandler.HandleRequestImg);
-                endpoints.MapGet("/video/{file}", MediaHandler.HandleRequestVideo);
-                endpoints.MapGet("/other/{file}", MediaHandler.HandleRequestOther);
+                endpoints.MapGet("/img/{file}", _mediaHandler.HandleRequestImg);
+                endpoints.MapGet("/video/{file}", _mediaHandler.HandleRequestVideo);
+                endpoints.MapGet("/other/{file}", _mediaHandler.HandleRequestOther);
                 endpoints.MapControllers();
             });
         }

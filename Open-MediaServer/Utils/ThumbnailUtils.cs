@@ -12,7 +12,7 @@ namespace Open_MediaServer.Utils
     {
         public static byte[] GetReduceThumbnail(MediaType mediaType, int width, int height, byte[] array)
         {
-            if (mediaType == MediaType.Image)
+            if (mediaType == MediaType.Images)
             {
                 try
                 {
@@ -38,7 +38,7 @@ namespace Open_MediaServer.Utils
                 }
             }
             
-            if(mediaType == MediaType.Video)
+            if(mediaType == MediaType.Videos)
             {
                 try
                 {

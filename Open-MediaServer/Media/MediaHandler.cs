@@ -10,7 +10,7 @@ namespace Open_MediaServer.Media
         public async Task HandleRequestImg(HttpContext context)
         {
             var file = (string) context.Request.RouteValues["file"];
-            var fileArray = MediaUtils.GetMedia(MediaType.Image, file);
+            var fileArray = MediaUtils.GetMedia(MediaType.Images, file);
 
             if (fileArray != null)
             {
@@ -30,7 +30,7 @@ namespace Open_MediaServer.Media
         public async Task HandleRequestVideo(HttpContext context)
         {
             var file = (string) context.Request.RouteValues["file"];
-            var fileArray = MediaUtils.GetMedia(MediaType.Video, file);
+            var fileArray = MediaUtils.GetMedia(MediaType.Videos, file);
 
             if (fileArray != null)
             {
