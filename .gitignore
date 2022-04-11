@@ -33,6 +33,8 @@ nupkg/
 **/.idea/shelf/*
 **/.idea/dictionaries
 **/.idea/httpRequests/
+**/appsettings.json
+**/appsettings.Development.json
 
 # Sensitive or high-churn files
 **/.idea/**/dataSources/

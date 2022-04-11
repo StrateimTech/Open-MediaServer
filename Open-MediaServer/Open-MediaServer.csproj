@@ -6,6 +6,8 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <Folder Include="Backend" />
+      <Folder Include="Frontend" />
       <Folder Include="Media\Cache" />
       <Folder Include="Media\Images" />
       <Folder Include="Media\Other" />
