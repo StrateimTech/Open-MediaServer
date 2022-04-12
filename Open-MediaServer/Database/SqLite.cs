@@ -8,13 +8,13 @@ namespace Open_MediaServer.Database;
 
 public class SqLite
 {
-    public readonly SQLiteConnection DatabaseConnection;
+    public readonly SQLiteAsyncConnection DatabaseConnection;
     
     public SqLite(string databasePath)
     {
         var database = Path.Combine(databasePath, "media.db");
-        DatabaseConnection = new SQLiteConnection(database);
+        DatabaseConnection = new SQLiteAsyncConnection(database);
         
-        DatabaseConnection.CreateTable<DatabaseSchema.Media>();
+        DatabaseConnection.CreateTableAsync<DatabaseSchema.Media>();
     }
 }

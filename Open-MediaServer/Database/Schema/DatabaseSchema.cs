@@ -16,5 +16,6 @@ public class DatabaseSchema
         public int Size { get; set; }
         public string ThumbnailPath { get; set; }
         public string ContentPath { get; set; }
+        public bool ContentCompressed { get; set; }
     }
 }

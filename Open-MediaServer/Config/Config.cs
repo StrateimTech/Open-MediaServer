@@ -2,6 +2,8 @@
 
 public class Config
 {
+    public string? WorkingDirectory = null;
+    
     // Length of generated uid 
     public int UniqueIdLength { get; set; } = 8;
     
@@ -11,4 +13,27 @@ public class Config
     
     // Developer tools
     public bool ShowSwaggerUi { get; set; } = true;
+
+    public bool AllowImages { get; set; } = true;
+    public bool AllowVideos { get; set; } = true;
+    public bool AllowOther { get; set; } = true;
+    
+    public string ThumbnailType = "png";
+
+    public string[] ImageTypes = new[]
+    {
+        "png"
+    };
+    
+    public string[] VideoTypes = new[]
+    {
+        "mp4"
+    };
+    
+    public string[] OtherTypes = new[]
+    {
+        "txt"
+    };
+    
+    public bool LosslessCompression { get; set; } = true;
 }

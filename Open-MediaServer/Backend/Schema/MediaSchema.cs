@@ -10,4 +10,11 @@ public class MediaSchema
         public int ContentCount { get; set; }
         public int ContentTotalSize { get; set; }
     }
+
+    public class MediaUpload
+    {
+        public string Name { get; set; }
+        public string Extension { get; set; }
+        public byte[] Content { get; set; }
+    }
 }
