@@ -17,6 +17,8 @@ public class Config
     public bool AllowImages { get; set; } = true;
     public bool AllowVideos { get; set; } = true;
     public bool AllowOther { get; set; } = true;
+
+    public bool PreComputeThumbnail = false;
     
     public string ThumbnailType = "png";
 

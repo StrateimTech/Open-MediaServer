@@ -6,11 +6,9 @@ using K4os.Compression.LZ4;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.StaticFiles;
 using Open_MediaServer.Backend.Schema;
-using Microsoft.AspNetCore.StaticFiles;
-using Microsoft.Net.Http.Headers;
+using Open_MediaServer.Content;
 using Open_MediaServer.Database.Schema;
 using Open_MediaServer.Utils;
-using SQLite;
 
 namespace Open_MediaServer.Backend.Controllers;
 
@@ -60,12 +58,23 @@ public class MediaApiController : ControllerBase
     [HttpPost("/api/upload/")]
     public async Task<ActionResult> PostUploadContent(MediaSchema.MediaUpload mediaUpload)
     {
+        var contentType = ContentUtils.GetContentType(mediaUpload.Extension);
+        if (contentType == null)
+            return null;
+
+        if (contentType == ContentType.Image && !Program.ConfigManager.Config.AllowImages
+            || contentType == ContentType.Video && !Program.ConfigManager.Config.AllowVideos
+            || contentType == ContentType.Other && !Program.ConfigManager.Config.AllowOther)
+        {
+            return null;
+        }
+
         byte[] content = mediaUpload.Content;
         if (Program.ConfigManager.Config.LosslessCompression)
         {
             content = LZ4Pickler.Pickle(mediaUpload.Content);
         }
-        
+
         var mediaSchema = new DatabaseSchema.Media()
         {
             // TODO: Actually generate a unique ID
@@ -77,19 +86,38 @@ public class MediaApiController : ControllerBase
             Size = content.Length,
             ContentCompressed = Program.ConfigManager.Config.LosslessCompression
         };
-        
-        // Program.Database.DatabaseConnection.InsertAsync();
+        mediaSchema.ContentPath = Program.ContentManager.SaveContent(content, mediaSchema.Id, mediaSchema.Name,
+            mediaSchema.Extension, (ContentType) contentType);
+
+        if ((contentType == ContentType.Video || contentType == ContentType.Image) &&
+            Program.ConfigManager.Config.PreComputeThumbnail)
+        {
+            var thumbnail = ContentUtils.GetThumbnail();
+            if (thumbnail != null)
+            {
+                if (Program.ConfigManager.Config.LosslessCompression)
+                {
+                    thumbnail = LZ4Pickler.Pickle(thumbnail);
+                }
+
+                mediaSchema.ThumbnailPath = Program.ContentManager.SaveThumbnail(thumbnail, mediaSchema.Id,
+                    mediaSchema.Name,
+                    mediaSchema.Extension, (ContentType) contentType);
+            }
+            else
+            {
+                Console.WriteLine($"Failed to compute thumbnail (ID: {mediaSchema.Id}, Name: {mediaSchema.Name}, Extension: {mediaSchema.Extension})");
+            }
+        }
+
+        await Program.Database.DatabaseConnection.InsertAsync(mediaSchema);
         return null;
     }
 
     [HttpPost("/api/delete/{id}/{name}")]
     public async Task<ActionResult> PostDeleteContent()
     {
-        
-        
-        
         // Program.Database.DatabaseConnection.DeleteAsync()
-        
         return null;
     }
 }
