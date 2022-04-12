@@ -35,6 +35,7 @@ nupkg/
 **/.idea/httpRequests/
 **/appsettings.json
 **/appsettings.Development.json
+**/config.json
 
 # Sensitive or high-churn files
 **/.idea/**/dataSources/

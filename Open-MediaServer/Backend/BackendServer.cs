@@ -42,12 +42,14 @@ public class BackendServer
         
         var app = builder.Build();
         
-        if (app.Environment.IsDevelopment())
+        app.UseDeveloperExceptionPage();
+        
+        if (Program.ConfigManager.Config.ShowSwaggerUi)
         {
             app.UseSwagger();
             app.UseSwaggerUI(options =>
             {
-                options.SwaggerEndpoint("/swagger/v1/swagger.json", "StrateimTech Open-MediaServer");
+                options.SwaggerEndpoint("/swagger/OpenMedia/swagger.json", "StrateimTech Open-MediaServer");
             });
         }
         
@@ -55,7 +57,7 @@ public class BackendServer
         
         app.UseAuthorization();
         
-        // app.MapControllers();
+        app.MapControllers();
         
         app.Run();
     }

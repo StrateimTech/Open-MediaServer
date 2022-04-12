@@ -27,7 +27,7 @@ public class ConfigManager
         string serializedJson = JsonSerializer.Serialize(Config, new JsonSerializerOptions()
         {
             WriteIndented = true,
-            ReadCommentHandling = JsonCommentHandling.Allow
+            ReadCommentHandling = JsonCommentHandling.Skip
         });
         File.WriteAllText(file, serializedJson);
     }
