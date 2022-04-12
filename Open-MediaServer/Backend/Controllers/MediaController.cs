@@ -6,9 +6,9 @@ namespace Open_MediaServer.Backend.Controllers;
 [Route("/api/v2/[controller]")]
 public class MediaController
 {
-    [HttpGet("/api/v2/test/")]
-    public int Test()
+    [HttpGet("/api/v2/upload/")]
+    public void UploadTest()
     {
-        return 42;
+        
     }
 }

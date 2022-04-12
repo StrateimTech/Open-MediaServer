@@ -1,2 +1,2 @@
 # Open-MediaServer
- Another media server
+Simple media distribution application
