@@ -15,9 +15,11 @@ public class Program
     
     public static void Main(string[] args)
     {
-        ConfigManager = new ConfigManager(Environment.CurrentDirectory);
-        
-        Backend = new BackendServer();
+        Database = new SqLite(Environment.CurrentDirectory);
+
+        // ConfigManager = new ConfigManager(Environment.CurrentDirectory);
+        //
+        // Backend = new BackendServer();
         // Frontend = new FrontendServer();
     }
 }

@@ -1,24 +1,13 @@
 ﻿using System;
+using SQLite;
 
 namespace Open_MediaServer.Backend.Schema;
 
 public class MediaSchema
 {
-    // ID 8 long abc..123 (3vwtjiUg)
-    // Name (Hello_World_abc)
-    // Extension (mp4)
-    // Author (Admin)
-    // UploadDate (4/11/22)
-    // Size (Bytes)
-    
-    public class Media
+    public class MediaStats
     {
-        public string Id { get; set; }
-        public string Name { get; set; }
-        public string Extension { get; set; }
-        public string Author { get; set; }
-        
-        public DateTime UploadDate { get; set; }
-        public int Size { get; set; }
+        public int ContentCount { get; set; }
+        public int ContentTotalSize { get; set; }
     }
 }
