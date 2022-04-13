@@ -36,6 +36,9 @@ nupkg/
 **/appsettings.json
 **/appsettings.Development.json
 **/config.json
+*.db
+**/Media/
+**/Media/**
 
 # Sensitive or high-churn files
 **/.idea/**/dataSources/

@@ -1,4 +1,6 @@
-﻿namespace Open_MediaServer.Config;
+﻿using K4os.Compression.LZ4;
+
+namespace Open_MediaServer.Config;
 
 public class Config
 {
@@ -17,25 +19,28 @@ public class Config
     public bool AllowImages { get; set; } = true;
     public bool AllowVideos { get; set; } = true;
     public bool AllowOther { get; set; } = true;
-
-    public bool PreComputeThumbnail = false;
     
-    public string ThumbnailType = "png";
+    public bool Thumbnails { get; set; } = false;
+    public bool PreComputeThumbnails { get; set; } = true;
+    public (int, int)? ThumbnailSize { get; set; } = null;
+    
+    public string ThumbnailType { get; set; }= ".png";
 
-    public string[] ImageTypes = new[]
+    public string[] ImageTypes { get; set; } = new[]
     {
-        "png"
+        ".png"
     };
     
-    public string[] VideoTypes = new[]
+    public string[] VideoTypes { get; set; } = new[]
     {
-        "mp4"
+        ".mp4"
     };
     
-    public string[] OtherTypes = new[]
+    public string[] OtherTypes { get; set; } = new[]
     {
-        "txt"
+        ".txt"
     };
     
     public bool LosslessCompression { get; set; } = true;
+    public LZ4Level LosslessCompressionLevel { get; set; } = LZ4Level.L12_MAX;
 }

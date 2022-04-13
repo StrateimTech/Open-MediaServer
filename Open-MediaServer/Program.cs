@@ -19,7 +19,7 @@ public class Program
     {
         ConfigManager = new ConfigManager(Environment.CurrentDirectory);
         ContentManager = new ContentManager(ConfigManager.Config.WorkingDirectory ?? Environment.CurrentDirectory);
-        // Database = new SqLite(ConfigManager.Config.WorkingDirectory ?? Environment.CurrentDirectory);
+        Database = new SqLite(ConfigManager.Config.WorkingDirectory ?? Environment.CurrentDirectory);
         Backend = new BackendServer();
         // Frontend = new FrontendServer();
     }

@@ -14,9 +14,9 @@ public class ContentManager
 
     public string SaveContent(byte[] content, string id, string name, string extension, ContentType contentType)
     {
-        var filePath = Path.Combine(_contentDirectory, "Media", contentType.GetDisplayName(), id, $"{name}.{extension}");
+        var filePath = Path.Combine(_contentDirectory, "Media", contentType.GetDisplayName(), id, $"{name}{extension}");
         
-        Directory.CreateDirectory(filePath);
+        Directory.CreateDirectory(Path.GetDirectoryName(filePath)!);
         if (!File.Exists(filePath))
         {
             File.WriteAllBytes(filePath, content);
@@ -27,7 +27,7 @@ public class ContentManager
     
     public string SaveThumbnail(byte[] thumbnail, string id, string name, string extension, ContentType contentType)
     {
-        var filePath = Path.Combine(_contentDirectory, "Media", contentType.GetDisplayName(), id, $"{name}_thumbnail.{extension}");
+        var filePath = Path.Combine(_contentDirectory, "Media", contentType.GetDisplayName(), id, $"{name}_thumbnail{extension}");
         
         Directory.CreateDirectory(filePath);
         if (!File.Exists(filePath))
