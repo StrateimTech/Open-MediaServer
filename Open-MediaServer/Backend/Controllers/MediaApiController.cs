@@ -3,6 +3,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using K4os.Compression.LZ4;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.StaticFiles;
 using Open_MediaServer.Backend.Schema;
@@ -60,13 +61,13 @@ public class MediaApiController : ControllerBase
     {
         var contentType = ContentUtils.GetContentType(mediaUpload.Extension);
         if (contentType == null)
-            return null;
+            return StatusCode(StatusCodes.Status400BadRequest);
 
         if (contentType == ContentType.Image && !Program.ConfigManager.Config.AllowImages
             || contentType == ContentType.Video && !Program.ConfigManager.Config.AllowVideos
             || contentType == ContentType.Other && !Program.ConfigManager.Config.AllowOther)
         {
-            return null;
+            return StatusCode(StatusCodes.Status415UnsupportedMediaType);
         }
 
         byte[] content = mediaUpload.Content;
