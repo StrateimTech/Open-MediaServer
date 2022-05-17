@@ -11,11 +11,11 @@ public class MediaSchema
         public string Name { get; set; }
     }
     
-    public class MediaUser
-    {
-        public string Id { get; set; }
-        public string Username { get; set; }
-    }
+    // public class MediaUser
+    // {
+    //     public string Id { get; set; }
+    //     public string Username { get; set; }
+    // }
     
     public class MediaStats
     {

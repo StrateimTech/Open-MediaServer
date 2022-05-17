@@ -4,11 +4,9 @@ using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
 using K4os.Compression.LZ4;
-using K4os.Compression.LZ4.Encoders;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.StaticFiles;
-using Microsoft.OpenApi.Extensions;
 using Open_MediaServer.Backend.Schema;
 using Open_MediaServer.Content;
 using Open_MediaServer.Database.Schema;
@@ -92,15 +90,15 @@ public class MediaApiController : ControllerBase
     }
 
     [HttpGet("/api/stats/")]
-    public MediaSchema.MediaStats GetStats()
+    public async Task<MediaSchema.MediaStats> GetStats()
     {
         var mediaTableQuery = Program.Database.MediaDatabase.Table<DatabaseSchema.Media>();
-        var totalContent = mediaTableQuery.CountAsync();
+        var totalContent = await mediaTableQuery.CountAsync();
         var totalContentSize = mediaTableQuery.ToListAsync().Result.Sum(media => media.Size);
 
         var statSchema = new MediaSchema.MediaStats()
         {
-            ContentCount = totalContent.Result,
+            ContentCount = totalContent,
             ContentTotalSize = totalContentSize,
             VideoContent = Program.ConfigManager.Config.AllowVideos,
             ImageContent = Program.ConfigManager.Config.AllowImages,
