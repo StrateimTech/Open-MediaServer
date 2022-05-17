@@ -10,20 +10,25 @@ public class DatabaseSchema
     {
         [PrimaryKey]
         public string Id { get; init; }
-        
-        public User User { get; set; }
         public string Name { get; set; }
         public string Extension { get; set; }
-        public DateTime UploadDate { get; set; }
-        public int Size { get; set; }
+        public int ContentSize { get; set; }
         public string ThumbnailPath { get; set; }
         public string ContentPath { get; set; }
         public ContentType ContentType { get; set; }
         public bool ContentCompressed { get; set; }
+        public bool Public { get; set; }
+        public DateTime UploadDate { get; set; }
     }
     
     public class User
     {
         public string Username { get; set; }
+        [PrimaryKey]
+        public string Email { get; set; }
+        public string Bio { get; set; }
+        public byte[] Salt { get; set; }
+        public string Password { get; set; }
+        public DateTime CreationDate { get; set; }
     }
 }

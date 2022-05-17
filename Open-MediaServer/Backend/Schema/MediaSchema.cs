@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
 using SQLite;
 
 namespace Open_MediaServer.Backend.Schema;
@@ -7,15 +8,11 @@ public class MediaSchema
 {
     public class MediaIdentity
     {
+        [Required]
         public string Id { get; set; }
+        [Required]
         public string Name { get; set; }
     }
-    
-    // public class MediaUser
-    // {
-    //     public string Id { get; set; }
-    //     public string Username { get; set; }
-    // }
     
     public class MediaStats
     {
@@ -28,8 +25,12 @@ public class MediaSchema
 
     public class MediaUpload
     {
+        [Required]
         public string Name { get; set; }
+        [Required]
         public string Extension { get; set; }
+        [Required]
         public byte[] Content { get; set; }
+        public bool Public { get; set; }
     }
 }

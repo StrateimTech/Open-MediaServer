@@ -18,6 +18,7 @@ namespace Open_MediaServer.Backend.Controllers;
 [Route("/api/[controller]")]
 public class MediaApiController : ControllerBase
 {
+    // https://media.strateim.tech/RPf4BxA/Hello_World.mp4/
     [HttpGet("/api/thumbnail/")]
     public async Task<ActionResult> GetThumbnail(MediaSchema.MediaIdentity identity)
     {
@@ -29,6 +30,11 @@ public class MediaApiController : ControllerBase
         var fileName = Path.GetFileNameWithoutExtension(identity.Name);
         var media = Program.Database.MediaDatabase.GetAsync<DatabaseSchema.Media>(media =>
             media.Id == identity.Id && media.Name == fileName).Result;
+        
+        if (media == null)
+        {
+            return StatusCode(StatusCodes.Status404NotFound);
+        }
         
         if (media.ContentType == ContentType.Other)
         {
@@ -74,9 +80,13 @@ public class MediaApiController : ControllerBase
         var fileName = Path.GetFileNameWithoutExtension(identity.Name);
         var media = Program.Database.MediaDatabase.GetAsync<DatabaseSchema.Media>(media =>
             media.Id == identity.Id && media.Name == fileName).Result;
+        
+        if (media == null)
+        {
+            return StatusCode(StatusCodes.Status404NotFound);
+        }
 
         var bytes = await System.IO.File.ReadAllBytesAsync(media.ContentPath);
-
         if (media.ContentCompressed)
         {
             bytes = LZ4Pickler.Unpickle(bytes);
@@ -94,7 +104,7 @@ public class MediaApiController : ControllerBase
     {
         var mediaTableQuery = Program.Database.MediaDatabase.Table<DatabaseSchema.Media>();
         var totalContent = await mediaTableQuery.CountAsync();
-        var totalContentSize = mediaTableQuery.ToListAsync().Result.Sum(media => media.Size);
+        var totalContentSize = mediaTableQuery.ToListAsync().Result.Sum(media => media.ContentSize);
 
         var statSchema = new MediaSchema.MediaStats()
         {
@@ -108,9 +118,9 @@ public class MediaApiController : ControllerBase
     }
 
     [HttpPost("/api/upload/")]
-    public async Task<ActionResult> PostUploadContent(MediaSchema.MediaUpload mediaUpload)
+    public async Task<ActionResult> PostUploadContent(MediaSchema.MediaUpload upload)
     {
-        var contentType = ContentUtils.GetContentType(mediaUpload.Extension);
+        var contentType = ContentUtils.GetContentType(upload.Extension);
         if (contentType == null)
         {
             return StatusCode(StatusCodes.Status400BadRequest);
@@ -127,13 +137,13 @@ public class MediaApiController : ControllerBase
         byte[] content;
 
         if (Program.ConfigManager.Config.LosslessCompression
-            && LZ4Codec.MaximumOutputSize(mediaUpload.Content.Length) < mediaUpload.Content.Length)
+            && LZ4Codec.MaximumOutputSize(upload.Content.Length) < upload.Content.Length)
         {
-            content = LZ4Pickler.Pickle(mediaUpload.Content, Program.ConfigManager.Config.LosslessCompressionLevel);
+            content = LZ4Pickler.Pickle(upload.Content, Program.ConfigManager.Config.LosslessCompressionLevel);
         }
         else
         {
-            content = mediaUpload.Content;
+            content = upload.Content;
             contentCompressed = false;
         }
 
@@ -141,21 +151,22 @@ public class MediaApiController : ControllerBase
         {
             // TODO: Actually generate a unique ID
             Id = StringUtils.RandomString(Program.ConfigManager.Config.UniqueIdLength),
-            Name = mediaUpload.Name,
-            Extension = mediaUpload.Extension,
-            
-            UploadDate = DateTime.Now,
-            Size = content.Length,
+            Name = upload.Name,
+            Extension = upload.Extension,
+            UploadDate = DateTime.UtcNow,
+            ContentSize = content.Length,
             ContentCompressed = contentCompressed,
-            ContentType = (ContentType) contentType
+            ContentType = (ContentType) contentType,
+            Public = upload.Public
         };
+        
         mediaSchema.ContentPath = Program.ContentManager.SaveContent(content, mediaSchema.Id, mediaSchema.Name,
             mediaSchema.Extension, (ContentType) contentType);
 
         if ((contentType == ContentType.Video || contentType == ContentType.Image) &&
             Program.ConfigManager.Config.Thumbnails && Program.ConfigManager.Config.PreComputeThumbnails)
         {
-            var thumbnail = ContentUtils.GetThumbnail(mediaUpload.Content,
+            var thumbnail = ContentUtils.GetThumbnail(upload.Content,
                 Program.ConfigManager.Config.ThumbnailSize?.Item1,
                 Program.ConfigManager.Config.ThumbnailSize?.Item2, (ContentType) contentType);
             if (thumbnail != null)
@@ -187,6 +198,12 @@ public class MediaApiController : ControllerBase
         var fileName = Path.GetFileNameWithoutExtension(identity.Name);
         var media = Program.Database.MediaDatabase.GetAsync<DatabaseSchema.Media>(media =>
             media.Id == identity.Id && media.Name == fileName).Result;
+        
+        if (media == null)
+        {
+            return StatusCode(StatusCodes.Status404NotFound);
+        }
+        
         await Program.Database.MediaDatabase.DeleteAsync<DatabaseSchema.Media>(media);
         return StatusCode(StatusCodes.Status200OK);
     }
