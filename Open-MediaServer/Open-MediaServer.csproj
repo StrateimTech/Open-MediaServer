@@ -13,10 +13,11 @@
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="ImageSharp.AVCodecFormats" Version="2.2.5" />
-      <PackageReference Include="ImageSharp.AVCodecFormats.Native.linux-x64" Version="1.4.0" />
+      <PackageReference Include="ImageSharp.AVCodecFormats" Version="3.0.5" />
+      <PackageReference Include="ImageSharp.AVCodecFormats.Native.linux-x64" Version="1.6.0" />
+      <PackageReference Include="ImageSharp.AVCodecFormats.Native.win-x64" Version="1.6.0" />
       <PackageReference Include="K4os.Compression.LZ4" Version="1.2.16" />
-      <PackageReference Include="SixLabors.ImageSharp" Version="1.0.4" />
+      <PackageReference Include="SixLabors.ImageSharp" Version="2.1.0" />
       <PackageReference Include="sqlite-net-pcl" Version="1.8.116" />
       <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
     </ItemGroup>

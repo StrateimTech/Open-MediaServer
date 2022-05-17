@@ -20,24 +20,23 @@ public class Config
     public bool AllowVideos { get; set; } = true;
     public bool AllowOther { get; set; } = true;
     
-    public bool Thumbnails { get; set; } = false;
+    public bool Thumbnails { get; set; } = true;
     public bool PreComputeThumbnails { get; set; } = true;
+    
+    // null size will result in the video resolution's size being used 
     public (int, int)? ThumbnailSize { get; set; } = null;
     
     public string ThumbnailType { get; set; }= ".png";
 
-    public string[] ImageTypes { get; set; } = new[]
-    {
-        ".png"
+    public string[] ImageTypes { get; set; } = {
+        ".png", ".tif", ".tiff", ".bmp", ".jpg", ".jpeg", ".gif", ".webp"
     };
     
-    public string[] VideoTypes { get; set; } = new[]
-    {
-        ".mp4"
+    public string[] VideoTypes { get; set; } = {
+        ".mp4", ".avi", ".mkv", ".mov", ".webm", ".wmv"
     };
     
-    public string[] OtherTypes { get; set; } = new[]
-    {
+    public string[] OtherTypes { get; set; } = {
         ".txt"
     };
     

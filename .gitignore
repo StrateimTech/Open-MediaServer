@@ -39,6 +39,8 @@ nupkg/
 *.db
 **/Media/
 **/Media/**
+tests/**
+tests/
 
 # Sensitive or high-churn files
 **/.idea/**/dataSources/

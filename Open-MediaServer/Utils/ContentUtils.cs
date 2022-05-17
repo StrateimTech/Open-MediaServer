@@ -2,6 +2,7 @@
 using System.IO;
 using System.Linq;
 using HeyRed.ImageSharp.AVCodecFormats;
+using Microsoft.OpenApi.Extensions;
 using Open_MediaServer.Content;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Formats.Png;
