@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Buffers.Text;
+using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text.Json;
@@ -30,10 +32,8 @@ public class UserApiController : ControllerBase
             }
 
             byte[] salt = new byte[128 / 8];
-            using (var rng = RandomNumberGenerator.Create())
-            {
-                rng.GetNonZeroBytes(salt);
-            }
+            using var rng = RandomNumberGenerator.Create();
+            rng.GetNonZeroBytes(salt);
 
             string hashedPassword = Convert.ToBase64String(KeyDerivation.Pbkdf2(
                 password: userRegister.Password,
@@ -41,6 +41,15 @@ public class UserApiController : ControllerBase
                 prf: KeyDerivationPrf.HMACSHA256,
                 iterationCount: 100000,
                 numBytesRequested: 256 / 8));
+            
+            byte[] sessionKey = new byte[64];
+            rng.GetNonZeroBytes(sessionKey);
+            Response.Cookies.Append("user_session", Convert.ToBase64String(sessionKey), new CookieOptions()
+            {
+                IsEssential = true,
+                Secure = true,
+                SameSite = SameSiteMode.Lax
+            });
 
             var userSchema = new DatabaseSchema.User()
             {
@@ -48,6 +57,7 @@ public class UserApiController : ControllerBase
                 Email = userRegister.Email,
                 Password = hashedPassword,
                 Salt = salt,
+                SessionKey = Convert.ToBase64String(sessionKey),
                 CreationDate = DateTime.UtcNow
             };
 
@@ -85,9 +95,40 @@ public class UserApiController : ControllerBase
                 numBytesRequested: 256 / 8));
             if (hashedPassword.SequenceEqual(user.Password))
             {
-                Console.WriteLine($"Sequence equaled ({hashedPassword})");
+                if (user.SessionKey == null)
+                {
+                    byte[] sessionKey = new byte[64];
+                    using var rng = RandomNumberGenerator.Create();
+                    rng.GetNonZeroBytes(sessionKey);
+                    Response.Cookies.Append("user_session", Convert.ToBase64String(sessionKey), new CookieOptions()
+                    {
+                        IsEssential = true,
+                        Secure = true,
+                        SameSite = SameSiteMode.Lax
+                    });
+                    user.SessionKey = Convert.ToBase64String(sessionKey);
+                    await Program.Database.UserDatabase.UpdateAsync(user);
+                
+                    string serializedJson = JsonSerializer.Serialize(user, new JsonSerializerOptions()
+                    {
+                        WriteIndented = true,
+                        ReadCommentHandling = JsonCommentHandling.Skip
+                    });
+                    Console.WriteLine(serializedJson);
+                }
+
+                if (Request.Cookies["user_session"] == null)
+                {
+                    Response.Cookies.Append("user_session", user.SessionKey, new CookieOptions()
+                    {
+                        IsEssential = true,
+                        Secure = true,
+                        SameSite = SameSiteMode.Lax
+                    });
+                }
+                return StatusCode(StatusCodes.Status200OK);
             }
-            return StatusCode(StatusCodes.Status200OK);
+            return StatusCode(StatusCodes.Status401Unauthorized);
         }
         return StatusCode(StatusCodes.Status400BadRequest, ModelState);
     }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Open_MediaServer.Content;
 using SQLite;
 
@@ -29,6 +30,7 @@ public class DatabaseSchema
         public string Bio { get; set; }
         public byte[] Salt { get; set; }
         public string Password { get; set; }
+        public string SessionKey { get; set; }
         public DateTime CreationDate { get; set; }
     }
 }
