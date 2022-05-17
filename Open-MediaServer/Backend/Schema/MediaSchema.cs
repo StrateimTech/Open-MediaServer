@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using Open_MediaServer.Content;
 using SQLite;
 
 namespace Open_MediaServer.Backend.Schema;
@@ -32,5 +34,16 @@ public class MediaSchema
         [Required]
         public byte[] Content { get; set; }
         public bool Public { get; set; }
+    }
+    
+    public class MediaParameterMass
+    {
+        public string Username { get; set; }
+        public ContentType? Type { get; set; }
+    }
+    
+    public class MediaReturnMass
+    {
+        public List<string> Ids { get; set; }
     }
 }

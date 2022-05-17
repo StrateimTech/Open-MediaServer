@@ -108,6 +108,27 @@ public class MediaApiController : ControllerBase
 
         return StatusCode(StatusCodes.Status400BadRequest, ModelState);
     }
+    
+    [HttpGet("/api/mass/")]
+    public async Task<MediaSchema.MediaReturnMass> GetMass(MediaSchema.MediaParameterMass parameterMass)
+    {
+        var mediaTable = await Program.Database.MediaDatabase.Table<DatabaseSchema.Media>().ToListAsync();
+        mediaTable.RemoveAll(media => media.Public == false);
+        if (parameterMass.Username != null)
+        {
+            var user = await Program.Database.UserDatabase.GetAsync<DatabaseSchema.User>(user => user.Username == parameterMass.Username);
+            mediaTable.RemoveAll(media => media.Author != user);
+        }
+        if (parameterMass.Type != null)
+        {
+            mediaTable.RemoveAll(media => media.ContentType == parameterMass.Type);
+        }
+        var mediaIds = mediaTable.Select(media => media.Id).ToList();
+        return new MediaSchema.MediaReturnMass()
+        {
+            Ids = mediaIds
+        };
+    }
 
     [HttpGet("/api/stats/")]
     public async Task<MediaSchema.MediaStats> GetStats()
