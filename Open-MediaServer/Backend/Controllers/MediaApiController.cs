@@ -132,6 +132,17 @@ public class MediaApiController : ControllerBase
     {
         if (ModelState.IsValid)
         {
+            if (Request.Cookies["user_session"] == null || !UserUtils.IsAuthed(Request.Cookies["user_session"]))
+            {
+                return StatusCode(StatusCodes.Status401Unauthorized);
+            }
+            DatabaseSchema.User user = await UserUtils.GetUser(Request.Cookies["user_session"]);
+
+            if (user == null)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
+            
             var contentType = ContentUtils.GetContentType(upload.Extension);
             if (contentType == null)
             {
@@ -169,7 +180,8 @@ public class MediaApiController : ControllerBase
                 ContentSize = content.Length,
                 ContentCompressed = contentCompressed,
                 ContentType = (ContentType) contentType,
-                Public = upload.Public
+                Public = upload.Public,
+                Author = user
             };
 
             mediaSchema.ContentPath = Program.ContentManager.SaveContent(content, mediaSchema.Id, mediaSchema.Name,
@@ -195,12 +207,24 @@ public class MediaApiController : ControllerBase
 
             Console.WriteLine("Inserting media into sqlite db");
             await Program.Database.MediaDatabase.InsertAsync(mediaSchema);
+            
+            user.Uploads ??= new();
+            user.Uploads.Add(mediaSchema.Id);
+            await Program.Database.UserDatabase.UpdateAsync(user);
+            
             string serializedJson = JsonSerializer.Serialize(mediaSchema, new JsonSerializerOptions()
             {
                 WriteIndented = true,
                 ReadCommentHandling = JsonCommentHandling.Skip
             });
             Console.WriteLine(serializedJson);
+            string serializedJson2 = JsonSerializer.Serialize(user, new JsonSerializerOptions()
+            {
+                WriteIndented = true,
+                ReadCommentHandling = JsonCommentHandling.Skip
+            });
+            Console.WriteLine(serializedJson2);
+            
             return StatusCode(StatusCodes.Status200OK);
         }
 
@@ -212,6 +236,16 @@ public class MediaApiController : ControllerBase
     {
         if (ModelState.IsValid)
         {
+            if (Request.Cookies["user_session"] == null || !UserUtils.IsAuthed(Request.Cookies["user_session"]))
+            {
+                return StatusCode(StatusCodes.Status401Unauthorized);
+            }
+            DatabaseSchema.User user = await UserUtils.GetUser(Request.Cookies["user_session"]);
+            if (user == null)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
+
             var fileName = Path.GetFileNameWithoutExtension(identity.Name);
             var media = Program.Database.MediaDatabase.GetAsync<DatabaseSchema.Media>(media =>
                 media.Id == identity.Id && media.Name == fileName).Result;
@@ -219,6 +253,11 @@ public class MediaApiController : ControllerBase
             if (media == null)
             {
                 return StatusCode(StatusCodes.Status404NotFound);
+            }
+
+            if (media.Author != user && !user.Admin)
+            {
+                return StatusCode(StatusCodes.Status403Forbidden);
             }
 
             await Program.Database.MediaDatabase.DeleteAsync<DatabaseSchema.Media>(media);

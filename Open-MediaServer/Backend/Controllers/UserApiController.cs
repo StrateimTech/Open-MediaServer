@@ -58,7 +58,8 @@ public class UserApiController : ControllerBase
                 Password = hashedPassword,
                 Salt = salt,
                 SessionKey = Convert.ToBase64String(sessionKey),
-                CreationDate = DateTime.UtcNow
+                CreationDate = DateTime.UtcNow,
+                Uploads = new()
             };
 
             Console.WriteLine("Inserting user into sqlite db");

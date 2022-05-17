@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Open_MediaServer.Content;
 using SQLite;
+using SQLiteNetExtensions.Attributes;
 
 namespace Open_MediaServer.Database.Schema;
 
@@ -20,6 +21,9 @@ public class DatabaseSchema
         public bool ContentCompressed { get; set; }
         public bool Public { get; set; }
         public DateTime UploadDate { get; set; }
+
+        [OneToOne]
+        public User Author { get; set; }
     }
     
     public class User
@@ -32,5 +36,9 @@ public class DatabaseSchema
         public string Password { get; set; }
         public string SessionKey { get; set; }
         public DateTime CreationDate { get; set; }
+        public bool Admin { get; set; }
+        
+        [TextBlob("UploadBlobbed")]
+        public List<string> Uploads { get; set; }
     }
 }
