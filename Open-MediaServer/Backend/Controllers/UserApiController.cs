@@ -18,7 +18,7 @@ namespace Open_MediaServer.Backend.Controllers;
 [Route("/api/[controller]")]
 public class UserApiController : ControllerBase
 {
-    [HttpPost("/api/register/")]
+    [HttpPost("/api/account/register/")]
     public async Task<ActionResult> PostRegister(UserSchema.UserRegister userRegister)
     {
         if (ModelState.IsValid)
@@ -76,8 +76,8 @@ public class UserApiController : ControllerBase
         return StatusCode(StatusCodes.Status400BadRequest, ModelState);
     }
 
-    [HttpPost("/api/login/")]
-    public async Task<ActionResult> GetLogin(UserSchema.UserLogin userLogin)
+    [HttpPost("/api/account/login/")]
+    public async Task<ActionResult> PostLogin(UserSchema.UserLogin userLogin)
     {
         if (ModelState.IsValid)
         {
@@ -130,6 +130,40 @@ public class UserApiController : ControllerBase
                 return StatusCode(StatusCodes.Status200OK);
             }
             return StatusCode(StatusCodes.Status401Unauthorized);
+        }
+        return StatusCode(StatusCodes.Status400BadRequest, ModelState);
+    }
+
+    [HttpPost("/api/account/delete/")]
+    public async Task<ActionResult> PostDelete(UserSchema.UserDelete userDelete)
+    {
+        if (ModelState.IsValid)
+        {
+            var user = await Program.Database.UserDatabase
+                .GetAsync<DatabaseSchema.User>(user => user.Email == userDelete.Email);
+            
+            if (user == null)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
+            
+            string hashedPassword = Convert.ToBase64String(KeyDerivation.Pbkdf2(
+                password: userDelete.Password,
+                salt: user.Salt,
+                prf: KeyDerivationPrf.HMACSHA256,
+                iterationCount: 100000,
+                numBytesRequested: 256 / 8));
+            if (hashedPassword.SequenceEqual(user.Password))
+            {
+                if (userDelete.DeleteMedia)
+                {
+                    foreach (var mediaIdentity in user.Uploads)
+                    {
+                        await Program.Database.MediaDatabase.DeleteAsync<DatabaseSchema.Media>(mediaIdentity.Id);
+                    }
+                }
+                await Program.Database.UserDatabase.DeleteAsync<DatabaseSchema.User>(user.Email);
+            }
         }
         return StatusCode(StatusCodes.Status400BadRequest, ModelState);
     }

@@ -21,4 +21,14 @@ public class UserSchema
         [Required]
         public string Password { get; set; }
     }
+    
+    public class UserDelete
+    {
+        [Required]
+        public string Email { get; set; }
+        [Required]
+        public string Password { get; set; }
+        [Required]
+        public bool DeleteMedia { get; set; }
+    }
 }

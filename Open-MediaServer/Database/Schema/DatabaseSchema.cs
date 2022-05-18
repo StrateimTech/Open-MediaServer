@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Open_MediaServer.Backend.Schema;
 using Open_MediaServer.Content;
 using SQLite;
 using SQLiteNetExtensions.Attributes;
@@ -39,6 +40,6 @@ public class DatabaseSchema
         public bool Admin { get; set; }
         
         [TextBlob("UploadBlobbed")]
-        public List<string> Uploads { get; set; }
+        public List<MediaSchema.MediaIdentity> Uploads { get; set; }
     }
 }

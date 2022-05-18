@@ -239,7 +239,11 @@ public class MediaApiController : ControllerBase
             await Program.Database.MediaDatabase.InsertAsync(mediaSchema);
             
             user.Uploads ??= new();
-            user.Uploads.Add(mediaSchema.Id);
+            user.Uploads.Add(new MediaSchema.MediaIdentity()
+            {
+                Id = mediaSchema.Id,
+                Name = mediaSchema.Name
+            });
             await Program.Database.UserDatabase.UpdateAsync(user);
             
             string serializedJson = JsonSerializer.Serialize(mediaSchema, new JsonSerializerOptions()
