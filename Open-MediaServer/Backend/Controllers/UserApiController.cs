@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Open_MediaServer.Backend.Schema;
 using Open_MediaServer.Database.Schema;
+using SQLiteNetExtensionsAsync.Extensions;
 
 namespace Open_MediaServer.Backend.Controllers;
 
@@ -63,7 +64,8 @@ public class UserApiController : ControllerBase
             };
 
             Console.WriteLine("Inserting user into sqlite db");
-            await Program.Database.UserDatabase.InsertAsync(userSchema);
+            await Program.Database.UserDatabase.InsertWithChildrenAsync(userSchema);
+            
             string serializedJson = JsonSerializer.Serialize(userSchema, new JsonSerializerOptions()
             {
                 WriteIndented = true,
@@ -108,7 +110,7 @@ public class UserApiController : ControllerBase
                         SameSite = SameSiteMode.Lax
                     });
                     user.SessionKey = Convert.ToBase64String(sessionKey);
-                    await Program.Database.UserDatabase.UpdateAsync(user);
+                    await Program.Database.UserDatabase.UpdateWithChildrenAsync(user);
                 
                     string serializedJson = JsonSerializer.Serialize(user, new JsonSerializerOptions()
                     {

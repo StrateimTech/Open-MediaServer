@@ -20,6 +20,7 @@
       <PackageReference Include="SixLabors.ImageSharp" Version="2.1.0" />
       <PackageReference Include="sqlite-net-pcl" Version="1.8.116" />
       <PackageReference Include="SQLiteNetExtensions" Version="2.1.0" />
+      <PackageReference Include="SQLiteNetExtensions.Async" Version="2.1.0" />
       <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
     </ItemGroup>
 

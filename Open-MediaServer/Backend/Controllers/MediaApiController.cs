@@ -11,6 +11,7 @@ using Open_MediaServer.Backend.Schema;
 using Open_MediaServer.Content;
 using Open_MediaServer.Database.Schema;
 using Open_MediaServer.Utils;
+using SQLiteNetExtensionsAsync.Extensions;
 
 namespace Open_MediaServer.Backend.Controllers;
 
@@ -119,11 +120,20 @@ public class MediaApiController : ControllerBase
             if (parameterMass.Username != null)
             {
                 var user = await Program.Database.UserDatabase.GetAsync<DatabaseSchema.User>(user => user.Username == parameterMass.Username);
-                mediaTable.RemoveAll(media => media.Author != user);
+                mediaTable.RemoveAll(media =>
+                {
+                    Console.WriteLine($"{media.Author == null}");
+                    Console.WriteLine($"{media.Author.Username}");
+                    return media.Author != user;
+                });
             }
             if (parameterMass.Type != null)
             {
-                mediaTable.RemoveAll(media => media.ContentType == parameterMass.Type);
+                mediaTable.RemoveAll(media =>
+                {
+                    Console.WriteLine($"{media.ContentType} {(int)media.ContentType}");
+                    return media.ContentType == parameterMass.Type;
+                });
             }
             var mediaIdentities = mediaTable.Select(media => new MediaSchema.MediaIdentity()
             {
@@ -166,12 +176,14 @@ public class MediaApiController : ControllerBase
             {
                 return StatusCode(StatusCodes.Status401Unauthorized);
             }
-            DatabaseSchema.User user = await UserUtils.GetUser(Request.Cookies["user_session"]);
+            DatabaseSchema.User user = await UserUtils.GetUserWithChildren(Request.Cookies["user_session"]);
 
             if (user == null)
             {
+                Console.WriteLine("AAAAAAAAAAAAAAAAAA");
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
+            Console.WriteLine($"{user.Username}");
             
             var contentType = ContentUtils.GetContentType(upload.Extension);
             if (contentType == null)
@@ -236,15 +248,14 @@ public class MediaApiController : ControllerBase
             }
 
             Console.WriteLine("Inserting media into sqlite db");
-            await Program.Database.MediaDatabase.InsertAsync(mediaSchema);
+            await Program.Database.MediaDatabase.InsertWithChildrenAsync(mediaSchema);
             
-            user.Uploads ??= new();
             user.Uploads.Add(new MediaSchema.MediaIdentity()
             {
                 Id = mediaSchema.Id,
                 Name = mediaSchema.Name
             });
-            await Program.Database.UserDatabase.UpdateAsync(user);
+            await Program.Database.UserDatabase.UpdateWithChildrenAsync(user);
             
             string serializedJson = JsonSerializer.Serialize(mediaSchema, new JsonSerializerOptions()
             {

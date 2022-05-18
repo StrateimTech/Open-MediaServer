@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
 using Open_MediaServer.Database.Schema;
+using SQLiteNetExtensionsAsync.Extensions;
 
 namespace Open_MediaServer.Utils;
 
@@ -16,5 +17,11 @@ public static class UserUtils
     {
         return await Program.Database.UserDatabase
             .GetAsync<DatabaseSchema.User>(user => user.SessionKey == sessionKey);
+    }
+    
+    public static async Task<DatabaseSchema.User> GetUserWithChildren(string sessionKey)
+    {
+        return await Program.Database.UserDatabase
+            .GetWithChildrenAsync<DatabaseSchema.User>(GetUser(sessionKey).Result.Email);
     }
 }
