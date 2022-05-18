@@ -125,10 +125,15 @@ public class MediaApiController : ControllerBase
             {
                 mediaTable.RemoveAll(media => media.ContentType == parameterMass.Type);
             }
-            var mediaIds = mediaTable.Select(media => media.Id).ToList();
+            var mediaIdentities = mediaTable.Select(media => new MediaSchema.MediaIdentity()
+            {
+                Name = media.Name,
+                Id = media.Id
+            }).ToList();
+
             return new MediaSchema.MediaReturnMass()
             {
-                Ids = mediaIds
+                Media = mediaIdentities
             };
         }
         return null;

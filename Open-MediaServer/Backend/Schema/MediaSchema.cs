@@ -44,6 +44,6 @@ public class MediaSchema
     
     public class MediaReturnMass
     {
-        public List<string> Ids { get; set; }
+        public List<MediaIdentity> Media { get; set; }
     }
 }
