@@ -29,7 +29,7 @@ public class UserApiController : ControllerBase
 
             if (usernameExists)
             {
-                return StatusCode(StatusCodes.Status400BadRequest, "Profile username already in use.");
+                return StatusCode(StatusCodes.Status403Forbidden, "Profile username already in use.");
             }
 
             byte[] salt = new byte[128 / 8];
@@ -144,7 +144,7 @@ public class UserApiController : ControllerBase
                 user.Username == userDelete.User.Username);
             if (userWithoutChildren == null)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError, "Unable to find account associated.");
+                return StatusCode(StatusCodes.Status400BadRequest, "Unable to find account associated.");
             }
             var user = await Program.Database.UserDatabase.FindWithChildrenAsync<DatabaseSchema.User>(userWithoutChildren.Id);
             
