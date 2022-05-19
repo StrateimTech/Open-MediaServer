@@ -164,7 +164,7 @@ public class UserApiController : ControllerBase
                         await Program.Database.MediaDatabase.DeleteAsync<DatabaseSchema.Media>(mediaIdentity.Id);
                     }
                 }
-                await Program.Database.UserDatabase.DeleteAsync<DatabaseSchema.User>(user.Email);
+                await Program.Database.UserDatabase.DeleteAsync<DatabaseSchema.User>(user.Id);
             }
         }
         return StatusCode(StatusCodes.Status400BadRequest, ModelState);

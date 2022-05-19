@@ -109,32 +109,30 @@ public class MediaApiController : ControllerBase
 
         return StatusCode(StatusCodes.Status400BadRequest, ModelState);
     }
-    
+
     [HttpPost("/api/mass/")]
     public async Task<MediaSchema.MediaReturnMass> GetMass(MediaSchema.MediaParameterMass parameterMass)
     {
         if (ModelState.IsValid)
         {
-            var mediaTable = await Program.Database.MediaDatabase.Table<DatabaseSchema.Media>().ToListAsync();
+            var mediaTable = await Program.Database.MediaDatabase.GetAllWithChildrenAsync<DatabaseSchema.Media>();
             mediaTable.RemoveAll(media => media.Public == false);
+            
             if (parameterMass.Username != null)
             {
-                var user = await Program.Database.UserDatabase.GetAsync<DatabaseSchema.User>(user => user.Username == parameterMass.Username);
-                mediaTable.RemoveAll(media =>
-                {
-                    Console.WriteLine($"{media.Author == null}");
-                    Console.WriteLine($"{media.Author.Username}");
-                    return media.Author != user;
-                });
+                var userWithoutChildren =
+                    await Program.Database.UserDatabase.GetAsync<DatabaseSchema.User>(user =>
+                        user.Username == parameterMass.Username);
+                var user =
+                    await Program.Database.UserDatabase.GetWithChildrenAsync<DatabaseSchema.User>(
+                        userWithoutChildren.Id);
+                mediaTable.RemoveAll(media => media.AuthorId != user.Id);
             }
             if (parameterMass.Type != null)
             {
-                mediaTable.RemoveAll(media =>
-                {
-                    Console.WriteLine($"{media.ContentType} {(int)media.ContentType}");
-                    return media.ContentType == parameterMass.Type;
-                });
+                mediaTable.RemoveAll(media => media.ContentType == parameterMass.Type);
             }
+
             var mediaIdentities = mediaTable.Select(media => new MediaSchema.MediaIdentity()
             {
                 Name = media.Name,
@@ -180,11 +178,9 @@ public class MediaApiController : ControllerBase
 
             if (user == null)
             {
-                Console.WriteLine("AAAAAAAAAAAAAAAAAA");
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
-            Console.WriteLine($"{user.Username}");
-            
+
             var contentType = ContentUtils.GetContentType(upload.Extension);
             if (contentType == null)
             {
@@ -223,7 +219,7 @@ public class MediaApiController : ControllerBase
                 ContentCompressed = contentCompressed,
                 ContentType = (ContentType) contentType,
                 Public = upload.Public,
-                Author = user
+                AuthorId = user.Id
             };
 
             mediaSchema.ContentPath = Program.ContentManager.SaveContent(content, mediaSchema.Id, mediaSchema.Name,
@@ -249,14 +245,14 @@ public class MediaApiController : ControllerBase
 
             Console.WriteLine("Inserting media into sqlite db");
             await Program.Database.MediaDatabase.InsertWithChildrenAsync(mediaSchema);
-            
+
             user.Uploads.Add(new MediaSchema.MediaIdentity()
             {
                 Id = mediaSchema.Id,
                 Name = mediaSchema.Name
             });
             await Program.Database.UserDatabase.UpdateWithChildrenAsync(user);
-            
+
             string serializedJson = JsonSerializer.Serialize(mediaSchema, new JsonSerializerOptions()
             {
                 WriteIndented = true,
@@ -269,7 +265,7 @@ public class MediaApiController : ControllerBase
                 ReadCommentHandling = JsonCommentHandling.Skip
             });
             Console.WriteLine(serializedJson2);
-            
+
             return StatusCode(StatusCodes.Status200OK);
         }
 
@@ -286,6 +282,7 @@ public class MediaApiController : ControllerBase
                 return StatusCode(StatusCodes.Status401Unauthorized);
             }
             DatabaseSchema.User user = await UserUtils.GetUser(Request.Cookies["user_session"]);
+            
             if (user == null)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError);
@@ -300,7 +297,7 @@ public class MediaApiController : ControllerBase
                 return StatusCode(StatusCodes.Status404NotFound);
             }
 
-            if (media.Author != user && !user.Admin)
+            if (media.AuthorId != user.Id && !user.Admin)
             {
                 return StatusCode(StatusCodes.Status403Forbidden);
             }
@@ -308,7 +305,7 @@ public class MediaApiController : ControllerBase
             await Program.Database.MediaDatabase.DeleteAsync<DatabaseSchema.Media>(media);
             return StatusCode(StatusCodes.Status200OK);
         }
-        
+
         return StatusCode(StatusCodes.Status400BadRequest, ModelState);
     }
 }

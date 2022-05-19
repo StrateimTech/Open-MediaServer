@@ -22,6 +22,6 @@ public static class UserUtils
     public static async Task<DatabaseSchema.User> GetUserWithChildren(string sessionKey)
     {
         return await Program.Database.UserDatabase
-            .GetWithChildrenAsync<DatabaseSchema.User>(GetUser(sessionKey).Result.Email);
+            .GetWithChildrenAsync<DatabaseSchema.User>(GetUser(sessionKey).Result.Id);
     }
 }

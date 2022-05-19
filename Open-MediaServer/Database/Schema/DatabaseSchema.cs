@@ -22,15 +22,15 @@ public class DatabaseSchema
         public bool ContentCompressed { get; set; }
         public bool Public { get; set; }
         public DateTime UploadDate { get; set; }
-
-        [OneToOne]
-        public User Author { get; set; }
+        public int AuthorId { get; set; }
     }
     
     public class User
     {
+        [PrimaryKey, AutoIncrement]
+        public int Id { get; set; }
+        [ForeignKey(typeof(string))]
         public string Username { get; set; }
-        [PrimaryKey]
         public string Email { get; set; }
         public string Bio { get; set; }
         public byte[] Salt { get; set; }
