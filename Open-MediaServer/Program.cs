@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using Microsoft.Extensions.Configuration;
 using Open_MediaServer.Backend;
 using Open_MediaServer.Config;
@@ -19,6 +20,17 @@ public class Program
     {
         ConfigManager = new ConfigManager(Environment.CurrentDirectory);
         ContentManager = new ContentManager(ConfigManager.Config.WorkingDirectory ?? Environment.CurrentDirectory);
+#if DEBUG
+        if (File.Exists(Path.Combine(Environment.CurrentDirectory, "media.db")))
+        {
+            File.Delete(Path.Combine(Environment.CurrentDirectory, "media.db"));
+        }
+        
+        if (File.Exists(Path.Combine(Environment.CurrentDirectory, "users.db")))
+        {
+            File.Delete(Path.Combine(Environment.CurrentDirectory, "users.db"));
+        }
+#endif      
         Database = new SqLite(ConfigManager.Config.WorkingDirectory ?? Environment.CurrentDirectory);
         Backend = new BackendServer();
         // Frontend = new FrontendServer();

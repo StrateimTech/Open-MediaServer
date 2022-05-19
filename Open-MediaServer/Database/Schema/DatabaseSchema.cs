@@ -31,7 +31,6 @@ public class DatabaseSchema
         public int Id { get; set; }
         [ForeignKey(typeof(string))]
         public string Username { get; set; }
-        public string Email { get; set; }
         public string Bio { get; set; }
         public byte[] Salt { get; set; }
         public string Password { get; set; }

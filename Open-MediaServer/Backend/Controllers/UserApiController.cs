@@ -20,7 +20,7 @@ namespace Open_MediaServer.Backend.Controllers;
 public class UserApiController : ControllerBase
 {
     [HttpPost("/api/account/register/")]
-    public async Task<ActionResult> PostRegister(UserSchema.UserRegister userRegister)
+    public async Task<ActionResult> PostRegister(UserSchema.User userRegister)
     {
         if (ModelState.IsValid)
         {
@@ -29,7 +29,7 @@ public class UserApiController : ControllerBase
 
             if (usernameExists)
             {
-                return StatusCode(StatusCodes.Status400BadRequest, "Username is already in use.");
+                return StatusCode(StatusCodes.Status400BadRequest, "Profile username already in use.");
             }
 
             byte[] salt = new byte[128 / 8];
@@ -55,7 +55,6 @@ public class UserApiController : ControllerBase
             var userSchema = new DatabaseSchema.User()
             {
                 Username = userRegister.Username,
-                Email = userRegister.Email,
                 Password = hashedPassword,
                 Salt = salt,
                 SessionKey = Convert.ToBase64String(sessionKey),
@@ -79,15 +78,15 @@ public class UserApiController : ControllerBase
     }
 
     [HttpPost("/api/account/login/")]
-    public async Task<ActionResult> PostLogin(UserSchema.UserLogin userLogin)
+    public async Task<ActionResult> PostLogin(UserSchema.User userLogin)
     {
         if (ModelState.IsValid)
         {
             var user = await Program.Database.UserDatabase
-                .GetAsync<DatabaseSchema.User>(user => user.Email == userLogin.Email);
+                .FindAsync<DatabaseSchema.User>(user => user.Username == userLogin.Username);
             if (user == null)
             {
-                return StatusCode(StatusCodes.Status400BadRequest, "No user has a account associated with that email.");
+                return StatusCode(StatusCodes.Status400BadRequest, "No user has a account associated with that username.");
             }
             
             string hashedPassword = Convert.ToBase64String(KeyDerivation.Pbkdf2(
@@ -141,8 +140,13 @@ public class UserApiController : ControllerBase
     {
         if (ModelState.IsValid)
         {
-            var user = await Program.Database.UserDatabase
-                .GetAsync<DatabaseSchema.User>(user => user.Email == userDelete.Email);
+            var userWithoutChildren = await Program.Database.UserDatabase.FindAsync<DatabaseSchema.User>(user =>
+                user.Username == userDelete.User.Username);
+            if (userWithoutChildren == null)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, "Unable to find account associated.");
+            }
+            var user = await Program.Database.UserDatabase.FindWithChildrenAsync<DatabaseSchema.User>(userWithoutChildren.Id);
             
             if (user == null)
             {
@@ -150,7 +154,7 @@ public class UserApiController : ControllerBase
             }
             
             string hashedPassword = Convert.ToBase64String(KeyDerivation.Pbkdf2(
-                password: userDelete.Password,
+                password: userDelete.User.Password,
                 salt: user.Salt,
                 prf: KeyDerivationPrf.HMACSHA256,
                 iterationCount: 100000,
@@ -165,6 +169,7 @@ public class UserApiController : ControllerBase
                     }
                 }
                 await Program.Database.UserDatabase.DeleteAsync<DatabaseSchema.User>(user.Id);
+                return StatusCode(StatusCodes.Status200OK);
             }
         }
         return StatusCode(StatusCodes.Status400BadRequest, ModelState);
