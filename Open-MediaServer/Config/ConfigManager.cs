@@ -7,7 +7,7 @@ namespace Open_MediaServer.Config;
 public class ConfigManager
 {
     public readonly Config Config = new();
-    
+
     public ConfigManager(string path)
     {
         string file = $"{path}/config.json";
@@ -20,6 +20,7 @@ public class ConfigManager
                 Console.WriteLine($"Failed to deserialize config ({file})");
                 return;
             }
+
             Config = deserializedConfig;
             return;
         }

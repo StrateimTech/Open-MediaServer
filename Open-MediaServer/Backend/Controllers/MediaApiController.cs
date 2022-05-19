@@ -44,7 +44,7 @@ public class MediaApiController : ControllerBase
                 return StatusCode(StatusCodes.Status400BadRequest);
             }
 
-            byte[] thumbnail;
+            byte[] thumbnailBytes;
             if (media.ThumbnailPath == null)
             {
                 var bytes = await System.IO.File.ReadAllBytesAsync(media.ContentPath);
@@ -54,26 +54,27 @@ public class MediaApiController : ControllerBase
                     bytes = LZ4Pickler.Unpickle(bytes);
                 }
 
-                thumbnail = ContentUtils.GetThumbnail(bytes, Program.ConfigManager.Config.ThumbnailSize?.Item1,
-                    Program.ConfigManager.Config.ThumbnailSize?.Item2, media.ContentType);
+                thumbnailBytes =
+                    ContentUtils.GetThumbnail(bytes, Program.ConfigManager.Config.ThumbnailSize?.Item1,
+                        Program.ConfigManager.Config.ThumbnailSize?.Item2, media.ContentType);
 
-                if (thumbnail == null)
+                if (thumbnailBytes == null)
                 {
                     return StatusCode(StatusCodes.Status500InternalServerError);
                 }
 
-                media.ThumbnailPath = Program.ContentManager.SaveThumbnail(thumbnail, media.Id, media.Name,
+                media.ThumbnailPath = Program.ContentManager.SaveThumbnail(thumbnailBytes, media.Id, media.Name,
                     Program.ConfigManager.Config.ThumbnailType,
                     (ContentType) ContentUtils.GetContentType(media.Extension)!);
                 await Program.Database.MediaDatabase.UpdateAsync(media);
             }
             else
             {
-                thumbnail = await System.IO.File.ReadAllBytesAsync(media.ThumbnailPath);
+                thumbnailBytes = await System.IO.File.ReadAllBytesAsync(media.ThumbnailPath);
             }
 
             var file = $"{media.Name}.png";
-            return File(thumbnail, "image/png", file);
+            return File(thumbnailBytes, "image/png", file);
         }
 
         return StatusCode(StatusCodes.Status400BadRequest, ModelState);
@@ -117,7 +118,7 @@ public class MediaApiController : ControllerBase
         {
             var mediaTable = await Program.Database.MediaDatabase.GetAllWithChildrenAsync<DatabaseSchema.Media>();
             mediaTable.RemoveAll(media => media.Public == false);
-            
+
             if (parameterMass.Username != null)
             {
                 var userWithoutChildren =
@@ -128,6 +129,7 @@ public class MediaApiController : ControllerBase
                         userWithoutChildren.Id);
                 mediaTable.RemoveAll(media => media.AuthorId != user.Id);
             }
+
             if (parameterMass.Type != null)
             {
                 mediaTable.RemoveAll(media => media.ContentType == parameterMass.Type);
@@ -144,6 +146,7 @@ public class MediaApiController : ControllerBase
                 Media = mediaIdentities
             };
         }
+
         return null;
     }
 
@@ -174,6 +177,7 @@ public class MediaApiController : ControllerBase
             {
                 return StatusCode(StatusCodes.Status401Unauthorized);
             }
+
             DatabaseSchema.User user = await UserUtils.GetUserWithChildren(Request.Cookies["user_session"]);
 
             if (user == null)
@@ -281,8 +285,9 @@ public class MediaApiController : ControllerBase
             {
                 return StatusCode(StatusCodes.Status401Unauthorized);
             }
+
             DatabaseSchema.User user = await UserUtils.GetUser(Request.Cookies["user_session"]);
-            
+
             if (user == null)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError);

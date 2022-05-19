@@ -12,13 +12,13 @@ public static class UserUtils
         return Program.Database.UserDatabase
             .GetAsync<DatabaseSchema.User>(user => user.SessionKey == sessionKey).Result.SessionKey == sessionKey;
     }
-    
+
     public static async Task<DatabaseSchema.User> GetUser(string sessionKey)
     {
         return await Program.Database.UserDatabase
             .GetAsync<DatabaseSchema.User>(user => user.SessionKey == sessionKey);
     }
-    
+
     public static async Task<DatabaseSchema.User> GetUserWithChildren(string sessionKey)
     {
         return await Program.Database.UserDatabase

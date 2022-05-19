@@ -20,18 +20,19 @@ public class BackendServer
             {
                 fileUploadMax *= 100000000;
             }
+
             options.Limits.MaxRequestBodySize = fileUploadMax;
         });
-        
+
         builder.Services.AddControllers();
-        
+
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen(options =>
         {
-            options.SwaggerDoc("OpenMedia", 
+            options.SwaggerDoc("OpenMedia",
                 new OpenApiInfo
                 {
-                    Title = "StrateimTech Open-MediaServer", 
+                    Title = "StrateimTech Open-MediaServer",
                     Version = "v2",
                     Contact = new OpenApiContact
                     {
@@ -39,11 +40,11 @@ public class BackendServer
                     }
                 });
         });
-        
+
         var app = builder.Build();
-        
+
         app.UseDeveloperExceptionPage();
-        
+
         if (Program.ConfigManager.Config.ShowSwaggerUi)
         {
             app.UseSwagger();
@@ -52,13 +53,13 @@ public class BackendServer
                 options.SwaggerEndpoint("/swagger/OpenMedia/swagger.json", "StrateimTech Open-MediaServer");
             });
         }
-        
+
         app.UseHttpsRedirection();
-        
+
         app.UseAuthorization();
-        
+
         app.MapControllers();
-        
+
         app.Run();
     }
 }

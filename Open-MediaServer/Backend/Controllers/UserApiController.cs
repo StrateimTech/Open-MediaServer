@@ -42,7 +42,7 @@ public class UserApiController : ControllerBase
                 prf: KeyDerivationPrf.HMACSHA256,
                 iterationCount: 100000,
                 numBytesRequested: 256 / 8));
-            
+
             byte[] sessionKey = new byte[64];
             rng.GetNonZeroBytes(sessionKey);
             Response.Cookies.Append("user_session", Convert.ToBase64String(sessionKey), new CookieOptions()
@@ -64,7 +64,7 @@ public class UserApiController : ControllerBase
 
             Console.WriteLine("Inserting user into sqlite db");
             await Program.Database.UserDatabase.InsertWithChildrenAsync(userSchema);
-            
+
             string serializedJson = JsonSerializer.Serialize(userSchema, new JsonSerializerOptions()
             {
                 WriteIndented = true,
@@ -86,9 +86,10 @@ public class UserApiController : ControllerBase
                 .FindAsync<DatabaseSchema.User>(user => user.Username == userLogin.Username);
             if (user == null)
             {
-                return StatusCode(StatusCodes.Status400BadRequest, "No user has a account associated with that username.");
+                return StatusCode(StatusCodes.Status400BadRequest,
+                    "No user has a account associated with that username.");
             }
-            
+
             string hashedPassword = Convert.ToBase64String(KeyDerivation.Pbkdf2(
                 password: userLogin.Password,
                 salt: user.Salt,
@@ -110,7 +111,7 @@ public class UserApiController : ControllerBase
                     });
                     user.SessionKey = Convert.ToBase64String(sessionKey);
                     await Program.Database.UserDatabase.UpdateWithChildrenAsync(user);
-                
+
                     string serializedJson = JsonSerializer.Serialize(user, new JsonSerializerOptions()
                     {
                         WriteIndented = true,
@@ -128,10 +129,13 @@ public class UserApiController : ControllerBase
                         SameSite = SameSiteMode.Lax
                     });
                 }
+
                 return StatusCode(StatusCodes.Status200OK);
             }
+
             return StatusCode(StatusCodes.Status401Unauthorized);
         }
+
         return StatusCode(StatusCodes.Status400BadRequest, ModelState);
     }
 
@@ -146,13 +150,15 @@ public class UserApiController : ControllerBase
             {
                 return StatusCode(StatusCodes.Status400BadRequest, "Unable to find account associated.");
             }
-            var user = await Program.Database.UserDatabase.FindWithChildrenAsync<DatabaseSchema.User>(userWithoutChildren.Id);
-            
+
+            var user =
+                await Program.Database.UserDatabase.FindWithChildrenAsync<DatabaseSchema.User>(userWithoutChildren.Id);
+
             if (user == null)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
-            
+
             string hashedPassword = Convert.ToBase64String(KeyDerivation.Pbkdf2(
                 password: userDelete.User.Password,
                 salt: user.Salt,
@@ -168,10 +174,12 @@ public class UserApiController : ControllerBase
                         await Program.Database.MediaDatabase.DeleteAsync<DatabaseSchema.Media>(mediaIdentity.Id);
                     }
                 }
+
                 await Program.Database.UserDatabase.DeleteAsync<DatabaseSchema.User>(user.Id);
                 return StatusCode(StatusCodes.Status200OK);
             }
         }
+
         return StatusCode(StatusCodes.Status400BadRequest, ModelState);
     }
 }

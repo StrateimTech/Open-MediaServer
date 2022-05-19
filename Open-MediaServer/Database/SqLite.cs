@@ -11,12 +11,12 @@ public class SqLite
 {
     public readonly SQLiteAsyncConnection MediaDatabase;
     public readonly SQLiteAsyncConnection UserDatabase;
-    
+
     public SqLite(string databasePath)
     {
         var mediaDatabase = Path.Combine(databasePath, "media.db");
         var userDatabase = Path.Combine(databasePath, "users.db");
-        
+
         MediaDatabase = new SQLiteAsyncConnection(mediaDatabase);
         MediaDatabase.CreateTableAsync<DatabaseSchema.Media>();
 

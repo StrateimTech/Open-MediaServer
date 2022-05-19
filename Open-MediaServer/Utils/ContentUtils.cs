@@ -32,9 +32,11 @@ public static class ContentUtils
             case ContentType.Image:
             {
                 using var image = Image.Load<Rgba32>(data);
-                if(width != null && height != null)
-                    image.Mutate(x => x.Resize((int)width, (int)height));
-                
+                if (width != null && height != null)
+                {
+                    image.Mutate(x => x.Resize((int) width, (int) height));
+                }
+
                 using var ms = new MemoryStream();
                 image.Save(ms, PngFormat.Instance);
                 return ms.ToArray();
@@ -44,8 +46,10 @@ public static class ContentUtils
                 var configuration = new Configuration().WithAVDecoders();
                 using var image = Image.Load<Rgba32>(configuration, data);
 
-                if(width != null && height != null)
-                    image.Mutate(x => x.Resize((int)width, (int)height));
+                if (width != null && height != null)
+                {
+                    image.Mutate(x => x.Resize((int) width, (int) height));
+                }
 
                 using var ms = new MemoryStream();
                 image.Save(ms, PngFormat.Instance);
@@ -53,6 +57,7 @@ public static class ContentUtils
                 return ms.ToArray();
             }
         }
+
         return null;
     }
 }

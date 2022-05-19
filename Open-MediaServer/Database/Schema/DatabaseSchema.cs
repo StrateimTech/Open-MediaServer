@@ -11,8 +11,7 @@ public class DatabaseSchema
 {
     public class Media
     {
-        [PrimaryKey]
-        public string Id { get; init; }
+        [PrimaryKey] public string Id { get; init; }
         public string Name { get; set; }
         public string Extension { get; set; }
         public int ContentSize { get; set; }
@@ -24,21 +23,20 @@ public class DatabaseSchema
         public DateTime UploadDate { get; set; }
         public int AuthorId { get; set; }
     }
-    
+
     public class User
     {
-        [PrimaryKey, AutoIncrement]
-        public int Id { get; set; }
-        [ForeignKey(typeof(string))]
-        public string Username { get; set; }
+        [PrimaryKey, AutoIncrement] public int Id { get; set; }
+        [ForeignKey(typeof(string))] public string Username { get; set; }
         public string Bio { get; set; }
         public byte[] Salt { get; set; }
         public string Password { get; set; }
         public string SessionKey { get; set; }
         public DateTime CreationDate { get; set; }
         public bool Admin { get; set; }
-        [TextBlob(nameof(UploadsBlobbed))]
-        public List<MediaSchema.MediaIdentity> Uploads { get; set; }
+
+        [TextBlob(nameof(UploadsBlobbed))] public List<MediaSchema.MediaIdentity> Uploads { get; set; }
+
         //Ignore
         public string UploadsBlobbed { get; set; }
     }
