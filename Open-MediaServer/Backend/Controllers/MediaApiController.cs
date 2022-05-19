@@ -20,7 +20,7 @@ namespace Open_MediaServer.Backend.Controllers;
 public class MediaApiController : ControllerBase
 {
     // https://media.strateim.tech/RPf4BxA/Hello_World.mp4/
-    [HttpGet("/api/thumbnail/")]
+    [HttpPost("/api/thumbnail/")]
     public async Task<ActionResult> GetThumbnail(MediaSchema.MediaIdentity identity)
     {
         if (ModelState.IsValid)
@@ -81,7 +81,7 @@ public class MediaApiController : ControllerBase
     }
 
 
-    [HttpGet("/api/media/")]
+    [HttpPost("/api/media/")]
     public async Task<ActionResult> GetMedia(MediaSchema.MediaIdentity identity)
     {
         if (ModelState.IsValid)
