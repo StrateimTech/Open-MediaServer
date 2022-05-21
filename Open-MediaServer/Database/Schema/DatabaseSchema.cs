@@ -34,9 +34,7 @@ public class DatabaseSchema
         public string SessionKey { get; set; }
         public DateTime CreationDate { get; set; }
         public bool Admin { get; set; }
-
         [TextBlob(nameof(UploadsBlobbed))] public List<MediaSchema.MediaIdentity> Uploads { get; set; }
-
         //Ignore
         public string UploadsBlobbed { get; set; }
     }

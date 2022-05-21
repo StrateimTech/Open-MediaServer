@@ -24,4 +24,10 @@
       <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Frontend\Assets\font" />
+      <Folder Include="Frontend\Assets\images" />
+      <Folder Include="Frontend\Assets\js" />
+    </ItemGroup>
+
 </Project>

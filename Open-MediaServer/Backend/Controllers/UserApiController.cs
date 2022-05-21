@@ -1,13 +1,10 @@
 ﻿using System;
-using System.Buffers.Text;
-using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Open_MediaServer.Backend.Schema;
 using Open_MediaServer.Database.Schema;
