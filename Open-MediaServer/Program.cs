@@ -18,7 +18,7 @@ public class Program
     
     public static void Main(string[] args)
     {
-//         ConfigManager = new ConfigManager(Environment.CurrentDirectory);
+         ConfigManager = new ConfigManager(Environment.CurrentDirectory);
 //         ContentManager = new ContentManager(ConfigManager.Config.WorkingDirectory ?? Environment.CurrentDirectory);
 // #if DEBUG
 //         if (File.Exists(Path.Combine(Environment.CurrentDirectory, "media.db")))

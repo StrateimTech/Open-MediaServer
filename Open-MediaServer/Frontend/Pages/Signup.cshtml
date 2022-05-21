@@ -1,15 +1,22 @@
 ﻿@page
+@using Open_MediaServer
 @model Open_MediaServer.Frontend.Pages.Signup
 
 @{
     Layout = "_Layout.cshtml";
+    
+    if (Request.Cookies["user_session"] != null)
+    {
+        Response.Redirect("/Account");
+        return;
+    }
 }
 
 <!DOCTYPE html>
 
 <html>
 <head>
-    <title></title>
+    <title>@Program.ConfigManager.Config.FrontendName Media - Signup</title>
 </head>
 <body>
 <div>

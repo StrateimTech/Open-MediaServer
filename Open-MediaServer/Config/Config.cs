@@ -4,6 +4,8 @@ namespace Open_MediaServer.Config;
 
 public class Config
 {
+    public string FrontendName { get; set; } = "";
+    
     public string? WorkingDirectory = null;
 
     // Length of generated uid 

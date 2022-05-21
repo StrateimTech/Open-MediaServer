@@ -1,19 +1,37 @@
 ﻿@page
+@using Open_MediaServer
+@using Open_MediaServer.Utils
 @model Open_MediaServer.Frontend.Pages.Admin
 
 @{
     Layout = "_Layout.cshtml";
+
+    if (Request.Cookies["user_session"] == null || !UserUtils.IsAuthed(Request.Cookies["user_session"]))
+    {
+        Response.Redirect("/Login?returnUrl=Admin");
+        return;
+    }
+        
+    if(UserUtils.IsAuthed(Request.Cookies["user_session"]))
+    {
+        var user = UserUtils.GetUser(Request.Cookies["user_session"]).Result;
+        if (user is {Admin: false })
+        {
+            Response.Redirect("/");
+            return;
+        }
+    }
 }
 
 <!DOCTYPE html>
 
 <html>
 <head>
-    <title></title>
+    <title>@Program.ConfigManager.Config.FrontendName Media - Admin</title>
 </head>
 <body>
 <div>
-    
+
 </div>
 </body>
 </html>
