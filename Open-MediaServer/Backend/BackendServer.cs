@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 
 namespace Open_MediaServer.Backend;
@@ -12,7 +13,9 @@ public class BackendServer
     public BackendServer()
     {
         var builder = WebApplication.CreateBuilder();
-
+        builder.Logging.ClearProviders();
+        builder.WebHost.UseUrls($"http://localhost:2000;https://localhost:2001");
+        
         builder.WebHost.UseKestrel(options =>
         {
             int? fileUploadMax = Program.ConfigManager.Config.FileNetworkUploadMax;

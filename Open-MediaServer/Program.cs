@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Threading;
 using Microsoft.Extensions.Configuration;
 using Open_MediaServer.Backend;
 using Open_MediaServer.Config;
@@ -8,31 +9,21 @@ using Open_MediaServer.Database;
 using Open_MediaServer.Frontend;
 
 namespace Open_MediaServer;
+
 public class Program
 {
     public static ConfigManager ConfigManager;
-    public static BackendServer Backend;
-    public static FrontendServer Frontend;
+    private static BackendServer _backend;
+    private static FrontendServer _frontend;
     public static SqLite Database;
     public static ContentManager ContentManager;
-    
+
     public static void Main(string[] args)
     {
-         ConfigManager = new ConfigManager(Environment.CurrentDirectory);
-//         ContentManager = new ContentManager(ConfigManager.Config.WorkingDirectory ?? Environment.CurrentDirectory);
-// #if DEBUG
-//         if (File.Exists(Path.Combine(Environment.CurrentDirectory, "media.db")))
-//         {
-//             File.Delete(Path.Combine(Environment.CurrentDirectory, "media.db"));
-//         }
-//         
-//         if (File.Exists(Path.Combine(Environment.CurrentDirectory, "users.db")))
-//         {
-//             File.Delete(Path.Combine(Environment.CurrentDirectory, "users.db"));
-//         }
-// #endif      
-//         Database = new SqLite(ConfigManager.Config.WorkingDirectory ?? Environment.CurrentDirectory);
-//         Backend = new BackendServer();
-        Frontend = new FrontendServer();
+        ConfigManager = new ConfigManager(Environment.CurrentDirectory);
+        ContentManager = new ContentManager(ConfigManager.Config.WorkingDirectory ?? Environment.CurrentDirectory);
+        Database = new SqLite(ConfigManager.Config.WorkingDirectory ?? Environment.CurrentDirectory);
+        new Thread(() => _backend = new BackendServer()).Start();
+        new Thread(() => _frontend = new FrontendServer()).Start();
     }
 }
