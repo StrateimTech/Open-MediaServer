@@ -21,6 +21,11 @@ public class UserApiController : ControllerBase
     {
         if (ModelState.IsValid)
         {
+            if (!Program.ConfigManager.Config.AllowSignups)
+            {
+                return StatusCode(StatusCodes.Status403Forbidden, "Signups are disabled.");
+            }
+            
             var usernameExists = Program.Database.UserDatabase.Table<DatabaseSchema.User>().ToListAsync().Result
                 .Any(user => user.Username == userRegister.Username);
 
