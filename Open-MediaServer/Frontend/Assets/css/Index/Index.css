@@ -1,0 +1,46 @@
+﻿.fade-div {
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+.fade-text {
+    font-size: 36px;
+    color: white;
+    font-family: 'Fugaz One', sans-serif
+}
+
+.loading-text:after {
+    display: inline-block;
+    animation: dots steps(1, end) 4s infinite;
+    animation-delay: 2s;
+    content: '';
+}
+
+@keyframes fade-in-move-down {
+    0% {
+        opacity: 0;
+        transform: translateY(-3rem);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes dots {
+    25% {
+        content: '.';
+    }
+    50% {
+        content: '..';
+    }
+    75% {
+        content: '...';
+    }
+    100% {
+        content: '';
+    }
+}

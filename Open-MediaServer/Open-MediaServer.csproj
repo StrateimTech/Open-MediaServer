@@ -25,9 +25,13 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Frontend\Assets\font" />
+      <Folder Include="Frontend\Assets\font\Lato" />
       <Folder Include="Frontend\Assets\images" />
       <Folder Include="Frontend\Assets\js" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <_ContentIncludedByDefault Remove="Frontend\Pages\Account\Login.cshtml" />
     </ItemGroup>
 
 </Project>

@@ -3,6 +3,9 @@
 
 @{
     Layout = "_Layout.cshtml";
+
+    int UploadCount = 248;
+    string ContentSize = "24.32 GB";
 }
 
 <!DOCTYPE html>
@@ -10,11 +13,17 @@
 <html>
 <head>
     <title>Media - Home</title>
+    <link rel="stylesheet" href="~/Frontend/Assets/css/Index/Index.css">
 </head>
 
 <body>
-<div>
-    A
+<div class="fade-div">
+    <div style="animation: fade-in-move-down 2s;" class="fade-text loading-text">
+        SERVING @UploadCount UPLOADS
+    </div>
+    <div style="animation: fade-in-move-down 1.5s;" class="fade-text loading-text">
+        STORING @ContentSize
+    </div>
 </div>
 </body>
 </html>
