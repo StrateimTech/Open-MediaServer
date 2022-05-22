@@ -51,7 +51,8 @@ public class UserApiController : ControllerBase
             {
                 IsEssential = true,
                 Secure = true,
-                SameSite = SameSiteMode.Lax
+                SameSite = SameSiteMode.Lax,
+                Expires = DateTime.Now.AddDays(30),
             });
 
             var userSchema = new DatabaseSchema.User()
@@ -109,7 +110,8 @@ public class UserApiController : ControllerBase
                     {
                         IsEssential = true,
                         Secure = true,
-                        SameSite = SameSiteMode.Lax
+                        SameSite = SameSiteMode.Lax,
+                        Expires = DateTime.Now.AddDays(30)
                     });
                     user.SessionKey = Convert.ToBase64String(sessionKey);
                     await Program.Database.UserDatabase.UpdateWithChildrenAsync(user);
@@ -128,7 +130,8 @@ public class UserApiController : ControllerBase
                     {
                         IsEssential = true,
                         Secure = true,
-                        SameSite = SameSiteMode.Lax
+                        SameSite = SameSiteMode.Lax,
+                        Expires = DateTime.Now.AddDays(30)
                     });
                 }
 
