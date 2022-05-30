@@ -1,18 +1,29 @@
 ﻿.sort-navbar {
     height: 32px;
     width: 100%;
-    background-color: rgb(32, 32, 32);
+    
+    margin: 4px 0 4px 0;
     
     display: flex;
     align-items: center;
+    justify-content: center;
+    flex-direction: row;
+    flex-wrap: wrap;
+    
+    gap: 8px;
 }
 
 .sort-item {
-    min-width: 56px;
+    display: flex;
+    justify-content: center;
+    
+    min-width: 96px;
     height: 24px;
     
+    outline: rgb(64, 48, 48) solid 1px;
     border-radius: 4px;
-    background-color: rgb(64, 64, 64);
+    
+    background-color: rgb(32, 24, 24);
     
     font-family: 'Lato Light', sans-serif;
     color: white;
