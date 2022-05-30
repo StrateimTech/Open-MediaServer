@@ -7,6 +7,11 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <!-- extends watching group to include *.cshtml and *.razor files -->
+        <Watch Include="**\*.cshtml;*.razor;*.js;*.css" Exclude="**\obj\**\*;bin\**\*" />
+    </ItemGroup>
+
+    <ItemGroup>
         <Content Include="Assets\**">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </Content>
@@ -17,7 +22,6 @@
       <PackageReference Include="ImageSharp.AVCodecFormats.Native.linux-x64" Version="1.6.0" />
       <PackageReference Include="ImageSharp.AVCodecFormats.Native.win-x64" Version="1.6.0" />
       <PackageReference Include="K4os.Compression.LZ4" Version="1.2.16" />
-      <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="6.0.5" />
       <PackageReference Include="SixLabors.ImageSharp" Version="2.1.0" />
       <PackageReference Include="sqlite-net-pcl" Version="1.8.116" />
       <PackageReference Include="SQLiteNetExtensions" Version="2.1.0" />

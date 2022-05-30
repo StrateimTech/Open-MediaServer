@@ -1,0 +1,36 @@
+﻿@page
+@using Open_MediaServer
+@model Open_MediaServer.Frontend.Pages.Media
+
+@{
+    Layout = "_Layout.cshtml";
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <title>@Program.ConfigManager.Config.FrontendName Media - Content</title>
+    <link rel="stylesheet" href="~/Frontend/Assets/css/Content/Content.css">
+    <link rel="stylesheet" href="~/Frontend/Assets/font/Font.css">
+</head>
+<body>
+<div class="sort-navbar">
+    <div class="sort-item">
+        Name
+    </div>
+    <div class="sort-item">
+        Upload Date
+    </div>
+
+    <div class="sort-item">
+        Views
+    </div>
+
+    <div class="sort-item">
+        Author
+    </div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,30 @@
+﻿@page "/content/{user}"
+@using Open_MediaServer
+@using Open_MediaServer.Database.Schema
+@model Open_MediaServer.Frontend.Pages.MediaDynamic
+
+@{
+    Layout = "_Layout.cshtml";
+}
+
+@* @{ *@
+@*     if (RouteData.Values.Count > 0 && RouteData.Values["user"] != null) *@
+@*     { *@
+@*         string username = RouteData.Values["user"].ToString(); *@
+@*         var user = await Program.Database.UserDatabase.FindAsync<DatabaseSchema.User>(user => user.Username == username); *@
+@*     } *@
+@*     else *@
+@*     { *@
+@*     } *@
+@* } *@
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <title>Content - @RouteData.Values["user"]</title>
+</head>
+<body>
+
+</body>
+</html>
