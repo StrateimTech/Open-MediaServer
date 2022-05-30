@@ -75,6 +75,23 @@
                                     <div class="media-element-text">
                                         @media.Id / @media.Name@media.Extension<br/>
                                         @media.UploadDate.ToString("MM/dd/yy HH:mm")<br/>
+                                        Public: @media.Public<br/>
+                                        @StringUtils.FormatBytesWithIdentifier(media.ContentSize)<br/>
+                                    </div>
+                                </div>
+                            </a>
+                        }
+                        else
+                        {
+                            <a class="media-flex-item" href="/@media.Id/@media.Name@media.Extension">
+                                <div class="media-element">
+                                    <div class="media-no-img-item">
+                                        No thumbnail .-.
+                                    </div>
+                                    <div class="media-element-text">
+                                        @media.Id / @media.Name@media.Extension<br/>
+                                        @media.UploadDate.ToString("MM/dd/yy HH:mm")<br/>
+                                        Public: @media.Public<br/>
                                         @StringUtils.FormatBytesWithIdentifier(media.ContentSize)<br/>
                                     </div>
                                 </div>

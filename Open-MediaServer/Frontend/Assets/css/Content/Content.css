@@ -1,30 +1,105 @@
 ﻿.sort-navbar {
     height: 32px;
     width: 100%;
-    
+
     margin: 4px 0 4px 0;
-    
+
     display: flex;
     align-items: center;
     justify-content: center;
     flex-direction: row;
     flex-wrap: wrap;
-    
+
     gap: 8px;
 }
 
 .sort-item {
     display: flex;
     justify-content: center;
-    
+
     min-width: 96px;
     height: 24px;
-    
+
     outline: rgb(64, 48, 48) solid 1px;
     border-radius: 4px;
-    
+
     background-color: rgb(32, 24, 24);
-    
+
     font-family: 'Lato Light', sans-serif;
     color: white;
+
+    cursor: pointer;
+
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+.content-container {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px;
+}
+
+@media screen and (max-width: 576px) {
+    .content-container {
+        flex-direction: column;
+    }
+}
+
+.content-item {
+    flex: 1 1 288px;
+    background-color: rgb(8, 8, 8);
+
+    max-width: 288px;
+    height: 96px;
+
+    box-sizing: border-box;
+    padding: 4px;
+
+    border-radius: 2px;
+    cursor: pointer;
+
+    text-decoration: none;
+}
+
+.content-item > div {
+    display: flex;
+}
+
+.content-item-thumbnail {
+    width: 150px;
+    height: 88px;
+}
+
+.content-item-no-thumbnail {
+    width: 150px;
+    height: 88px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-family: 'Lato', sans-serif;
+    font-size: 16px;
+    color: white;
+}
+
+.content-item-text {
+    font-family: 'Lato', sans-serif;
+    font-size: 12px;
+    color: white;
+    margin-left: 8px;
+}
+
+.main-text {
+    font-family: 'Lato', sans-serif;
+    font-size: 32px;
+    color: white;
+    text-align: center;
+
+    margin: 8px 0 8px 0;
 }
