@@ -7,7 +7,9 @@
     string accountUrl = "/Login";
     if (Context.Request.Cookies["user_session"] != null && UserUtils.IsAuthed(Context.Request.Cookies["user_session"]))
     {
-        accountText = "ACCOUNT";
+        var user = UserUtils.GetUser(Context.Request.Cookies["user_session"]).Result;
+        
+        accountText = user.Username.ToUpper();
         accountUrl = "/Account";
     }
 }

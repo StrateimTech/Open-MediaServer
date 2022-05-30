@@ -1,10 +1,12 @@
 ﻿using System;
 using System.IO;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
+using Microsoft.OpenApi.Models;
 
 namespace Open_MediaServer.Frontend;
 
@@ -14,10 +16,27 @@ public class FrontendServer
     {
         var builder = WebApplication.CreateBuilder(new WebApplicationOptions()
         {
-            
             ContentRootPath = $"{Directory.GetCurrentDirectory()}{Path.DirectorySeparatorChar}Frontend{Path.DirectorySeparatorChar}",
             WebRootPath = "Assets"
         });
+        
+        builder.Services.AddControllers();
+        builder.Services.AddEndpointsApiExplorer();
+        builder.Services.AddSwaggerGen(options =>
+        {
+            options.SwaggerDoc("OpenMedia",
+                new OpenApiInfo
+                {
+                    Title = "StrateimTech Open-MediaServer",
+                    Version = "v2",
+                    Contact = new OpenApiContact
+                    {
+                        Url = new Uri("https://github.com/StrateimTech/Open-MediaServer")
+                    }
+                });
+        });
+        
+        builder.WebHost.UseUrls($"http://*:80;https://*:443");
 
         builder.Services.AddRazorPages(options =>
         {
@@ -30,6 +49,15 @@ public class FrontendServer
         {
             app.UseExceptionHandler("/Error");
             app.UseHsts();
+        }
+        
+        if (Program.ConfigManager.Config.ShowSwaggerUi)
+        {
+            app.UseSwagger();
+            app.UseSwaggerUI(options =>
+            {
+                options.SwaggerEndpoint("/swagger/OpenMedia/swagger.json", "StrateimTech Open-MediaServer");
+            });
         }
 
         app.UseHttpsRedirection();
@@ -47,6 +75,11 @@ public class FrontendServer
         app.UseAuthorization();
 
         app.MapRazorPages();
+        
+        app.UseEndpoints(endpoints =>
+        {
+            endpoints.MapControllers();
+        });
 
         app.Run();
     }

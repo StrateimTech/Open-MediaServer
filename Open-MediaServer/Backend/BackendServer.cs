@@ -14,7 +14,7 @@ public class BackendServer
     {
         var builder = WebApplication.CreateBuilder();
         builder.Logging.ClearProviders();
-        builder.WebHost.UseUrls($"http://localhost:2000;https://localhost:2001");
+        builder.WebHost.UseUrls($"http://*:2000;https://*:2001");
         
         builder.WebHost.UseKestrel(options =>
         {
@@ -60,7 +60,7 @@ public class BackendServer
         app.UseHttpsRedirection();
 
         app.UseAuthorization();
-
+        
         app.MapControllers();
 
         app.Run();

@@ -1,6 +1,8 @@
 ﻿@page
 @using Open_MediaServer
+@using Open_MediaServer.Database.Schema
 @using Open_MediaServer.Utils
+@using SQLiteNetExtensionsAsync.Extensions
 @model Open_MediaServer.Frontend.Pages.Account
 
 @{
@@ -18,10 +20,71 @@
 <html>
 <head>
     <title>@Program.ConfigManager.Config.FrontendName Media - Account</title>
+    <link rel="stylesheet" href="~/Frontend/Assets/css/Account/Account.css">
+    <link rel="stylesheet" href="~/Frontend/Assets/font/Font.css">
 </head>
 <body>
-<div>
-    
+<div class="main-container">
+    <div class="main-flex-item">
+        <div class="profile-container noselect">
+            <div class="main-text">
+                Account
+                <hr class="hr-main"/>
+            </div>
+            <div>
+                <div class="light-text">
+                    Name
+                </div>
+                <input class="profile-input"/>
+            </div>
+
+            <div>
+                <div class="light-text" style="margin-top: 4px">
+                    Bio
+                </div>
+                <input class="profile-input"/>
+            </div>
+        </div>
+    </div>
+    <div class="main-flex-item noselect">
+        <div class="main-text media-main-text">
+            Media
+            <hr class="hr-main"/>
+        </div>
+        <div class="media-container">
+            @{
+                var mediaList = await Program.Database.MediaDatabase.GetAllWithChildrenAsync<DatabaseSchema.Media>();
+                if (mediaList == null || mediaList.Count <= 0)
+                {
+                    <div class="main-text" style="width: 100%; text-align: center">
+                        This account has no media associated with it.<br/>
+                        Try uploading a video!
+                    </div>
+                }
+                else
+                {
+                    foreach (var media in mediaList)
+                    {
+                        if (media.ThumbnailPath != null)
+                        {
+                            var img = await System.IO.File.ReadAllBytesAsync(media.ThumbnailPath);
+                            var imgBase64 = Convert.ToBase64String(img);
+                            <a class="media-flex-item" href="/@media.Id/@media.Name@media.Extension">
+                                <div class="media-element">
+                                    <img src="data:image;base64,@imgBase64" alt="@media.Name" class="media-img-item">
+                                    <div class="media-element-text">
+                                        @media.Id / @media.Name@media.Extension<br/>
+                                        @media.UploadDate.ToString("MM/dd/yy HH:mm")<br/>
+                                        @StringUtils.FormatBytesWithIdentifier(media.ContentSize)<br/>
+                                    </div>
+                                </div>
+                            </a>
+                        }
+                    }
+                }
+            }
+        </div>
+    </div>
 </div>
 </body>
 </html>
