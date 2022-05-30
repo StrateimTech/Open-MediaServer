@@ -8,7 +8,7 @@
     if (Context.Request.Cookies["user_session"] != null && UserUtils.IsAuthed(Context.Request.Cookies["user_session"]))
     {
         var user = UserUtils.GetUser(Context.Request.Cookies["user_session"]).Result;
-        
+
         accountText = user.Username.ToUpper();
         accountUrl = "/Account";
     }
@@ -39,6 +39,16 @@
                 CONTENT
             </a>
         </li>
+        @{
+            if (Context.Request.Cookies["user_session"] != null && UserUtils.IsAuthed(Context.Request.Cookies["user_session"]))
+            {
+                <li>
+                    <a href="/Upload">
+                        UPLOAD
+                    </a>
+                </li>
+            }
+        }
     </ul>
 
     <ul class="navbar-item">
