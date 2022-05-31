@@ -1,4 +1,5 @@
 ﻿@page
+@using System.Web
 @using Open_MediaServer
 @using Open_MediaServer.Database.Schema
 @using Open_MediaServer.Utils
@@ -29,9 +30,6 @@
         Date
     </div>
     <div class="sort-item">
-        Downloads
-    </div>
-    <div class="sort-item">
         Type
     </div>
 </div>
@@ -47,6 +45,61 @@
         }
         else
         {
+            if (Request.Query.Count > 0)
+            {
+                if (Request.Query.ContainsKey("name"))
+                {
+                    var nameSort = Request.Query["name"];
+                    if (nameSort[0] != null)
+                    {
+                        if (Boolean.TryParse(nameSort[0], out bool value) && value)
+                        {
+                            mediaList = mediaList.OrderBy(media => media.Name).ToList();
+                        }
+                    }
+                }
+
+                if (Request.Query.ContainsKey("author"))
+                {
+                    var authorSort = Request.Query["author"];
+                
+                    if (authorSort[0] != null)
+                    {
+                        if (Boolean.TryParse(authorSort[0], out bool value) && value)
+                        {
+                            mediaList = mediaList.OrderBy(media => media.AuthorId).ToList();
+                        }
+                    }
+                }
+
+                if (Request.Query.ContainsKey("date"))
+                {
+                    var dateSort = Request.Query["date"];
+                
+                    if (dateSort[0] != null)
+                    {
+                        if (Boolean.TryParse(dateSort[0], out bool value) && value)
+                        {
+                            mediaList = mediaList.OrderBy(media => media.UploadDate).Reverse().ToList();
+                        }
+                    }
+                }
+
+                if (Request.Query.ContainsKey("type"))
+                {
+                    var typeSort = Request.Query["type"];
+                
+                    if (typeSort[0] != null)
+                    {
+                        if (Boolean.TryParse(typeSort[0], out bool value) && value)
+                        {
+                            mediaList = mediaList.OrderBy(media => media.Extension).ToList();
+                        }
+                    }
+                }
+            }
+            
+            
             foreach (var media in mediaList)
             {
                 var author = await Program.Database.UserDatabase.GetAsync<DatabaseSchema.User>(user => user.Id == media.AuthorId);
