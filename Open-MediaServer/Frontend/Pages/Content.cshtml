@@ -17,21 +17,22 @@
     <title>@Program.ConfigManager.Config.FrontendName Media - Content</title>
     <link rel="stylesheet" href="~/Frontend/Assets/css/Content/Content.css">
     <link rel="stylesheet" href="~/Frontend/Assets/font/Font.css">
+    <script src="~/Frontend/Assets/js/Content/Content.js"></script>
 </head>
 <body>
 <div class="sort-navbar">
-    <div class="sort-item">
+    <a class="sort-item" onclick="updateQueryURL('name', window);">
         Name
-    </div>
-    <div class="sort-item">
+    </a>
+    <a class="sort-item" onclick="updateQueryURL('author', window);">
         Author
-    </div>
-    <div class="sort-item">
+    </a>
+    <a class="sort-item" onclick="updateQueryURL('date', window);">
         Date
-    </div>
-    <div class="sort-item">
+    </a>
+    <a class="sort-item" onclick="updateQueryURL('type', window);">
         Type
-    </div>
+    </a>
 </div>
 <div class="content-container">
     @{
@@ -62,7 +63,7 @@
                 if (Request.Query.ContainsKey("author"))
                 {
                     var authorSort = Request.Query["author"];
-                
+
                     if (authorSort[0] != null)
                     {
                         if (Boolean.TryParse(authorSort[0], out bool value) && value)
@@ -75,7 +76,7 @@
                 if (Request.Query.ContainsKey("date"))
                 {
                     var dateSort = Request.Query["date"];
-                
+
                     if (dateSort[0] != null)
                     {
                         if (Boolean.TryParse(dateSort[0], out bool value) && value)
@@ -88,7 +89,7 @@
                 if (Request.Query.ContainsKey("type"))
                 {
                     var typeSort = Request.Query["type"];
-                
+
                     if (typeSort[0] != null)
                     {
                         if (Boolean.TryParse(typeSort[0], out bool value) && value)
@@ -98,8 +99,8 @@
                     }
                 }
             }
-            
-            
+
+
             foreach (var media in mediaList)
             {
                 var author = await Program.Database.UserDatabase.GetAsync<DatabaseSchema.User>(user => user.Id == media.AuthorId);
