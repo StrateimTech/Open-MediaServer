@@ -13,6 +13,8 @@
         Response.Redirect("/Login?returnUrl=Account");
         return;
     }
+
+    var user = UserUtils.GetUser(Request.Cookies["user_session"]).Result;
 }
 
 <!DOCTYPE html>
@@ -31,18 +33,24 @@
                 Account
                 <hr class="hr-main"/>
             </div>
-            <div>
-                <div class="light-text">
-                    Name
-                </div>
-                <input class="profile-input"/>
-            </div>
 
             <div>
-                <div class="light-text" style="margin-top: 4px">
+                <div class="light-text container-desc-text">
+                    Name
+                </div>
+                <input type="text" id="profileName" class="profile-input" value="@user.Username" placeholder="Name"/>
+            </div>
+
+            <div class="profile-input-containers">
+                <div class="light-text container-desc-text">
                     Bio
                 </div>
-                <input class="profile-input"/>
+                <textarea id="profileBio" class="profile-input" placeholder="Empty bio...">@user.Bio</textarea>
+            </div>
+            
+            <div class="light-text div-update-button">
+                <button class="profile-update-button" onclick="console.log('Hello World!');">Update Profile</button>
+                @* <input type="button" id="profileUpdate" class="profile-input" value="@user.Username" placeholder="Name"/> *@
             </div>
         </div>
     </div>
