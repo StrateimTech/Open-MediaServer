@@ -14,7 +14,7 @@ public class BackendServer
     {
         var builder = WebApplication.CreateBuilder();
         builder.Logging.ClearProviders();
-        builder.WebHost.UseUrls($"http://*:2000;https://*:2001");
+        builder.WebHost.UseUrls($"http://*:{Program.ConfigManager.Config.BackendHttp};https://*:{Program.ConfigManager.Config.BackendHttps}");
         
         builder.WebHost.UseKestrel(options =>
         {

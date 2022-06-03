@@ -5,6 +5,12 @@ namespace Open_MediaServer.Config;
 public class Config
 {
     public string FrontendName { get; set; } = "";
+
+    public short FrontendHttp { get; set; } = 80;
+    public short FrontendHttps { get; set; } = 443;
+
+    public short BackendHttp { get; set; } = 2000;
+    public short BackendHttps { get; set; } = 2001;
     
     public string? WorkingDirectory = null;
 

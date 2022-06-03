@@ -37,7 +37,7 @@ public class FrontendServer
                 });
         });
         
-        builder.WebHost.UseUrls($"http://*:80;https://*:443");
+        builder.WebHost.UseUrls($"http://*:{Program.ConfigManager.Config.FrontendHttp};https://*:{Program.ConfigManager.Config.FrontendHttps}");
 
         builder.Services.AddRazorPages(options =>
         {

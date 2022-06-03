@@ -106,11 +106,9 @@
                 var author = await Program.Database.UserDatabase.GetAsync<DatabaseSchema.User>(user => user.Id == media.AuthorId);
                 if (media.ThumbnailPath != null)
                 {
-                    var img = await System.IO.File.ReadAllBytesAsync(media.ThumbnailPath);
-                    var imgBase64 = Convert.ToBase64String(img);
                     <a class="content-item" href="/@media.Id/@media.Name@media.Extension">
                         <div>
-                            <img src="data:image;base64,@imgBase64" alt="@media.Name" class="content-item-thumbnail">
+                            <img src="@Url.Action("GetThumbnail", "MediaApi", new {Id = media.Id, Name = media.Name}, Request.Scheme, Request.Host.ToUriComponent() + ":" + (Request.Scheme.Equals("https", StringComparison.OrdinalIgnoreCase) ? Program.ConfigManager.Config.BackendHttps : Program.ConfigManager.Config.BackendHttp))" alt="@media.Name" class="content-item-thumbnail"/>
                             <div class="content-item-text">
                                 @media.Name.FirstCharToUpper()@media.Extension<br/>
                                 @media.UploadDate.ToString("MM/dd/yy hh:mm")<br/>
