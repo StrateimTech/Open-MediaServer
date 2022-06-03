@@ -73,10 +73,11 @@
                                 <div class="media-element">
                                     <img src="data:image;base64,@imgBase64" alt="@media.Name" class="media-img-item">
                                     <div class="media-element-text">
-                                        @media.Id / @media.Name@media.Extension<br/>
+                                        @media.Name@media.Extension<br/>
                                         @media.UploadDate.ToString("MM/dd/yy HH:mm")<br/>
                                         Public: @media.Public<br/>
-                                        @StringUtils.FormatBytesWithIdentifier(media.ContentSize)<br/>
+                                        Size: @StringUtils.FormatBytesWithIdentifier(media.ContentSize)<br/>
+                                        ID: @media.Id
                                     </div>
                                 </div>
                             </a>
@@ -89,10 +90,11 @@
                                         No thumbnail .-.
                                     </div>
                                     <div class="media-element-text">
-                                        @media.Id / @media.Name@media.Extension<br/>
+                                        @media.Name@media.Extension<br/>
                                         @media.UploadDate.ToString("MM/dd/yy HH:mm")<br/>
                                         Public: @media.Public<br/>
-                                        @StringUtils.FormatBytesWithIdentifier(media.ContentSize)<br/>
+                                        Size: @StringUtils.FormatBytesWithIdentifier(media.ContentSize)<br/>
+                                        ID: @media.Id
                                     </div>
                                 </div>
                             </a>

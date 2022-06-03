@@ -68,11 +68,12 @@
 
 .content-item > div {
     display: flex;
+    height: 100%;
 }
 
 .content-item-thumbnail {
-    width: 150px;
-    height: 88px;
+    width: 55%;
+    height: 100%;
 }
 
 .content-item-no-thumbnail {
