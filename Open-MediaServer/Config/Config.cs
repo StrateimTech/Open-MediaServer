@@ -1,4 +1,7 @@
-﻿using K4os.Compression.LZ4;
+﻿using HeyRed.ImageSharp.AVCodecFormats.Webm;
+using K4os.Compression.LZ4;
+using SixLabors.ImageSharp.Formats;
+using SixLabors.ImageSharp.Formats.Webp;
 
 namespace Open_MediaServer.Config;
 
@@ -35,7 +38,7 @@ public class Config
     // null size will result in the video resolution's size being used 
     public (int, int)? ThumbnailSize { get; set; } = null;
 
-    public string ThumbnailType { get; set; } = ".png";
+    public IImageFormat ThumbnailFormat { get; set; } = WebpFormat.Instance;
 
     public string[] ImageTypes { get; set; } =
     {

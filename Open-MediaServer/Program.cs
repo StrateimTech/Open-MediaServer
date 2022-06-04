@@ -1,7 +1,5 @@
 using System;
-using System.IO;
 using System.Threading;
-using Microsoft.Extensions.Configuration;
 using Open_MediaServer.Backend;
 using Open_MediaServer.Config;
 using Open_MediaServer.Content;

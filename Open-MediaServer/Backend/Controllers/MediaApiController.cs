@@ -54,9 +54,8 @@ public class MediaApiController : ControllerBase
                     bytes = LZ4Pickler.Unpickle(bytes);
                 }
 
-                thumbnailBytes =
-                    ContentUtils.GetThumbnail(bytes, Program.ConfigManager.Config.ThumbnailSize?.Item1,
-                        Program.ConfigManager.Config.ThumbnailSize?.Item2, media.ContentType);
+                thumbnailBytes = await ContentUtils.GetThumbnail(bytes, Program.ConfigManager.Config.ThumbnailSize?.Item1,
+                        Program.ConfigManager.Config.ThumbnailSize?.Item2, media.ContentType, Program.ConfigManager.Config.ThumbnailFormat);
 
                 if (thumbnailBytes == null)
                 {
@@ -64,7 +63,7 @@ public class MediaApiController : ControllerBase
                 }
 
                 media.ThumbnailPath = Program.ContentManager.SaveThumbnail(thumbnailBytes, media.Id, media.Name,
-                    Program.ConfigManager.Config.ThumbnailType,
+                    Program.ConfigManager.Config.ThumbnailFormat.FileExtensions.ToList()[0],
                     (ContentType) ContentUtils.GetContentType(media.Extension)!);
                 await Program.Database.MediaDatabase.UpdateAsync(media);
             }
@@ -232,13 +231,13 @@ public class MediaApiController : ControllerBase
             if ((contentType == ContentType.Video || contentType == ContentType.Image) &&
                 Program.ConfigManager.Config.Thumbnails && Program.ConfigManager.Config.PreComputeThumbnails)
             {
-                var thumbnail = ContentUtils.GetThumbnail(upload.Content,
+                var thumbnail = await ContentUtils.GetThumbnail(upload.Content,
                     Program.ConfigManager.Config.ThumbnailSize?.Item1,
-                    Program.ConfigManager.Config.ThumbnailSize?.Item2, (ContentType) contentType);
+                    Program.ConfigManager.Config.ThumbnailSize?.Item2, (ContentType) contentType, Program.ConfigManager.Config.ThumbnailFormat);
                 if (thumbnail != null)
                 {
                     mediaSchema.ThumbnailPath = Program.ContentManager.SaveThumbnail(thumbnail, mediaSchema.Id,
-                        mediaSchema.Name, Program.ConfigManager.Config.ThumbnailType, (ContentType) contentType);
+                        mediaSchema.Name, Program.ConfigManager.Config.ThumbnailFormat.FileExtensions.ToList()[0], (ContentType) contentType);
                 }
                 else
                 {

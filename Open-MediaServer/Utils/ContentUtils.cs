@@ -1,10 +1,13 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using HeyRed.ImageSharp.AVCodecFormats;
+using HeyRed.ImageSharp.AVCodecFormats.Webm;
 using Microsoft.OpenApi.Extensions;
 using Open_MediaServer.Content;
 using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.Formats;
 using SixLabors.ImageSharp.Formats.Png;
 using SixLabors.ImageSharp.PixelFormats;
 using SixLabors.ImageSharp.Processing;
@@ -25,39 +28,28 @@ public static class ContentUtils
         return null;
     }
 
-    public static byte[] GetThumbnail(byte[] data, int? width, int? height, ContentType contentType)
+    public static async Task<byte[]> GetThumbnail(byte[] data, int? width, int? height, ContentType contentType,
+        IImageFormat format)
     {
+        Image<Rgba32> image;
         switch (contentType)
         {
-            case ContentType.Image:
-            {
-                using var image = Image.Load<Rgba32>(data);
-                if (width != null && height != null)
-                {
-                    image.Mutate(x => x.Resize((int) width, (int) height));
-                }
-
-                using var ms = new MemoryStream();
-                image.Save(ms, PngFormat.Instance);
-                return ms.ToArray();
-            }
             case ContentType.Video:
-            {
                 var configuration = new Configuration().WithAVDecoders();
-                using var image = Image.Load<Rgba32>(configuration, data);
-
-                if (width != null && height != null)
-                {
-                    image.Mutate(x => x.Resize((int) width, (int) height));
-                }
-
-                using var ms = new MemoryStream();
-                image.Save(ms, PngFormat.Instance);
-                image.Dispose();
-                return ms.ToArray();
-            }
+                image = Image.Load<Rgba32>(configuration, data);
+                break;
+            default:
+                image = Image.Load<Rgba32>(data);
+                break;
         }
-
-        return null;
+        
+        if (width != null && height != null)
+        {
+            image.Mutate(x => x.Resize((int) width, (int) height));
+        }
+    
+        using var ms = new MemoryStream();
+        await image.SaveAsync(ms, format);
+        return ms.ToArray();
     }
 }
