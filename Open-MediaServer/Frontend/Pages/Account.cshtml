@@ -85,7 +85,7 @@
                                                   Request.Scheme,
                                                   Request.Host.ToUriComponent() + ":" + 
                                                   (Request.Scheme.Equals("https", StringComparison.OrdinalIgnoreCase) 
-                                                      ? Program.ConfigManager.Config.BackendHttps : Program.ConfigManager.Config.BackendHttp))
+                                                      ? Program.ConfigManager.Config.BackendPorts.https : Program.ConfigManager.Config.BackendPorts.http))
                                             " 
                                          alt="@media.Name" class="media-img-item"/>
                                     <div class="media-element-text">

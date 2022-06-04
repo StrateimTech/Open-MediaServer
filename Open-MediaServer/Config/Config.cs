@@ -1,5 +1,6 @@
 ﻿using HeyRed.ImageSharp.AVCodecFormats.Webm;
 using K4os.Compression.LZ4;
+using Newtonsoft.Json;
 using SixLabors.ImageSharp.Formats;
 using SixLabors.ImageSharp.Formats.Webp;
 
@@ -7,15 +8,12 @@ namespace Open_MediaServer.Config;
 
 public class Config
 {
-    public string FrontendName { get; set; } = "";
+    public string FrontendName { get; set; }
 
-    public short FrontendHttp { get; set; } = 80;
-    public short FrontendHttps { get; set; } = 443;
-
-    public short BackendHttp { get; set; } = 2000;
-    public short BackendHttps { get; set; } = 2001;
+    public (short http, short https) FrontendPorts { get; set; } = (80, 443);
+    public (short http, short https) BackendPorts { get; set; } = (2000, 2001);
     
-    public string? WorkingDirectory = null;
+    public string? WorkingDirectory { get; set; } = null;
 
     // Length of generated uid 
     public int UniqueIdLength { get; set; } = 8;
@@ -36,8 +34,9 @@ public class Config
     public bool PreComputeThumbnails { get; set; } = true;
 
     // null size will result in the video resolution's size being used 
-    public (int, int)? ThumbnailSize { get; set; } = null;
+    public (int width, int height)? ThumbnailSize { get; set; } = (200, 113);
 
+    [JsonProperty( TypeNameHandling = TypeNameHandling.Objects )]
     public IImageFormat ThumbnailFormat { get; set; } = WebpFormat.Instance;
 
     public string[] ImageTypes { get; set; } =

@@ -1,6 +1,6 @@
 ﻿using System;
 using System.IO;
-using System.Text.Json;
+using Newtonsoft.Json;
 
 namespace Open_MediaServer.Config;
 
@@ -14,7 +14,7 @@ public class ConfigManager
         if (File.Exists(file))
         {
             string fileData = File.ReadAllText(file);
-            var deserializedConfig = JsonSerializer.Deserialize<Config>(fileData);
+            var deserializedConfig = JsonConvert.DeserializeObject<Config>(fileData);
             if (deserializedConfig == null)
             {
                 Console.WriteLine($"Failed to deserialize config ({file})");
@@ -25,10 +25,11 @@ public class ConfigManager
             return;
         }
 
-        string serializedJson = JsonSerializer.Serialize(Config, new JsonSerializerOptions()
+        string serializedJson = JsonConvert.SerializeObject(Config, new JsonSerializerSettings
         {
-            WriteIndented = true,
-            ReadCommentHandling = JsonCommentHandling.Skip
+            Formatting = Formatting.Indented,
+            NullValueHandling = NullValueHandling.Include,
+            
         });
         File.WriteAllText(file, serializedJson);
     }
