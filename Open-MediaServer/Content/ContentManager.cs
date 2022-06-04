@@ -27,7 +27,7 @@ public class ContentManager
     public string SaveThumbnail(byte[] thumbnail, string id, string name, string extension, ContentType contentType)
     {
         var filePath = Path.Combine(_contentDirectory, "Media", contentType.GetDisplayName(), id,
-            $"{name}_thumbnail{extension}");
+            $"{name}_thumbnail.{extension}");
         Directory.CreateDirectory(Path.GetDirectoryName(filePath)!);
         if (!File.Exists(filePath))
         {

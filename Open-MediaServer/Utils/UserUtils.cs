@@ -10,7 +10,7 @@ public static class UserUtils
     public static bool IsAuthed(string sessionKey)
     {
         return Program.Database.UserDatabase
-            .GetAsync<DatabaseSchema.User>(user => user.SessionKey == sessionKey).Result.SessionKey == sessionKey;
+            .FindAsync<DatabaseSchema.User>(user => user.SessionKey == sessionKey).Result?.SessionKey == sessionKey;
     }
 
     public static async Task<DatabaseSchema.User> GetUser(string sessionKey)
