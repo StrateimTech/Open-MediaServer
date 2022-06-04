@@ -16,4 +16,11 @@ public class UserSchema
         [OneToOne] [Required] public User User { get; set; }
         [Required] public bool DeleteMedia { get; set; }
     }
+    
+    public class UserUpdate
+    {
+        [OneToOne] [Required] public User User { get; set; }
+        [Required] public string Name { get; set; }
+        public string Bio { get; set; }
+    }
 }

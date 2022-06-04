@@ -187,4 +187,18 @@ public class UserApiController : ControllerBase
 
         return StatusCode(StatusCodes.Status400BadRequest, ModelState);
     }
+    
+    [HttpPost("/api/account/update/")]
+    public async Task<ActionResult> PostUpdate(UserSchema.UserUpdate userUpdate)
+    {
+        if (ModelState.IsValid)
+        {
+            var user = await Program.Database.UserDatabase.FindAsync<DatabaseSchema.User>(user =>
+                user.Username == userUpdate.User.Username);
+            user.Username = userUpdate.Name;
+            user.Bio = userUpdate.Bio;
+            await Program.Database.UserDatabase.UpdateAsync(user);
+        }
+        return StatusCode(StatusCodes.Status400BadRequest, ModelState);
+    }
 }
