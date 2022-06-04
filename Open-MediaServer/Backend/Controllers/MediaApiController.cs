@@ -78,7 +78,34 @@ public class MediaApiController : ControllerBase
             }
             else
             {
-                thumbnailBytes = await System.IO.File.ReadAllBytesAsync(media.ThumbnailPath);
+                if (System.IO.File.Exists(media.ThumbnailPath))
+                {
+                    thumbnailBytes = await System.IO.File.ReadAllBytesAsync(media.ThumbnailPath);
+                }
+                else
+                {
+                    var bytes = await System.IO.File.ReadAllBytesAsync(media.ContentPath);
+
+                    if (media.ContentCompressed)
+                    {
+                        bytes = LZ4Pickler.Unpickle(bytes);
+                    }
+
+                    thumbnailBytes = await ContentUtils.GetThumbnail(bytes,
+                        Program.ConfigManager.Config.ThumbnailSize?.Item1,
+                        Program.ConfigManager.Config.ThumbnailSize?.Item2, media.ContentType,
+                        Program.ConfigManager.Config.ThumbnailFormat);
+
+                    if (thumbnailBytes == null)
+                    {
+                        return StatusCode(StatusCodes.Status500InternalServerError);
+                    }
+
+                    media.ThumbnailPath = Program.ContentManager.SaveThumbnail(thumbnailBytes, media.Id, media.Name,
+                        Program.ConfigManager.Config.ThumbnailFormat.FileExtensions.ToList()[0],
+                        (ContentType) ContentUtils.GetContentType(media.Extension)!);
+                    await Program.Database.MediaDatabase.UpdateAsync(media);
+                }
             }
 
             var responseHeaders = Response.GetTypedHeaders();
