@@ -59,7 +59,7 @@
             Content
             <hr class="hr-main"/>
         </div>
-        <div class="media-container">
+        <div class="content-container">
             @{
                 var mediaList = await Program.Database.MediaDatabase.GetAllWithChildrenAsync<DatabaseSchema.Media>();
                 if (mediaList == null || mediaList.Count <= 0)
@@ -75,45 +75,33 @@
                     {
                         if (media.ThumbnailPath != null)
                         {
-                            <a class="media-flex-item" href="/@media.Id/@media.Name@media.Extension">
-                                <div class="media-element">
-                                    <img src="@Url.Action("GetThumbnail", "MediaApi", 
-                                                  new {
-                                                      Id = media.Id, 
-                                                      Name = media.Name
-                                                  }, 
-                                                  Request.Scheme,
-                                                  Request.Host.ToUriComponent() + ":" + 
-                                                  (Request.Scheme.Equals("https", StringComparison.OrdinalIgnoreCase) 
-                                                      ? Program.ConfigManager.Config.BackendPorts.https : Program.ConfigManager.Config.BackendPorts.http))
-                                            " 
-                                         alt="@media.Name" class="media-img-item"/>
-                                    <div class="media-element-text">
+                            <div class="content-item">
+                                <a class="content-href" href="/@media.Id/@media.Name@media.Extension">
+                                    <img class="content-item-thumbnail" src="@Url.Action("GetThumbnail", "MediaApi", new {Id = media.Id, Name = media.Name}, Request.Scheme, Request.Host.ToUriComponent() + ":" + (Request.Scheme.Equals("https", StringComparison.OrdinalIgnoreCase) ? Program.ConfigManager.Config.BackendPorts.https : Program.ConfigManager.Config.BackendPorts.http)) " alt="@media.Name"/>
+                                    <div class="content-item-text">
                                         @media.Name@media.Extension<br/>
                                         @media.UploadDate.ToString("MM/dd/yy HH:mm")<br/>
-                                        Public: @media.Public<br/>
                                         Size: @StringUtils.FormatBytesWithIdentifier(media.ContentSize)<br/>
-                                        ID: @media.Id
+                                        Public: @media.Public<br/>
                                     </div>
-                                </div>
-                            </a>
+                                </a>
+                            </div>
                         }
                         else
                         {
-                            <a class="media-flex-item" href="/@media.Id/@media.Name@media.Extension">
-                                <div class="media-element">
-                                    <div class="media-no-img-item">
-                                        No thumbnail .-.
+                            <div class="content-item">
+                                <a class="content-href" href="/@media.Id/@media.Name@media.Extension">
+                                    <div class="content-item-no-thumbnail">
+                                        No Thumbnail
                                     </div>
-                                    <div class="media-element-text">
+                                    <div class="content-item-text">
                                         @media.Name@media.Extension<br/>
                                         @media.UploadDate.ToString("MM/dd/yy HH:mm")<br/>
-                                        Public: @media.Public<br/>
                                         Size: @StringUtils.FormatBytesWithIdentifier(media.ContentSize)<br/>
-                                        ID: @media.Id
+                                        Public: @media.Public<br/>
                                     </div>
-                                </div>
-                            </a>
+                                </a>
+                            </div>
                         }
                     }
                 }
