@@ -123,9 +123,11 @@ public class MediaApiController : ControllerBase
     }
 
 
-    [HttpPost("/api/media/")]
-    public async Task<ActionResult> GetMedia(MediaSchema.MediaIdentity identity)
+    [HttpGet("/api/media/")]
+    public async Task<ActionResult> GetMedia([FromQuery] MediaSchema.MediaIdentity identity)
     {
+        Console.WriteLine($"AAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+        
         if (ModelState.IsValid)
         {
             var fileName = Path.GetFileNameWithoutExtension(identity.Name);
