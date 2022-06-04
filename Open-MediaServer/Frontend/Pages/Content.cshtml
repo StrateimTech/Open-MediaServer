@@ -102,16 +102,17 @@
 
             foreach (var media in mediaList)
             {
+                var author = await Program.Database.UserDatabase.GetAsync<DatabaseSchema.User>(user => user.Id == media.AuthorId);
                 if (media.ThumbnailPath != null)
                 {
                     <div class="content-item">
                         <a class="content-href" href="/@media.Id/@media.Name@media.Extension">
                             <img class="content-item-thumbnail" src="@Url.Action("GetThumbnail", "MediaApi", new {Id = media.Id, Name = media.Name}, Request.Scheme, Request.Host.ToUriComponent() + ":" + (Request.Scheme.Equals("https", StringComparison.OrdinalIgnoreCase) ? Program.ConfigManager.Config.BackendPorts.https : Program.ConfigManager.Config.BackendPorts.http)) " alt="@media.Name"/>
                             <div class="content-item-text">
-                                @media.Name@media.Extension<br/>
-                                @media.UploadDate.ToString("MM/dd/yy HH:mm")<br/>
+                                @media.Name.FirstCharToUpper()@media.Extension<br/>
+                                Author: @author.Username.FirstCharToUpper()<br/>
+                                Date: @media.UploadDate.ToString("MM/dd/yy")<br/>
                                 Size: @StringUtils.FormatBytesWithIdentifier(media.ContentSize)<br/>
-                                Public: @media.Public<br/>
                             </div>
                         </a>
                     </div>
@@ -124,50 +125,15 @@
                                 No Thumbnail
                             </div>
                             <div class="content-item-text">
-                                @media.Name@media.Extension<br/>
-                                @media.UploadDate.ToString("MM/dd/yy HH:mm")<br/>
+                                @media.Name.FirstCharToUpper()@media.Extension<br/>
+                                Author: @author.Username.FirstCharToUpper()<br/>
+                                Date: @media.UploadDate.ToString("MM/dd/yy")<br/>
                                 Size: @StringUtils.FormatBytesWithIdentifier(media.ContentSize)<br/>
-                                Public: @media.Public<br/>
                             </div>
                         </a>
                     </div>
                 }
             }
-
-            @* foreach (var media in mediaList) *@
-            @* { *@
-            @*     var author = await Program.Database.UserDatabase.GetAsync<DatabaseSchema.User>(user => user.Id == media.AuthorId); *@
-            @*     if (media.ThumbnailPath != null) *@
-            @*     { *@
-            @*         <a class="content-item" href="/@media.Id/@media.Name@media.Extension"> *@
-            @*             <div> *@
-            @*                 <img src="@Url.Action("GetThumbnail", "MediaApi", new {Id = media.Id, Name = media.Name}, Request.Scheme, Request.Host.ToUriComponent() + ":" + (Request.Scheme.Equals("https", StringComparison.OrdinalIgnoreCase) ? Program.ConfigManager.Config.BackendPorts.https : Program.ConfigManager.Config.BackendPorts.http))" alt="@media.Name" class="content-item-thumbnail"/> *@
-            @*                 <div class="content-item-text"> *@
-            @*                     @media.Name.FirstCharToUpper()@media.Extension<br/> *@
-            @*                     @media.UploadDate.ToString("MM/dd/yy hh:mm")<br/> *@
-            @*                     @StringUtils.FormatBytesWithIdentifier(media.ContentSize)<br/> *@
-            @*                     @author.Username.FirstCharToUpper()<br/> *@
-            @*                 </div> *@
-            @*             </div> *@
-            @*         </a> *@
-            @*     } *@
-            @*     else *@
-            @*     { *@
-            @*         <a class="content-item" href="/@media.Id/@media.Name@media.Extension"> *@
-            @*             <div> *@
-            @*                 <div class="content-item-no-thumbnail"> *@
-            @*                     No thumbnail .-. *@
-            @*                 </div> *@
-            @*                 <div class="content-item-text"> *@
-            @*                     @media.Name.FirstCharToUpper()@media.Extension<br/> *@
-            @*                     @media.UploadDate.ToString("MM/dd/yy hh:mm")<br/> *@
-            @*                     @StringUtils.FormatBytesWithIdentifier(media.ContentSize)<br/> *@
-            @*                     @author.Username.FirstCharToUpper()<br/> *@
-            @*                 </div> *@
-            @*             </div> *@
-            @*         </a> *@
-            @*     } *@
-            @* } *@
         }
     }
 </div>
