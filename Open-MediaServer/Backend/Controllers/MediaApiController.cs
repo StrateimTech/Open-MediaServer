@@ -71,9 +71,9 @@ public class MediaApiController : ControllerBase
             {
                 thumbnailBytes = await System.IO.File.ReadAllBytesAsync(media.ThumbnailPath);
             }
-
-            var file = $"{media.Name}.png";
-            return File(thumbnailBytes, "image/png", file);
+            
+            var file = $"{media.Name}.{Program.ConfigManager.Config.ThumbnailFormat.FileExtensions.ToList()[0]}";
+            return File(thumbnailBytes, Program.ConfigManager.Config.ThumbnailFormat.DefaultMimeType, file);
         }
 
         return StatusCode(StatusCodes.Status400BadRequest, ModelState);
