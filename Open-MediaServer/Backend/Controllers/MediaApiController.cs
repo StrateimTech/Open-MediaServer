@@ -5,8 +5,10 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using K4os.Compression.LZ4;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.Headers;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.StaticFiles;
+using Microsoft.Net.Http.Headers;
 using Open_MediaServer.Backend.Schema;
 using Open_MediaServer.Content;
 using Open_MediaServer.Database.Schema;
@@ -44,6 +46,11 @@ public class MediaApiController : ControllerBase
                 return StatusCode(StatusCodes.Status400BadRequest);
             }
 
+            if (Request.GetTypedHeaders().IfModifiedSince?.UtcDateTime >= media.UploadDate)
+            {
+                return StatusCode(StatusCodes.Status304NotModified);
+            }
+
             byte[] thumbnailBytes;
             if (media.ThumbnailPath == null)
             {
@@ -54,8 +61,10 @@ public class MediaApiController : ControllerBase
                     bytes = LZ4Pickler.Unpickle(bytes);
                 }
 
-                thumbnailBytes = await ContentUtils.GetThumbnail(bytes, Program.ConfigManager.Config.ThumbnailSize?.Item1,
-                        Program.ConfigManager.Config.ThumbnailSize?.Item2, media.ContentType, Program.ConfigManager.Config.ThumbnailFormat);
+                thumbnailBytes = await ContentUtils.GetThumbnail(bytes,
+                    Program.ConfigManager.Config.ThumbnailSize?.Item1,
+                    Program.ConfigManager.Config.ThumbnailSize?.Item2, media.ContentType,
+                    Program.ConfigManager.Config.ThumbnailFormat);
 
                 if (thumbnailBytes == null)
                 {
@@ -71,7 +80,14 @@ public class MediaApiController : ControllerBase
             {
                 thumbnailBytes = await System.IO.File.ReadAllBytesAsync(media.ThumbnailPath);
             }
-            
+
+            var responseHeaders = Response.GetTypedHeaders();
+            responseHeaders.CacheControl = new CacheControlHeaderValue
+            {
+                NoCache = true
+            };
+            responseHeaders.LastModified = new DateTimeOffset(media.UploadDate);
+
             var file = $"{media.Name}.{Program.ConfigManager.Config.ThumbnailFormat.FileExtensions.ToList()[0]}";
             return File(thumbnailBytes, Program.ConfigManager.Config.ThumbnailFormat.DefaultMimeType, file);
         }
@@ -233,11 +249,13 @@ public class MediaApiController : ControllerBase
             {
                 var thumbnail = await ContentUtils.GetThumbnail(upload.Content,
                     Program.ConfigManager.Config.ThumbnailSize?.Item1,
-                    Program.ConfigManager.Config.ThumbnailSize?.Item2, (ContentType) contentType, Program.ConfigManager.Config.ThumbnailFormat);
+                    Program.ConfigManager.Config.ThumbnailSize?.Item2, (ContentType) contentType,
+                    Program.ConfigManager.Config.ThumbnailFormat);
                 if (thumbnail != null)
                 {
                     mediaSchema.ThumbnailPath = Program.ContentManager.SaveThumbnail(thumbnail, mediaSchema.Id,
-                        mediaSchema.Name, Program.ConfigManager.Config.ThumbnailFormat.FileExtensions.ToList()[0], (ContentType) contentType);
+                        mediaSchema.Name, Program.ConfigManager.Config.ThumbnailFormat.FileExtensions.ToList()[0],
+                        (ContentType) contentType);
                 }
                 else
                 {
