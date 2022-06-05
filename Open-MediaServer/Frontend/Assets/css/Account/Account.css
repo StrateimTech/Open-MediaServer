@@ -88,7 +88,7 @@
     margin-top: auto;
     width: 100%;
     padding: 4px;
-
+    
     background-color: rgb(8, 140, 40);
     color: white;
 
@@ -103,6 +103,30 @@
 
 .profile-update-button:active {
     background-color: rgb(11, 125, 30);
+    color: rgb(240, 240, 240);
+    opacity: 0.9;
+}
+
+.profile-delete-button {
+    margin: auto 0 8px 0;
+
+    width: 100%;
+    padding: 4px;
+
+    background-color: rgb(200, 10, 10);
+    color: white;
+
+    display: inline-block;
+    border: none;
+    border-radius: 4px;
+
+    box-sizing: border-box;
+
+    cursor: pointer;
+}
+
+.profile-delete-button:active {
+    background-color: rgb(180, 9, 10);
     color: rgb(240, 240, 240);
     opacity: 0.9;
 }

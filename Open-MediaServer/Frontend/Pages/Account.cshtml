@@ -51,6 +51,10 @@
                     @Html.TextArea("Bio", user.Bio, new {@class = "profile-input", @placeholder = "Empty bio..."})
                 </div>
                 @Html.TextBox("returnURL", "/Account", new {@type = "hidden"})
+                @* @using (Html.BeginForm("PostUpdate", "UserApi", FormMethod.Get, new {@class = "profile-input-form"})) *@
+                @* { *@
+                @*     <input type="submit" class="profile-delete-button" value="Delete Profile"/> *@
+                @* } *@
                 <input type="submit" class="profile-update-button" value="Update Profile"/>
             }
         </div>
