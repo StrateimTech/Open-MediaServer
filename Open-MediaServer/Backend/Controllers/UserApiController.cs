@@ -26,7 +26,7 @@ public class UserApiController : ControllerBase
             {
                 return StatusCode(StatusCodes.Status403Forbidden, "Signups are disabled.");
             }
-            
+
             var usernameExists = Program.Database.UserDatabase.Table<DatabaseSchema.User>().ToListAsync().Result
                 .Any(user => user.Username == userRegister.Username);
 
@@ -86,11 +86,6 @@ public class UserApiController : ControllerBase
     {
         if (ModelState.IsValid)
         {
-            if (userLogin.Password == null)
-            {
-                return StatusCode(StatusCodes.Status401Unauthorized);
-            }
-
             var user = await Program.Database.UserDatabase
                 .FindAsync<DatabaseSchema.User>(user => user.Username == userLogin.Username);
             if (user == null)
@@ -155,11 +150,6 @@ public class UserApiController : ControllerBase
     {
         if (ModelState.IsValid)
         {
-            if (userDelete.User.Password == null)
-            {
-                return StatusCode(StatusCodes.Status401Unauthorized);
-            }
-
             var userWithoutChildren = await Program.Database.UserDatabase.FindAsync<DatabaseSchema.User>(user =>
                 user.Username == userDelete.User.Username);
             if (userWithoutChildren == null)
@@ -199,36 +189,32 @@ public class UserApiController : ControllerBase
         return StatusCode(StatusCodes.Status400BadRequest, ModelState);
     }
 
-    [HttpPost("/api/account/update/")]
-    public async Task<ActionResult> PostUpdate([FromQuery] UserSchema.UserUpdate userUpdate)
+    [HttpGet("/api/account/update/")]
+    public async Task<ActionResult> PostUpdate([FromQuery] UserSchema.UserUpdate userUpdate, [FromQuery] string? returnUrl)
     {
+        Console.WriteLine($"{userUpdate.Name} {userUpdate.Bio} {userUpdate.Username}");
         if (ModelState.IsValid)
         {
-            if (userUpdate.User.Password == null && userUpdate.User.AuthKey == null)
+            if (Request.Cookies["user_session"] == null || !UserUtils.IsAuthed(Request.Cookies["user_session"]))
             {
                 return StatusCode(StatusCodes.Status401Unauthorized);
             }
+            
+            DatabaseSchema.User cookieUser = await UserUtils.GetUser(Request.Cookies["user_session"]);
 
+            if (cookieUser == null)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
+            
             var user = await Program.Database.UserDatabase.FindAsync<DatabaseSchema.User>(user =>
-                user.Username == userUpdate.User.Username);
+                user.Username == userUpdate.Username);
             if (user == null)
             {
                 return StatusCode(StatusCodes.Status400BadRequest, "Unable to find account associated with username.");
             }
 
-            string hashedPassword = null;
-            if (userUpdate.User.Password != null)
-            {
-                hashedPassword = Convert.ToBase64String(KeyDerivation.Pbkdf2(
-                    password: userUpdate.User.Password,
-                    salt: user.Salt,
-                    prf: KeyDerivationPrf.HMACSHA256,
-                    iterationCount: 100000,
-                    numBytesRequested: 256 / 8));
-            }
-
-            if (UserUtils.IsAuthed(userUpdate.User.AuthKey) ||
-                hashedPassword != null && hashedPassword.SequenceEqual(user.Password))
+            if (cookieUser.Id == user.Id)
             {
                 if (userUpdate.Name != null)
                 {
@@ -237,9 +223,12 @@ public class UserApiController : ControllerBase
 
                 user.Bio = userUpdate.Bio;
                 await Program.Database.UserDatabase.UpdateAsync(user);
+                if (returnUrl != null)
+                {
+                    return RedirectToPage(returnUrl);
+                }
                 return StatusCode(StatusCodes.Status200OK);
             }
-
             return StatusCode(StatusCodes.Status401Unauthorized);
         }
 

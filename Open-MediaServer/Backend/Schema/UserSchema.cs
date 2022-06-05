@@ -8,8 +8,7 @@ public class UserSchema
     public class User
     {
         [Required] public string Username { get; set; }
-        public string Password { get; set; }
-        public string AuthKey { get; set; }
+        [Required] public string Password { get; set; }
     }
     
     public class UserDelete
@@ -20,7 +19,7 @@ public class UserSchema
     
     public class UserUpdate
     {
-        [OneToOne] [Required] public User User { get; set; }
+        [Required] public string Username { get; set; }
         public string Name { get; set; }
         public string Bio { get; set; }
     }

@@ -35,23 +35,24 @@
                 <hr class="hr-main"/>
             </div>
 
-            <div>
-                <div class="light-text container-desc-text">
-                    Name
+            @using (Html.BeginForm("PostUpdate", "UserApi", FormMethod.Get))
+            {
+                @Html.TextBox("Username", user.Username, new {@type = "hidden"})
+                <div>
+                    <div class="light-text container-desc-text">
+                        Name
+                    </div>
+                    @Html.TextBox("Name", user.Username, new {@class = "profile-input", @placeholder = "Name"})
                 </div>
-                <input type="text" id="profileName" class="profile-input" value="@user.Username" placeholder="Name"/>
-            </div>
-
-            <div class="profile-input-containers">
-                <div class="light-text container-desc-text">
-                    Bio
+                <div class="profile-input-containers">
+                    <div class="light-text container-desc-text">
+                        Bio
+                    </div>
+                    @Html.TextArea("Bio", user.Bio, new {@class = "profile-input", @placeholder = "profileBio"})
                 </div>
-                <textarea id="profileBio" class="profile-input" placeholder="Empty bio...">@user.Bio</textarea>
-            </div>
-
-            <div class="light-text div-update-button">
-                <button class="profile-update-button" onclick="console.log('Hello World!');">Update Profile</button>
-            </div>
+                @Html.TextBox("returnURL", "/Account", new {@type = "hidden"})
+                <input type="submit" class="profile-update-button" value="Update Profile"/>
+            }
         </div>
     </div>
     <div class="main-flex-item noselect">
