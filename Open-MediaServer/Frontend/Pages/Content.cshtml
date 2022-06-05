@@ -107,7 +107,7 @@
                 {
                     <div class="content-item">
                         <a class="content-href" href="/@media.Id/@media.Name@media.Extension">
-                            <img class="content-item-thumbnail" src="@Url.Action("GetThumbnail", "MediaApi", new {Id = media.Id, Name = media.Name}, Request.Scheme, Request.Host.ToUriComponent() + ":" + (Request.Scheme.Equals("https", StringComparison.OrdinalIgnoreCase) ? Program.ConfigManager.Config.BackendPorts.https : Program.ConfigManager.Config.BackendPorts.http)) " alt="@media.Name"/>
+                            <img class="content-item-thumbnail" src="@Url.Action("GetThumbnail", "MediaApi", new {Id = media.Id, Name = media.Name}, Request.Scheme, Request.Host.ToUriComponent() + ":" + (Request.Scheme.Equals("https", StringComparison.OrdinalIgnoreCase) ? Program.ConfigManager.Config.BackendPorts.https : Program.ConfigManager.Config.BackendPorts.http))" alt="@media.Name"/>
                             <div class="content-item-text">
                                 @media.Name.FirstCharToUpper()@media.Extension<br/>
                                 Author: @author.Username.FirstCharToUpper()<br/>
