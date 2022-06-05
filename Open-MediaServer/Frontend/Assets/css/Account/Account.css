@@ -188,3 +188,17 @@
     
     text-decoration: none;
 }
+
+.no-content-available {
+    width: 100%;
+
+    font-family: 'Lato', sans-serif;
+    color: white;
+    text-align: center;
+    font-size: 24px;
+
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}

@@ -55,7 +55,7 @@
             }
         </div>
     </div>
-    <div class="main-flex-item">
+    <div class="main-flex-item" style="width: 100%">
         <div class="main-text media-main-text">
             Content
             <hr class="hr-main"/>
@@ -63,9 +63,10 @@
         <div class="content-container">
             @{
                 var mediaList = await Program.Database.MediaDatabase.GetAllWithChildrenAsync<DatabaseSchema.Media>();
-                if (mediaList == null || mediaList.Count <= 0)
+                mediaList.RemoveAll(media => media.AuthorId != user.Id);
+                if (mediaList.Count <= 0)
                 {
-                    <div class="main-text" style="width: 100%; text-align: center">
+                    <div class="no-content-available">
                         This account has no media associated with it.<br/>
                         Try uploading a video!
                     </div>
