@@ -35,7 +35,7 @@
                 <hr class="hr-main"/>
             </div>
 
-            @using (Html.BeginForm("PostUpdate", "UserApi", FormMethod.Get))
+            @using (Html.BeginForm("PostUpdate", "UserApi", FormMethod.Get, new {@class = "profile-input-form"}))
             {
                 @Html.TextBox("Username", user.Username, new {@type = "hidden"})
                 <div>
@@ -44,7 +44,7 @@
                     </div>
                     @Html.TextBox("Name", user.Username, new {@class = "profile-input", @placeholder = "Name"})
                 </div>
-                <div class="profile-input-containers">
+                <div>
                     <div class="light-text container-desc-text">
                         Bio
                     </div>
@@ -55,7 +55,7 @@
             }
         </div>
     </div>
-    <div class="main-flex-item" style="width: 100%">
+    <div class="main-flex-item">
         <div class="main-text media-main-text">
             Content
             <hr class="hr-main"/>
