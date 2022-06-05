@@ -56,7 +56,7 @@
             <div class="profile-input-buttons">
                 @using (Html.BeginForm("GetLogout", "UserApi", FormMethod.Get, new {@class = ""}))
                 {
-                    @Html.TextBox("returnURL", "/Account", new {@type = "hidden"})
+                    @Html.TextBox("returnURL", "/Login", new {@type = "hidden"})
                     <input type="submit" class="profile-logout-button profile-button" value="Logout"/>
                 }
             </div>

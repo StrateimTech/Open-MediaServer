@@ -196,7 +196,7 @@ public class UserApiController : ControllerBase
         {
             if (Request.Cookies["user_session"] == null || !UserUtils.IsAuthed(Request.Cookies["user_session"]))
             {
-                return StatusCode(StatusCodes.Status401Unauthorized);
+                return RedirectToPage("/Login");
             }
             
             DatabaseSchema.User cookieUser = await UserUtils.GetUser(Request.Cookies["user_session"]);
