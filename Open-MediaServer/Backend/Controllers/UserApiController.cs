@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Open_MediaServer.Backend.Schema;
 using Open_MediaServer.Database.Schema;
+using Open_MediaServer.Utils;
 using SQLiteNetExtensionsAsync.Extensions;
 
 namespace Open_MediaServer.Backend.Controllers;
@@ -85,6 +86,11 @@ public class UserApiController : ControllerBase
     {
         if (ModelState.IsValid)
         {
+            if (userLogin.Password == null)
+            {
+                return StatusCode(StatusCodes.Status401Unauthorized);
+            }
+
             var user = await Program.Database.UserDatabase
                 .FindAsync<DatabaseSchema.User>(user => user.Username == userLogin.Username);
             if (user == null)
@@ -149,11 +155,16 @@ public class UserApiController : ControllerBase
     {
         if (ModelState.IsValid)
         {
+            if (userDelete.User.Password == null)
+            {
+                return StatusCode(StatusCodes.Status401Unauthorized);
+            }
+
             var userWithoutChildren = await Program.Database.UserDatabase.FindAsync<DatabaseSchema.User>(user =>
                 user.Username == userDelete.User.Username);
             if (userWithoutChildren == null)
             {
-                return StatusCode(StatusCodes.Status400BadRequest, "Unable to find account associated.");
+                return StatusCode(StatusCodes.Status400BadRequest, "Unable to find account associated with username.");
             }
 
             var user =
@@ -187,18 +198,51 @@ public class UserApiController : ControllerBase
 
         return StatusCode(StatusCodes.Status400BadRequest, ModelState);
     }
-    
+
     [HttpPost("/api/account/update/")]
-    public async Task<ActionResult> PostUpdate(UserSchema.UserUpdate userUpdate)
+    public async Task<ActionResult> PostUpdate([FromQuery] UserSchema.UserUpdate userUpdate)
     {
         if (ModelState.IsValid)
         {
+            if (userUpdate.User.Password == null && userUpdate.User.AuthKey == null)
+            {
+                return StatusCode(StatusCodes.Status401Unauthorized);
+            }
+
             var user = await Program.Database.UserDatabase.FindAsync<DatabaseSchema.User>(user =>
                 user.Username == userUpdate.User.Username);
-            user.Username = userUpdate.Name;
-            user.Bio = userUpdate.Bio;
-            await Program.Database.UserDatabase.UpdateAsync(user);
+            if (user == null)
+            {
+                return StatusCode(StatusCodes.Status400BadRequest, "Unable to find account associated with username.");
+            }
+
+            string hashedPassword = null;
+            if (userUpdate.User.Password != null)
+            {
+                hashedPassword = Convert.ToBase64String(KeyDerivation.Pbkdf2(
+                    password: userUpdate.User.Password,
+                    salt: user.Salt,
+                    prf: KeyDerivationPrf.HMACSHA256,
+                    iterationCount: 100000,
+                    numBytesRequested: 256 / 8));
+            }
+
+            if (UserUtils.IsAuthed(userUpdate.User.AuthKey) ||
+                hashedPassword != null && hashedPassword.SequenceEqual(user.Password))
+            {
+                if (userUpdate.Name != null)
+                {
+                    user.Username = userUpdate.Name;
+                }
+
+                user.Bio = userUpdate.Bio;
+                await Program.Database.UserDatabase.UpdateAsync(user);
+                return StatusCode(StatusCodes.Status200OK);
+            }
+
+            return StatusCode(StatusCodes.Status401Unauthorized);
         }
+
         return StatusCode(StatusCodes.Status400BadRequest, ModelState);
     }
 }
