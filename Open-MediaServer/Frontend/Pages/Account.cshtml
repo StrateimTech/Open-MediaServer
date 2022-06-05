@@ -35,7 +35,7 @@
                 <hr class="hr-main"/>
             </div>
 
-            @using (Html.BeginForm("PostUpdate", "UserApi", FormMethod.Get, new {@class = "profile-input-form"}))
+            @using (Html.BeginForm("GetUpdate", "UserApi", FormMethod.Get, new {@class = "profile-input-form"}))
             {
                 @Html.TextBox("Username", user.Username, new {@type = "hidden"})
                 <div>
@@ -51,12 +51,15 @@
                     @Html.TextArea("Bio", user.Bio, new {@class = "profile-input", @placeholder = "Empty bio..."})
                 </div>
                 @Html.TextBox("returnURL", "/Account", new {@type = "hidden"})
-                @* @using (Html.BeginForm("PostUpdate", "UserApi", FormMethod.Get, new {@class = "profile-input-form"})) *@
-                @* { *@
-                @*     <input type="submit" class="profile-delete-button" value="Delete Profile"/> *@
-                @* } *@
-                <input type="submit" class="profile-update-button" value="Update Profile"/>
+                <input type="submit" class="profile-update-button profile-button" value="Update Account"/>
             }
+            <div class="profile-input-buttons">
+                @using (Html.BeginForm("GetLogout", "UserApi", FormMethod.Get, new {@class = ""}))
+                {
+                    @Html.TextBox("returnURL", "/Account", new {@type = "hidden"})
+                    <input type="submit" class="profile-logout-button profile-button" value="Logout"/>
+                }
+            </div>
         </div>
     </div>
     <div class="main-flex-item">

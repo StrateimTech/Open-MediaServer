@@ -77,19 +77,26 @@
     opacity: 0.7;
 }
 
+.profile-input-buttons {
+    display: flex;
+    flex-flow: column;
+    gap: 8px;
+}
+
 .profile-input-form {
+    margin-bottom: 8px;
+    
     display: flex;
     flex-flow: column;
     height: 100%;
     gap: 8px;
 }
 
-.profile-update-button {
+.profile-button {
     margin-top: auto;
     width: 100%;
     padding: 4px;
-    
-    background-color: rgb(8, 140, 40);
+
     color: white;
 
     display: inline-block;
@@ -97,8 +104,12 @@
     border-radius: 4px;
 
     box-sizing: border-box;
-    
+
     cursor: pointer;
+}
+
+.profile-update-button {
+    background-color: rgb(8, 140, 40);
 }
 
 .profile-update-button:active {
@@ -108,25 +119,21 @@
 }
 
 .profile-delete-button {
-    margin: auto 0 8px 0;
-
-    width: 100%;
-    padding: 4px;
-
     background-color: rgb(200, 10, 10);
-    color: white;
-
-    display: inline-block;
-    border: none;
-    border-radius: 4px;
-
-    box-sizing: border-box;
-
-    cursor: pointer;
 }
 
 .profile-delete-button:active {
     background-color: rgb(180, 9, 10);
+    color: rgb(240, 240, 240);
+    opacity: 0.9;
+}
+
+.profile-logout-button {
+    background-color: rgb(48, 48, 48);
+}
+
+.profile-logout-button:active {
+    background-color: rgb(32, 32, 32);
     color: rgb(240, 240, 240);
     opacity: 0.9;
 }

@@ -190,9 +190,8 @@ public class UserApiController : ControllerBase
     }
 
     [HttpGet("/api/account/update/")]
-    public async Task<ActionResult> PostUpdate([FromQuery] UserSchema.UserUpdate userUpdate, [FromQuery] string? returnUrl)
+    public async Task<ActionResult> GetUpdate([FromQuery] UserSchema.UserUpdate userUpdate, [FromQuery] string? returnUrl)
     {
-        Console.WriteLine($"{userUpdate.Name} {userUpdate.Bio} {userUpdate.Username}");
         if (ModelState.IsValid)
         {
             if (Request.Cookies["user_session"] == null || !UserUtils.IsAuthed(Request.Cookies["user_session"]))
@@ -233,5 +232,19 @@ public class UserApiController : ControllerBase
         }
 
         return StatusCode(StatusCodes.Status400BadRequest, ModelState);
+    }
+
+    [HttpGet("/api/account/logout/")]
+    public ActionResult GetLogout([FromQuery] string? returnUrl)
+    {
+        if (Request.Cookies["user_session"] != null)
+        {
+            Response.Cookies.Delete("user_session");
+        }
+        if (returnUrl != null)
+        {
+            return RedirectToPage(returnUrl);
+        }
+        return StatusCode(StatusCodes.Status200OK);
     }
 }
