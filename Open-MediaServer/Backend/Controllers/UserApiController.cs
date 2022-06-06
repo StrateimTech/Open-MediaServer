@@ -81,8 +81,8 @@ public class UserApiController : ControllerBase
         return StatusCode(StatusCodes.Status400BadRequest, ModelState);
     }
 
-    [HttpPost("/api/account/login/")]
-    public async Task<ActionResult> PostLogin(UserSchema.User userLogin)
+    [HttpGet("/api/account/login/")]
+    public async Task<ActionResult> GetLogin([FromQuery] UserSchema.User userLogin, [FromQuery] string? returnUrl)
     {
         if (ModelState.IsValid)
         {
@@ -134,6 +134,11 @@ public class UserApiController : ControllerBase
                         SameSite = SameSiteMode.Lax,
                         Expires = DateTime.Now.AddDays(30)
                     });
+                }
+
+                if (returnUrl != null)
+                {
+                    return RedirectToPage(returnUrl);
                 }
 
                 return StatusCode(StatusCodes.Status200OK);
@@ -190,7 +195,8 @@ public class UserApiController : ControllerBase
     }
 
     [HttpGet("/api/account/update/")]
-    public async Task<ActionResult> GetUpdate([FromQuery] UserSchema.UserUpdate userUpdate, [FromQuery] string? returnUrl)
+    public async Task<ActionResult> GetUpdate([FromQuery] UserSchema.UserUpdate userUpdate,
+        [FromQuery] string? returnUrl)
     {
         if (ModelState.IsValid)
         {
@@ -198,14 +204,14 @@ public class UserApiController : ControllerBase
             {
                 return RedirectToPage("/Login");
             }
-            
+
             DatabaseSchema.User cookieUser = await UserUtils.GetUser(Request.Cookies["user_session"]);
 
             if (cookieUser == null)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
-            
+
             var user = await Program.Database.UserDatabase.FindAsync<DatabaseSchema.User>(user =>
                 user.Username == userUpdate.Username);
             if (user == null)
@@ -226,8 +232,10 @@ public class UserApiController : ControllerBase
                 {
                     return RedirectToPage(returnUrl);
                 }
+
                 return StatusCode(StatusCodes.Status200OK);
             }
+
             return StatusCode(StatusCodes.Status401Unauthorized);
         }
 
@@ -241,10 +249,12 @@ public class UserApiController : ControllerBase
         {
             Response.Cookies.Delete("user_session");
         }
+
         if (returnUrl != null)
         {
             return RedirectToPage(returnUrl);
         }
+
         return StatusCode(StatusCodes.Status200OK);
     }
 }

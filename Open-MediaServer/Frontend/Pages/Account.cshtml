@@ -35,7 +35,7 @@
                 <hr class="hr-main"/>
             </div>
 
-            @using (Html.BeginForm("GetUpdate", "UserApi", FormMethod.Get, new {@class = "profile-input-form"}))
+            @using (Html.BeginForm("GetUpdate", "UserApi", FormMethod.Get, new {@class = "profile-input-form", @autocomplete = "off"}))
             {
                 @Html.TextBox("Username", user.Username, new {@type = "hidden"})
                 <div>

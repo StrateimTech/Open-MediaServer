@@ -5,7 +5,7 @@
 
 @{
     Layout = "_Layout.cshtml";
-    
+
     if (Request.Cookies["user_session"] != null && UserUtils.IsAuthed(Request.Cookies["user_session"]))
     {
         Response.Redirect("/Account");
@@ -18,8 +18,18 @@
 <html>
 <head>
     <title>@Program.ConfigManager.Config.FrontendName Media - Login</title>
+    <link rel="stylesheet" href="~/Frontend/Assets/css/Login/Login.css">
+    <link rel="stylesheet" href="~/Frontend/Assets/font/Font.css">
 </head>
 <body>
-
+<div class="login-form-size">
+    @using (Html.BeginForm("GetLogin", "UserApi", FormMethod.Get, new {@class = "login-form", @autocomplete = "off"}))
+    {
+        @Html.TextBox("Username", null, new {@placeholder = "Username", @required = "required"})
+        @Html.TextBox("Password", null, new {@placeholder = "Password", @required = "required", @type = "password"})
+        @Html.TextBox("returnURL", "/Account", new {@type = "hidden"})
+        <button type="submit">Login</button>
+    }
+</div>
 </body>
 </html>
