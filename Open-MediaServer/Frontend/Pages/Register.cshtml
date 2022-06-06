@@ -1,11 +1,12 @@
 ﻿@page
 @using Open_MediaServer
+@using Open_MediaServer.Utils
 @model Open_MediaServer.Frontend.Pages.Register
 
 @{
     Layout = "_Layout.cshtml";
 
-    if (Request.Cookies["user_session"] != null)
+    if (Request.Cookies["user_session"] != null && UserUtils.IsAuthed(Request.Cookies["user_session"]))
     {
         Response.Redirect("/Account");
         return;
