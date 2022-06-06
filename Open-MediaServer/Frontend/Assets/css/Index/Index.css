@@ -10,7 +10,12 @@
 .fade-text {
     font-size: 36px;
     color: white;
-    font-family: 'Fugaz One', sans-serif
+    font-family: 'Fugaz One', sans-serif;
+
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
 }
 
 .loading-text:after {
