@@ -32,7 +32,6 @@
 
     <ItemGroup>
       <Folder Include="Frontend\Assets\css\Admin" />
-      <Folder Include="Frontend\Assets\css\Signup" />
       <Folder Include="Frontend\Assets\css\Uploading" />
       <Folder Include="Frontend\Assets\font\Lato" />
       <Folder Include="Frontend\Assets\images" />

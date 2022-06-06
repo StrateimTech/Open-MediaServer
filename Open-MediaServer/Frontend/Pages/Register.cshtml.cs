@@ -2,7 +2,7 @@
 
 namespace Open_MediaServer.Frontend.Pages;
 
-public class Signup : PageModel
+public class Register : PageModel
 {
     public void OnGet()
     {

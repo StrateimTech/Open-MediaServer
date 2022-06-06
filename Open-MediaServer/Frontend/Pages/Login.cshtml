@@ -22,11 +22,15 @@
     <link rel="stylesheet" href="~/Frontend/Assets/font/Font.css">
 </head>
 <body>
-<div class="login-form-size">
+<div class="login-flex">
+    <div class="login-form-text">
+        Login
+    </div>
     @using (Html.BeginForm("GetLogin", "UserApi", FormMethod.Get, new {@class = "login-form", @autocomplete = "off"}))
     {
         @Html.TextBox("Username", null, new {@placeholder = "Username", @required = "required"})
         @Html.TextBox("Password", null, new {@placeholder = "Password", @required = "required", @type = "password"})
+        <label class="login-register-text">Don't have an account? <a class="register-href" href="/Register">Register</a></label>
         @Html.TextBox("returnURL", "/Account", new {@type = "hidden"})
         <button type="submit">Login</button>
     }

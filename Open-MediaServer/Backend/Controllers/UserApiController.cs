@@ -17,8 +17,8 @@ namespace Open_MediaServer.Backend.Controllers;
 [Route("/api/[controller]")]
 public class UserApiController : ControllerBase
 {
-    [HttpPost("/api/account/register/")]
-    public async Task<ActionResult> PostRegister(UserSchema.User userRegister)
+    [HttpGet("/api/account/register/")]
+    public async Task<ActionResult> GetRegister([FromQuery] UserSchema.User userRegister, [FromQuery] string? returnUrl)
     {
         if (ModelState.IsValid)
         {
@@ -75,6 +75,12 @@ public class UserApiController : ControllerBase
                 ReadCommentHandling = JsonCommentHandling.Skip
             });
             Console.WriteLine(serializedJson);
+
+            if (returnUrl != null)
+            {
+                return RedirectToPage(returnUrl);
+            }
+
             return StatusCode(StatusCodes.Status200OK);
         }
 
