@@ -33,6 +33,9 @@
     <a class="sort-item" onclick="updateQueryURL('type', window);">
         Type
     </a>
+    <a class="sort-item" onclick="updateQueryURL('size', window);">
+        Size
+    </a>
 </div>
 <div class="content-container">
     @{
@@ -95,6 +98,19 @@
                         if (Boolean.TryParse(typeSort[0], out bool value) && value)
                         {
                             mediaList = mediaList.OrderBy(media => media.Extension).ToList();
+                        }
+                    }
+                }
+                
+                if (Request.Query.ContainsKey("size"))
+                {
+                    var sizeSort = Request.Query["size"];
+
+                    if (sizeSort[0] != null)
+                    {
+                        if (Boolean.TryParse(sizeSort[0], out bool value) && value)
+                        {
+                            mediaList = mediaList.OrderBy(media => media.ContentSize).ToList();
                         }
                     }
                 }
