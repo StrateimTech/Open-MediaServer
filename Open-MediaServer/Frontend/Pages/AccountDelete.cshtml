@@ -1,0 +1,42 @@
+﻿@page "/Account/Delete"
+@using Open_MediaServer
+@using Open_MediaServer.Utils
+@model Open_MediaServer.Frontend.Pages.AccountDelete
+
+@{
+    Layout = "_Layout.cshtml";
+    
+    if (Request.Cookies["user_session"] == null || !UserUtils.IsAuthed(Request.Cookies["user_session"]))
+    {
+        Response.Redirect("/Login?returnUrl=Account");
+        return;
+    }
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <title>@Program.ConfigManager.Config.FrontendName Media - Account Deletion</title>
+    <link rel="stylesheet" href="~/Frontend/Assets/css/Account/Delete/Delete.css">
+    <link rel="stylesheet" href="~/Frontend/Assets/font/Font.css">
+</head>
+<body>
+<div class="delete-flex">
+    <div class="delete-form-text">
+        Account Deletion
+    </div>
+    @using (Html.BeginForm("GetDelete", "UserApi", FormMethod.Get, new {@class = "delete-form", @autocomplete = "off"}))
+    {
+        @Html.TextBox("User.Username", null, new {@placeholder = "Username", @class = "delete-form-input", @required = "required"})
+        @Html.TextBox("User.Password", null, new {@placeholder = "Password", @class = "delete-form-input", @required = "required", @type = "password"})
+        <div class="delete-content">
+            @Html.CheckBox("DeleteContent", null)
+            <label for="DeleteContent">Delete Content</label>
+        </div>
+        @Html.TextBox("returnURL", "/Index", new {@type = "hidden"})
+        <button type="submit">Delete Account</button>
+    }
+</div>
+</body>
+</html>

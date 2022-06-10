@@ -18,7 +18,7 @@ namespace Open_MediaServer.Backend.Controllers;
 public class UserApiController : ControllerBase
 {
     [HttpGet("/api/account/register/")]
-    public async Task<ActionResult> GetRegister([FromQuery] UserSchema.User userRegister, [FromQuery] string? returnUrl)
+    public async Task<ActionResult> GetRegister([FromQuery] UserSchema.User userRegister, [FromQuery] string returnUrl)
     {
         if (ModelState.IsValid)
         {
@@ -88,7 +88,7 @@ public class UserApiController : ControllerBase
     }
 
     [HttpGet("/api/account/login/")]
-    public async Task<ActionResult> GetLogin([FromQuery] UserSchema.User userLogin, [FromQuery] string? returnUrl)
+    public async Task<ActionResult> GetLogin([FromQuery] UserSchema.User userLogin, [FromQuery] string returnUrl)
     {
         if (ModelState.IsValid)
         {
@@ -156,8 +156,8 @@ public class UserApiController : ControllerBase
         return StatusCode(StatusCodes.Status400BadRequest, ModelState);
     }
 
-    [HttpPost("/api/account/delete/")]
-    public async Task<ActionResult> PostDelete(UserSchema.UserDelete userDelete)
+    [HttpGet("/api/account/delete/")]
+    public async Task<ActionResult> GetDelete([FromQuery] UserSchema.UserDelete userDelete, [FromQuery] string returnUrl)
     {
         if (ModelState.IsValid)
         {
@@ -184,7 +184,7 @@ public class UserApiController : ControllerBase
                 numBytesRequested: 256 / 8));
             if (hashedPassword.SequenceEqual(user.Password))
             {
-                if (userDelete.DeleteMedia)
+                if (userDelete.DeleteContent)
                 {
                     foreach (var mediaIdentity in user.Uploads)
                     {
@@ -193,6 +193,10 @@ public class UserApiController : ControllerBase
                 }
 
                 await Program.Database.UserDatabase.DeleteAsync<DatabaseSchema.User>(user.Id);
+                if (returnUrl != null)
+                {
+                    return RedirectToPage(returnUrl);
+                }
                 return StatusCode(StatusCodes.Status200OK);
             }
         }
@@ -202,7 +206,7 @@ public class UserApiController : ControllerBase
 
     [HttpGet("/api/account/update/")]
     public async Task<ActionResult> GetUpdate([FromQuery] UserSchema.UserUpdate userUpdate,
-        [FromQuery] string? returnUrl)
+        [FromQuery] string returnUrl)
     {
         if (ModelState.IsValid)
         {
@@ -249,7 +253,7 @@ public class UserApiController : ControllerBase
     }
 
     [HttpGet("/api/account/logout/")]
-    public ActionResult GetLogout([FromQuery] string? returnUrl)
+    public ActionResult GetLogout([FromQuery] string returnUrl)
     {
         if (Request.Cookies["user_session"] != null)
         {

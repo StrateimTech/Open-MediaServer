@@ -54,11 +54,12 @@
                 <input type="submit" class="profile-update-button profile-button" value="Update Account"/>
             }
             <div class="profile-input-buttons">
-                @using (Html.BeginForm("GetLogout", "UserApi", FormMethod.Get, new {@class = ""}))
+                @using (Html.BeginForm("GetLogout", "UserApi", FormMethod.Get))
                 {
                     @Html.TextBox("returnURL", "/Login", new {@type = "hidden"})
                     <input type="submit" class="profile-logout-button profile-button" value="Logout"/>
                 }
+                <a class="profile-delete-button profile-button" href="/Account/Delete">Delete Account</a>
             </div>
         </div>
     </div>

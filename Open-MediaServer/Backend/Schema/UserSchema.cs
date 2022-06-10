@@ -13,8 +13,8 @@ public class UserSchema
     
     public class UserDelete
     {
-        [OneToOne] [Required] public User User { get; set; }
-        [Required] public bool DeleteMedia { get; set; }
+        [Required] public User User { get; set; }
+        [Required] public bool DeleteContent { get; set; }
     }
     
     public class UserUpdate
