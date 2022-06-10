@@ -54,7 +54,7 @@
                 <input type="submit" class="profile-update-button profile-button" value="Update Account"/>
             }
             <div class="profile-input-buttons">
-                @using (Html.BeginForm("GetLogout", "UserApi", FormMethod.Get))
+                @using (Html.BeginForm("GetLogout", "UserApi", FormMethod.Get, new {@class = "profile-logout-form"}))
                 {
                     @Html.TextBox("returnURL", "/Login", new {@type = "hidden"})
                     <input type="submit" class="profile-logout-button profile-button" value="Logout"/>

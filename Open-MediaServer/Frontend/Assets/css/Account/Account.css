@@ -79,7 +79,7 @@
 
 .profile-input-buttons {
     display: flex;
-    flex-flow: column;
+    flex-flow: row;
     gap: 8px;
 }
 
@@ -119,20 +119,26 @@
 }
 
 .profile-delete-button {
+    flex: 0 1 50%;
+    
     text-decoration: none;
     text-align: center;
 
     font-family: 'Lato', sans-serif;
     font-size: 13px;
     color: white;
-    
-    background-color: rgb(190, 10, 10);
+
+    background-color: rgb(185, 43, 61);
 }
 
 .profile-delete-button:active {
-    background-color: rgb(180, 9, 10);
+    background-color: rgb(153, 36, 48);
     color: rgb(240, 240, 240);
     opacity: 0.9;
+}
+
+.profile-logout-form {
+    flex: 0 0 50%;
 }
 
 .profile-logout-button {
