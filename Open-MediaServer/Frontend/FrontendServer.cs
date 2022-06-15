@@ -42,7 +42,11 @@ public class FrontendServer
                 });
         });
         
-        builder.WebHost.UseUrls($"http://*:{Program.ConfigManager.Config.FrontendPorts.http};https://*:{Program.ConfigManager.Config.FrontendPorts.https}");
+        builder.WebHost.UseKestrel(options =>
+        {
+            options.ListenAnyIP(Program.ConfigManager.Config.FrontendPorts.http);
+            options.ListenAnyIP(Program.ConfigManager.Config.FrontendPorts.https, configure => configure.UseHttps());
+        });
 
         builder.Services.AddRazorPages(options =>
         {
@@ -66,7 +70,10 @@ public class FrontendServer
             });
         }
 
-        app.UseHttpsRedirection();
+        if (Program.ConfigManager.Config.ForceHttpsRedirection)
+        {
+            app.UseHttpsRedirection();
+        }
         app.UseStaticFiles();
         
         app.UseStaticFiles(new StaticFileOptions

@@ -17,10 +17,12 @@ public class BackendServer
         {
             builder.Logging.ClearProviders();
         }
-        builder.WebHost.UseUrls($"http://*:{Program.ConfigManager.Config.BackendPorts.http};https://*:{Program.ConfigManager.Config.BackendPorts.https}");
         
         builder.WebHost.UseKestrel(options =>
         {
+            options.ListenAnyIP(Program.ConfigManager.Config.BackendPorts.http);
+            options.ListenAnyIP(Program.ConfigManager.Config.BackendPorts.https, configure => configure.UseHttps());
+            
             int? fileUploadMax = Program.ConfigManager.Config.FileNetworkUploadMax;
             if (fileUploadMax != null)
             {
@@ -60,7 +62,10 @@ public class BackendServer
             });
         }
 
-        app.UseHttpsRedirection();
+        if (Program.ConfigManager.Config.ForceHttpsRedirection)
+        {
+            app.UseHttpsRedirection();
+        }
 
         app.UseAuthorization();
         

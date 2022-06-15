@@ -33,7 +33,7 @@ public class MediaApiController : ControllerBase
             }
 
             var fileName = Path.GetFileNameWithoutExtension(identity.Name);
-            var media = Program.Database.MediaDatabase.GetAsync<DatabaseSchema.Media>(media =>
+            var media = Program.Database.MediaDatabase.FindAsync<DatabaseSchema.Media>(media =>
                 media.Id == identity.Id && media.Name == fileName).Result;
 
             if (media == null)
@@ -129,7 +129,7 @@ public class MediaApiController : ControllerBase
         if (ModelState.IsValid)
         {
             var fileName = Path.GetFileNameWithoutExtension(identity.Name);
-            var media = Program.Database.MediaDatabase.GetAsync<DatabaseSchema.Media>(media =>
+            var media = Program.Database.MediaDatabase.FindAsync<DatabaseSchema.Media>(media =>
                 media.Id == identity.Id && media.Name == fileName).Result;
 
             if (media == null)
@@ -164,10 +164,10 @@ public class MediaApiController : ControllerBase
             if (parameterMass.Username != null)
             {
                 var userWithoutChildren =
-                    await Program.Database.UserDatabase.GetAsync<DatabaseSchema.User>(user =>
+                    await Program.Database.UserDatabase.FindAsync<DatabaseSchema.User>(user =>
                         user.Username == parameterMass.Username);
                 var user =
-                    await Program.Database.UserDatabase.GetWithChildrenAsync<DatabaseSchema.User>(
+                    await Program.Database.UserDatabase.FindWithChildrenAsync<DatabaseSchema.User>(
                         userWithoutChildren.Id);
                 mediaTable.RemoveAll(media => media.AuthorId != user.Id);
             }
@@ -344,7 +344,7 @@ public class MediaApiController : ControllerBase
             }
 
             var fileName = Path.GetFileNameWithoutExtension(identity.Name);
-            var media = Program.Database.MediaDatabase.GetAsync<DatabaseSchema.Media>(media =>
+            var media = Program.Database.MediaDatabase.FindAsync<DatabaseSchema.Media>(media =>
                 media.Id == identity.Id && media.Name == fileName).Result;
 
             if (media == null)

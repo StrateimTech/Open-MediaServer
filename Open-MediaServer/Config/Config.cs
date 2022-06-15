@@ -27,6 +27,8 @@ public class Config
 
     public bool ShowConsoleProviders { get; set; } = true;
 
+    public bool ForceHttpsRedirection { get; set; } = false;
+
     public bool AllowSignups { get; set; } = true;
     public bool AllowImages { get; set; } = true;
     public bool AllowVideos { get; set; } = true;
