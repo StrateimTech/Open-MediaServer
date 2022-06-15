@@ -13,14 +13,14 @@ public class Program
     public static ConfigManager ConfigManager;
     private static BackendServer _backend;
     private static FrontendServer _frontend;
-    public static SqLite Database;
+    public static SqDatabase Database;
     public static ContentManager ContentManager;
 
     public static void Main(string[] args)
     {
         ConfigManager = new ConfigManager(Environment.CurrentDirectory);
         ContentManager = new ContentManager(ConfigManager.Config.WorkingDirectory ?? Environment.CurrentDirectory);
-        Database = new SqLite(ConfigManager.Config.WorkingDirectory ?? Environment.CurrentDirectory);
+        Database = new SqDatabase(ConfigManager.Config.WorkingDirectory ?? Environment.CurrentDirectory);
         new Thread(() => _backend = new BackendServer()).Start();
         new Thread(() => _frontend = new FrontendServer()).Start();
     }

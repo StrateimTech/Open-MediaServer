@@ -21,6 +21,11 @@ public class FrontendServer
             WebRootPath = "Assets"
         });
         
+        if (!Program.ConfigManager.Config.ShowConsoleProviders)
+        {
+            builder.Logging.ClearProviders();
+        }
+        
         builder.Services.AddControllers();
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen(options =>

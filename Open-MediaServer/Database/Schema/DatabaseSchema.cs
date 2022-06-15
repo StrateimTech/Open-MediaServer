@@ -14,14 +14,17 @@ public class DatabaseSchema
         [PrimaryKey] public string Id { get; init; }
         public string Name { get; set; }
         public string Extension { get; set; }
-        public int ContentSize { get; set; }
-        public string ThumbnailPath { get; set; }
-        public string ContentPath { get; set; }
-        public ContentType ContentType { get; set; }
-        public bool ContentCompressed { get; set; }
-        public bool Public { get; set; }
         public DateTime UploadDate { get; set; }
+        public int ContentSize { get; set; }
+        public bool ContentCompressed { get; set; }
+        public ContentType ContentType { get; set; }
+        [TextBlob(nameof(ContentDiemsionsBlobbed))] public (int width, int height) ContentDiemsions { get; set; }
+        public string ContentDiemsionsBlobbed { get; set; }
+        public string ContentMime { get; set; }
+        public string ContentPath { get; set; }
+        public string ThumbnailPath { get; set; }
         public int AuthorId { get; set; }
+        public bool Public { get; set; }
     }
 
     public class User
@@ -35,7 +38,6 @@ public class DatabaseSchema
         public DateTime CreationDate { get; set; }
         public bool Admin { get; set; }
         [TextBlob(nameof(UploadsBlobbed))] public List<MediaSchema.MediaIdentity> Uploads { get; set; }
-        //Ignore
         public string UploadsBlobbed { get; set; }
     }
 }

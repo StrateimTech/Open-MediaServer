@@ -28,6 +28,22 @@ public static class ContentUtils
         return null;
     }
 
+    public static (int, int) GetDimensions(byte[] data, ContentType contentType)
+    {
+        Image<Rgba32> image;
+        switch (contentType)
+        {
+            case ContentType.Video:
+                var configuration = new Configuration().WithAVDecoders();
+                image = Image.Load<Rgba32>(configuration, data);
+                break;
+            default:
+                image = Image.Load<Rgba32>(data);
+                break;
+        }
+        return (image.Width, image.Height);
+    }
+
     public static async Task<byte[]> GetThumbnail(byte[] data, int? width, int? height, ContentType contentType,
         IImageFormat format)
     {

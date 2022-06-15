@@ -253,7 +253,7 @@ public class MediaApiController : ControllerBase
                 content = upload.Content;
                 contentCompressed = false;
             }
-
+            
             var mediaSchema = new DatabaseSchema.Media()
             {
                 // TODO: Actually generate a unique ID
@@ -263,6 +263,12 @@ public class MediaApiController : ControllerBase
                 UploadDate = DateTime.UtcNow,
                 ContentSize = content.Length,
                 ContentCompressed = contentCompressed,
+                ContentDiemsions = ContentUtils.GetDimensions(upload.Content, (ContentType) contentType),
+                ContentMime =
+                    new FileExtensionContentTypeProvider().TryGetContentType($"{upload.Name}{upload.Extension}",
+                        out string mimeType)
+                        ? mimeType
+                        : "application/octet-stream",
                 ContentType = (ContentType) contentType,
                 Public = upload.Public,
                 AuthorId = user.Id

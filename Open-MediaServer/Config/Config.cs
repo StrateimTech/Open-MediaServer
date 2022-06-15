@@ -25,6 +25,8 @@ public class Config
     // Developer tools
     public bool ShowSwaggerUi { get; set; } = true;
 
+    public bool ShowConsoleProviders { get; set; } = true;
+
     public bool AllowSignups { get; set; } = true;
     public bool AllowImages { get; set; } = true;
     public bool AllowVideos { get; set; } = true;

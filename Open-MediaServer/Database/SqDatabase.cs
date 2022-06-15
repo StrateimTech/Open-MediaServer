@@ -7,12 +7,12 @@ using SQLite;
 
 namespace Open_MediaServer.Database;
 
-public class SqLite
+public class SqDatabase
 {
     public readonly SQLiteAsyncConnection MediaDatabase;
     public readonly SQLiteAsyncConnection UserDatabase;
 
-    public SqLite(string databasePath)
+    public SqDatabase(string databasePath)
     {
         var mediaDatabase = Path.Combine(databasePath, "media.db");
         var userDatabase = Path.Combine(databasePath, "users.db");
