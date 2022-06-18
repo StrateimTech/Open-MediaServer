@@ -30,7 +30,10 @@
     {
         @Html.TextBox("Username", null, new {@placeholder = "Username", @required = "required"})
         @Html.TextBox("Password", null, new {@placeholder = "Password", @required = "required", @type = "password"})
-        <label class="login-register-text">Don't have an account? <a class="register-href" href="/Register">Register</a></label>
+        if (Program.ConfigManager.Config.AllowRegistering)
+        {
+            <label class="login-register-text">Don't have an account? <a class="register-href" href="/Register">Register</a></label>
+        }
         @Html.TextBox("returnURL", "/Account", new {@type = "hidden"})
         <button type="submit">Login</button>
     }

@@ -11,6 +11,12 @@
         Response.Redirect("/Account");
         return;
     }
+
+    if (!Program.ConfigManager.Config.AllowRegistering)
+    {
+        Response.Redirect("/Login");
+        return;
+    }
 }
 
 <!DOCTYPE html>

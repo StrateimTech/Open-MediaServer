@@ -29,7 +29,7 @@ public class Config
 
     public bool ForceHttpsRedirection { get; set; } = false;
 
-    public bool AllowSignups { get; set; } = true;
+    public bool AllowRegistering { get; set; } = true;
     public bool AllowImages { get; set; } = true;
     public bool AllowVideos { get; set; } = true;
     public bool AllowOther { get; set; } = true;

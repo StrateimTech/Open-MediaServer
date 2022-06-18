@@ -22,9 +22,9 @@ public class UserApiController : ControllerBase
     {
         if (ModelState.IsValid)
         {
-            if (!Program.ConfigManager.Config.AllowSignups)
+            if (!Program.ConfigManager.Config.AllowRegistering)
             {
-                return StatusCode(StatusCodes.Status403Forbidden, "Signups are disabled.");
+                return StatusCode(StatusCodes.Status403Forbidden, "Registering is disabled.");
             }
 
             var usernameExists = Program.Database.UserDatabase.Table<DatabaseSchema.User>().ToListAsync().Result
