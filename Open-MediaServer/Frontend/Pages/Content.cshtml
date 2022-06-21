@@ -110,7 +110,7 @@
                     {
                         if (Boolean.TryParse(sizeSort[0], out bool value) && value)
                         {
-                            mediaList = mediaList.OrderBy(media => media.ContentSize).ToList();
+                            mediaList = mediaList.OrderBy(media => media.ContentSize).Reverse().ToList();
                         }
                     }
                 }
