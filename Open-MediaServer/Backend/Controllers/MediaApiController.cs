@@ -5,7 +5,6 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using K4os.Compression.LZ4;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Http.Headers;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.Net.Http.Headers;
@@ -222,7 +221,6 @@ public class MediaApiController : ControllerBase
         return statSchema;
     }
 
-    //TODO: Convert all spaces to either - or _ preferably 
     [HttpPost("/api/upload/")]
     public async Task<ActionResult> PostUploadContent(MediaSchema.MediaUpload upload)
     {
@@ -271,7 +269,7 @@ public class MediaApiController : ControllerBase
             {
                 // TODO: Actually generate a unique ID
                 Id = StringUtils.RandomString(Program.ConfigManager.Config.UniqueIdLength),
-                Name = upload.Name,
+                Name = upload.Name.Replace(" ", "_"),
                 Extension = upload.Extension,
                 UploadDate = DateTime.UtcNow,
                 ContentSize = content.Length,
