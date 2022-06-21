@@ -89,13 +89,13 @@
                                     if (sinceUpload.Days <= 1)
                                     {
                                         <div>
-                                            @author.Username • Uploaded today
+                                            @author.Username • Uploaded today • @StringUtils.FormatBytesWithIdentifier(media.ContentSize) • @(media.Public ? "Public" : "Private") 
                                         </div>
                                     }
                                     else
                                     {
                                         <div>
-                                            @author.Username • Uploaded @sinceUpload.Days days ago
+                                            @author.Username • Uploaded @sinceUpload.Days days ago • @StringUtils.FormatBytesWithIdentifier(media.ContentSize) • @(media.Public ? "Public" : "Private")
                                         </div>
                                     }
                                 }

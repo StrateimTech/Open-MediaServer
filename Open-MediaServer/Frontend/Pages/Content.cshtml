@@ -7,6 +7,12 @@
 
 @{
     Layout = "_Layout.cshtml";
+    
+    DatabaseSchema.User user = null;
+    if (Request.Cookies["user_session"] != null && UserUtils.IsAuthed(Request.Cookies["user_session"]))
+    {
+        user = await UserUtils.GetUser(Request.Cookies["user_session"]);
+    }
 }
 
 @section AdditionalHead
@@ -36,15 +42,18 @@
     <a class="sort-item" onclick="updateQueryURL('size', window);">
         Size
     </a>
+    @{
+        if (user != null)
+        {
+            <a class="sort-item" onclick="updateQueryURL('visibility', window);">
+                Visibility
+            </a>
+        }
+    }
 </div>
 <div class="content-container">
     @{
         var mediaList = await Program.Database.MediaDatabase.GetAllWithChildrenAsync<DatabaseSchema.Media>();
-        DatabaseSchema.User user = null;
-        if (Request.Cookies["user_session"] != null && UserUtils.IsAuthed(Request.Cookies["user_session"]))
-        {
-            user = await UserUtils.GetUser(Request.Cookies["user_session"]);
-        }
 
         if (user == null || user is {Admin: false })
         {
@@ -128,6 +137,19 @@
                         if (Boolean.TryParse(sizeSort[0], out bool value) && value)
                         {
                             mediaList = mediaList.OrderBy(media => media.ContentSize).Reverse().ToList();
+                        }
+                    }
+                }
+
+                if (Request.Query.ContainsKey("visibility"))
+                {
+                    var visibilitySort = Request.Query["visibility"];
+
+                    if (visibilitySort[0] != null)
+                    {
+                        if (Boolean.TryParse(visibilitySort[0], out bool value) && value)
+                        {
+                            mediaList = mediaList.OrderBy(media => media.Public).ToList();
                         }
                     }
                 }
