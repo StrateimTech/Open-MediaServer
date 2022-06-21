@@ -39,8 +39,8 @@ public class Config
     public bool Thumbnails { get; set; } = true;
     public bool PreComputeThumbnails { get; set; } = true;
 
-    // null size will result in the video resolution's size being used 
-    public (int width, int height)? ThumbnailSize { get; set; } = (200, 113);
+    // Only the thumbnail's width is needed (Keeps the original content's aspect ratio for clarity)
+    public int ThumbnailWidth { get; set; } = 200;
 
     [JsonProperty( TypeNameHandling = TypeNameHandling.Objects )]
     public IImageFormat ThumbnailFormat { get; set; } = WebpFormat.Instance;

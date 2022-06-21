@@ -47,11 +47,11 @@
 }
 
 .content-item {
-    flex: 0 0 288px;
+    flex: 1 1 288px;
     background-color: rgb(8, 8, 8);
 
-    width: 288px;
-    height: 96px;
+    max-width: 288px;
+    max-height: 288px;
 
     box-sizing: border-box;
     padding: 4px;
@@ -79,6 +79,7 @@
     flex: 0 0 50%;
     width: 50%;
     height: 100%;
+    aspect-ratio: 1 / 1;
 }
 
 .content-item-no-thumbnail {

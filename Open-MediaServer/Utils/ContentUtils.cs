@@ -38,10 +38,11 @@ public static class ContentUtils
                 image = Image.Load<Rgba32>(data);
                 break;
         }
+
         return (image.Width, image.Height);
     }
 
-    public static async Task<byte[]> GetThumbnail(byte[] data, int? width, int? height, ContentType contentType,
+    public static async Task<byte[]> GetThumbnail(byte[] data, int? width, ContentType contentType,
         IImageFormat format)
     {
         Image<Rgba32> image;
@@ -55,12 +56,12 @@ public static class ContentUtils
                 image = Image.Load<Rgba32>(data);
                 break;
         }
-        
-        if (width != null && height != null)
+
+        if (width != null)
         {
-            image.Mutate(x => x.Resize((int) width, (int) height));
+            image.Mutate(x => x.Resize((int) width, (int) (image.Height / image.Width * width)));
         }
-    
+
         using var ms = new MemoryStream();
         await image.SaveAsync(ms, format);
         return ms.ToArray();

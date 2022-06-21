@@ -60,8 +60,7 @@ public class MediaApiController : ControllerBase
                 }
 
                 thumbnailBytes = await ContentUtils.GetThumbnail(bytes,
-                    Program.ConfigManager.Config.ThumbnailSize?.Item1,
-                    Program.ConfigManager.Config.ThumbnailSize?.Item2, media.ContentType,
+                    Program.ConfigManager.Config.ThumbnailWidth, media.ContentType,
                     Program.ConfigManager.Config.ThumbnailFormat);
 
                 if (thumbnailBytes == null)
@@ -90,8 +89,7 @@ public class MediaApiController : ControllerBase
                     }
 
                     thumbnailBytes = await ContentUtils.GetThumbnail(bytes,
-                        Program.ConfigManager.Config.ThumbnailSize?.Item1,
-                        Program.ConfigManager.Config.ThumbnailSize?.Item2, media.ContentType,
+                        Program.ConfigManager.Config.ThumbnailWidth, media.ContentType,
                         Program.ConfigManager.Config.ThumbnailFormat);
 
                     if (thumbnailBytes == null)
@@ -296,8 +294,7 @@ public class MediaApiController : ControllerBase
                 Program.ConfigManager.Config.Thumbnails && Program.ConfigManager.Config.PreComputeThumbnails)
             {
                 var thumbnail = await ContentUtils.GetThumbnail(upload.Content,
-                    Program.ConfigManager.Config.ThumbnailSize?.Item1,
-                    Program.ConfigManager.Config.ThumbnailSize?.Item2, (ContentType) contentType,
+                    Program.ConfigManager.Config.ThumbnailWidth, (ContentType) contentType,
                     Program.ConfigManager.Config.ThumbnailFormat);
                 if (thumbnail != null)
                 {
