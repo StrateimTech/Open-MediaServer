@@ -193,6 +193,12 @@ public class UserApiController : ControllerBase
                 }
 
                 await Program.Database.UserDatabase.DeleteAsync<DatabaseSchema.User>(user.Id);
+                
+                if (Request.Cookies["user_session"] != null)
+                {
+                    Response.Cookies.Delete("user_session");
+                }
+                
                 if (returnUrl != null)
                 {
                     return RedirectToPage(returnUrl);
