@@ -11,7 +11,7 @@
 
     var mediaTableQuery = Program.Database.MediaDatabase.Table<DatabaseSchema.Media>();
     int uploadCount = await mediaTableQuery.CountAsync();
-    int totalContentSize = mediaTableQuery.ToListAsync().Result.Sum(media => media.ContentSize);
+    int totalContentSize = (await mediaTableQuery.ToListAsync()).Sum(media => media.ContentSize);
     string contentSize = StringUtils.FormatBytesWithIdentifier(totalContentSize);
 }
 

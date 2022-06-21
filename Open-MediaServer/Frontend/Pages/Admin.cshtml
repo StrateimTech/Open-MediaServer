@@ -14,7 +14,7 @@
 
     if (UserUtils.IsAuthed(Request.Cookies["user_session"]))
     {
-        var user = UserUtils.GetUser(Request.Cookies["user_session"]).Result;
+        var user = await UserUtils.GetUser(Request.Cookies["user_session"]);
         if (user is {Admin: false })
         {
             Response.Redirect("/");

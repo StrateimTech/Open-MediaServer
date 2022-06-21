@@ -15,7 +15,7 @@
         return;
     }
 
-    var user = UserUtils.GetUser(Request.Cookies["user_session"]).Result;
+    var user = await UserUtils.GetUser(Request.Cookies["user_session"]);
 }
 
 @section AdditionalHead
