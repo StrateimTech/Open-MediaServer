@@ -221,6 +221,9 @@ public class MediaApiController : ControllerBase
         return statSchema;
     }
 
+    //TODO: Correctly parse name to a safe url standard
+    //TODO: Add name length limit 1-64 chars
+    //TODO: Add file size limit
     [HttpPost("/api/upload/")]
     public async Task<ActionResult> PostUploadContent(MediaSchema.MediaUpload upload)
     {

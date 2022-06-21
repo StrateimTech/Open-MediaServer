@@ -12,7 +12,7 @@
 
 @section AdditionalHead
 {
-    <title>@RouteData.Values["id"] @RouteData.Values["name"]</title>
+    <title>@Program.ConfigManager.Config.FrontendName Media - @RouteData.Values["name"]</title>
     <link rel="stylesheet" href="~/Frontend/Assets/css/SingleContent/SingleContent.css">
     @{
         if (RouteData.Values["id"] != null && RouteData.Values["name"] != null)
@@ -94,7 +94,7 @@
                                     }
                                     else
                                     {
-                                        <div style="display: inline-block">
+                                        <div>
                                             @author.Username • Uploaded @sinceUpload.Days days ago
                                         </div>
                                     }

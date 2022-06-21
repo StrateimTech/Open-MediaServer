@@ -38,6 +38,10 @@
     color: white;
 }
 
+.content-text > div {
+    display: inline-block
+}
+
 .content-text > form {
     display: inline-block;
 }
