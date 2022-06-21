@@ -35,6 +35,7 @@ public class Config
     public bool AllowVideos { get; set; } = true;
     public bool AllowOther { get; set; } = true;
 
+    public int UploadNameLimit { get; set; } = 64;
     public bool Thumbnails { get; set; } = true;
     public bool PreComputeThumbnails { get; set; } = true;
 

@@ -221,8 +221,6 @@ public class MediaApiController : ControllerBase
         return statSchema;
     }
 
-    //TODO: Add name length limit 1-64 chars
-    //TODO: Add file size limit
     [HttpPost("/api/upload/")]
     public async Task<ActionResult> PostUploadContent(MediaSchema.MediaUpload upload)
     {
@@ -251,6 +249,11 @@ public class MediaApiController : ControllerBase
                 || contentType == ContentType.Other && !Program.ConfigManager.Config.AllowOther)
             {
                 return StatusCode(StatusCodes.Status415UnsupportedMediaType);
+            }
+
+            if (upload.Name.Length > Program.ConfigManager.Config.UploadNameLimit || upload.Name.Length <= 0)
+            {
+                return StatusCode(StatusCodes.Status400BadRequest);
             }
 
             bool contentCompressed = Program.ConfigManager.Config.LosslessCompression;
