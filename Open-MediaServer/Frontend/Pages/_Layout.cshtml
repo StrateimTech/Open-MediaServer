@@ -18,12 +18,19 @@
 <html lang="en">
 
 <head>
-    <meta charset="utf-8"/>
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <base href="~/"/>
     <link rel="stylesheet" href="~/Frontend/Assets/css/Global/layout.css">
     <link rel="stylesheet" href="~/Frontend/Assets/font/Font.css">
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    @{
+        if (Program.ConfigManager.Config.FrontendName != null)
+        {
+            <meta property="og:site_name" content="@Program.ConfigManager.Config.FrontendName"/>
+        }
+    }
+    @await RenderSectionAsync("AdditionalHead", true)
 </head>
 
 <body style="margin: 0; padding: 0" class="background">
@@ -60,9 +67,7 @@
     </ul>
 </div>
 
-<section>
-    @RenderBody()
-</section>
+@RenderBody()
 
 </body>
 

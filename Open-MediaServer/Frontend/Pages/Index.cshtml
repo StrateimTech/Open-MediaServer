@@ -15,14 +15,15 @@
     string contentSize = StringUtils.FormatBytesWithIdentifier(totalContentSize);
 }
 
-<!DOCTYPE html>
-
-<html>
-<head>
+@section AdditionalHead
+{
     <title>@Program.ConfigManager.Config.FrontendName Media - Home</title>
     <link rel="stylesheet" href="~/Frontend/Assets/css/Index/Index.css">
-</head>
+}
 
+<!DOCTYPE html>
+
+<html lang="en">
 <body>
 <div class="fade-div">
     <div style="animation: fade-in-move-down 2s;" class="fade-text loading-text">

@@ -11,8 +11,8 @@
         Response.Redirect("/Login?returnUrl=Admin");
         return;
     }
-        
-    if(UserUtils.IsAuthed(Request.Cookies["user_session"]))
+
+    if (UserUtils.IsAuthed(Request.Cookies["user_session"]))
     {
         var user = UserUtils.GetUser(Request.Cookies["user_session"]).Result;
         if (user is {Admin: false })
@@ -23,12 +23,14 @@
     }
 }
 
+@section AdditionalHead
+{
+    <title>@Program.ConfigManager.Config.FrontendName Media - Admin</title>
+}
+
 <!DOCTYPE html>
 
-<html>
-<head>
-    <title>@Program.ConfigManager.Config.FrontendName Media - Admin</title>
-</head>
+<html lang="en">
 <body>
 <div>
 

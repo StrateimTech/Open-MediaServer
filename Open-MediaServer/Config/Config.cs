@@ -10,6 +10,8 @@ public class Config
 {
     public string FrontendName { get; set; }
 
+    public string FrontendDomain { get; set; }
+
     public (short http, short https) FrontendPorts { get; set; } = (80, 443);
     public (short http, short https) BackendPorts { get; set; } = (2000, 2001);
     

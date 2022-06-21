@@ -5,7 +5,7 @@
 
 @{
     Layout = "_Layout.cshtml";
-    
+
     if (Request.Cookies["user_session"] == null || !UserUtils.IsAuthed(Request.Cookies["user_session"]))
     {
         Response.Redirect("/Login?returnUrl=Upload");
@@ -13,15 +13,17 @@
     }
 }
 
+@section AdditionalHead
+{
+    <title>@Program.ConfigManager.Config.FrontendName Media - Upload</title>
+}
+
 <!DOCTYPE html>
 
-<html>
-<head>
-    <title>@Program.ConfigManager.Config.FrontendName Media - Upload</title>
-</head>
+<html lang="en">
 <body>
 <div>
-    
+
 </div>
 </body>
 </html>

@@ -18,14 +18,15 @@
     var user = UserUtils.GetUser(Request.Cookies["user_session"]).Result;
 }
 
-<!DOCTYPE html>
-
-<html>
-<head>
+@section AdditionalHead
+{
     <title>@Program.ConfigManager.Config.FrontendName Media - Account</title>
     <link rel="stylesheet" href="~/Frontend/Assets/css/Account/Account.css">
-    <link rel="stylesheet" href="~/Frontend/Assets/font/Font.css">
-</head>
+}
+
+<!DOCTYPE html>
+
+<html lang="en">
 <body>
 <div class="main-container">
     <div class="main-flex-item">
@@ -87,7 +88,7 @@
                         {
                             <div class="content-item">
                                 <a class="content-href" href="/@media.Id/@media.Name@media.Extension">
-                                    <img class="content-item-thumbnail" src="@Url.Action("GetThumbnail", "MediaApi", new {Id = media.Id, Name = media.Name}, Request.Scheme, Request.Host.ToUriComponent())" alt="@media.Name"/>
+                                    <img class="content-item-thumbnail" src="@Url.Action("GetThumbnail", "MediaApi", new {Id = media.Id, Name = media.Name}, Request.Scheme, Program.ConfigManager.Config.FrontendDomain)" alt="@media.Name"/>
                                     <div class="content-item-text">
                                         @media.Name@media.Extension<br/>
                                         @media.UploadDate.ToString("MM/dd/yy HH:mm")<br/>

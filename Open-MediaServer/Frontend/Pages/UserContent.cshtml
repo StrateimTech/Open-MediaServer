@@ -7,6 +7,11 @@
     Layout = "_Layout.cshtml";
 }
 
+@section AdditionalHead
+{
+    <title>Content - @RouteData.Values["user"]</title>
+}
+
 @* @{ *@
 @*     if (RouteData.Values.Count > 0 && RouteData.Values["user"] != null) *@
 @*     { *@
@@ -20,10 +25,7 @@
 
 <!DOCTYPE html>
 
-<html>
-<head>
-    <title>Content - @RouteData.Values["user"]</title>
-</head>
+<html lang="en">
 <body>
 
 </body>

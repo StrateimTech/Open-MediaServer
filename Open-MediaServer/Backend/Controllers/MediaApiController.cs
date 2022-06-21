@@ -210,6 +210,7 @@ public class MediaApiController : ControllerBase
         return statSchema;
     }
 
+    //TODO: Convert all spaces to either - or _ preferably 
     [HttpPost("/api/upload/")]
     public async Task<ActionResult> PostUploadContent(MediaSchema.MediaUpload upload)
     {

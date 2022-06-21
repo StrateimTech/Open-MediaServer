@@ -10,15 +10,16 @@
     Layout = "_Layout.cshtml";
 }
 
-<!DOCTYPE html>
-
-<html>
-<head>
+@section AdditionalHead
+{
     <title>@Program.ConfigManager.Config.FrontendName Media - Content</title>
     <link rel="stylesheet" href="~/Frontend/Assets/css/Content/Content.css">
-    <link rel="stylesheet" href="~/Frontend/Assets/font/Font.css">
     <script src="~/Frontend/Assets/js/Content/Content.js"></script>
-</head>
+}
+
+<!DOCTYPE html>
+
+<html lang="en">
 <body>
 <div class="sort-navbar">
     <a class="sort-item" onclick="updateQueryURL('name', window);">
@@ -101,7 +102,7 @@
                         }
                     }
                 }
-                
+
                 if (Request.Query.ContainsKey("size"))
                 {
                     var sizeSort = Request.Query["size"];
@@ -123,7 +124,7 @@
                 {
                     <div class="content-item">
                         <a class="content-href" href="/@media.Id/@media.Name@media.Extension">
-                            <img class="content-item-thumbnail" src="@Url.Action("GetThumbnail", "MediaApi", new {Id = media.Id, Name = media.Name}, Request.Scheme, Request.Host.ToUriComponent())" alt="@media.Name"/>
+                            <img class="content-item-thumbnail" src="@Url.Action("GetThumbnail", "MediaApi", new {Id = media.Id, Name = media.Name}, Request.Scheme, Program.ConfigManager.Config.FrontendDomain)" alt="@media.Name"/>
                             <div class="content-item-text">
                                 @media.Name.FirstCharToUpper()@media.Extension<br/>
                                 @{

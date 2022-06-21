@@ -5,14 +5,15 @@
     Layout = "_Layout.cshtml";
 }
 
-<!DOCTYPE html>
-
-<html>
-<head>
+@section AdditionalHead
+{
     <title>User @RouteData.Values["username"]</title>
     <link rel="stylesheet" href="~/Frontend/Assets/css/Account/User/User.css">
-    <link rel="stylesheet" href="~/Frontend/Assets/font/Font.css">
-</head>
+}
+
+<!DOCTYPE html>
+
+<html lang="en">
 <body>
 
 </body>

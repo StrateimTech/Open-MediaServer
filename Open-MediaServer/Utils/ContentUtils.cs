@@ -3,12 +3,9 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using HeyRed.ImageSharp.AVCodecFormats;
-using HeyRed.ImageSharp.AVCodecFormats.Webm;
-using Microsoft.OpenApi.Extensions;
 using Open_MediaServer.Content;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Formats;
-using SixLabors.ImageSharp.Formats.Png;
 using SixLabors.ImageSharp.PixelFormats;
 using SixLabors.ImageSharp.Processing;
 
