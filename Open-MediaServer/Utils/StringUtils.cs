@@ -2,7 +2,6 @@
 using System.Linq;
 using System.Text;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Http.Extensions;
 
 namespace Open_MediaServer.Utils;
 
