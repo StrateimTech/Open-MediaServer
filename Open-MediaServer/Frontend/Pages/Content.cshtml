@@ -40,7 +40,24 @@
 <div class="content-container">
     @{
         var mediaList = await Program.Database.MediaDatabase.GetAllWithChildrenAsync<DatabaseSchema.Media>();
-        mediaList.RemoveAll(media => media.Public == false);
+        DatabaseSchema.User user = null;
+        if (Request.Cookies["user_session"] != null && UserUtils.IsAuthed(Request.Cookies["user_session"]))
+        {
+            user = await UserUtils.GetUser(Request.Cookies["user_session"]);
+        }
+
+        if (user == null || user is {Admin: false })
+        {
+            mediaList.RemoveAll(media =>
+            {
+                if (user != null && media.AuthorId == user.Id)
+                {
+                    return false;
+                }
+                return media.Public == false;
+            });
+        }
+        
         if (mediaList.Count <= 0)
         {
             <div class="main-text">
@@ -118,7 +135,7 @@
 
             foreach (var media in mediaList)
             {
-                var author = await Program.Database.UserDatabase.FindAsync<DatabaseSchema.User>(user => user.Id == media.AuthorId);
+                var author = await Program.Database.UserDatabase.FindAsync<DatabaseSchema.User>(dbUser => dbUser.Id == media.AuthorId);
                 if (media.ThumbnailPath != null)
                 {
                     <div class="content-item">
@@ -127,21 +144,21 @@
                             <div class="content-item-text">
                                 @Uri.UnescapeDataString(media.Name).FirstCharToUpper()@media.Extension<br/>
                                 @{
-                                    if (author == null)
+                                    var sinceUpload = DateTime.UtcNow.Subtract(media.UploadDate);
+                                    if (sinceUpload.Days <= 1)
                                     {
                                         <div>
-                                            Account Deleted
+                                            @(author.Username.FirstCharToUpper() ?? "Account Deleted") • Uploaded today
                                         </div>
                                     }
                                     else
                                     {
                                         <div>
-                                            Author: @author.Username.FirstCharToUpper()<br/>
+                                            @(author.Username.FirstCharToUpper() ?? "Account Deleted") • @sinceUpload.Days days ago
                                         </div>
                                     }
                                 }
-                                Date: @media.UploadDate.ToString("MM/dd/yy")<br/>
-                                Size: @StringUtils.FormatBytesWithIdentifier(media.ContentSize)<br/>
+                                @(media.Public ? "Public" : "Private") • @StringUtils.FormatBytesWithIdentifier(media.ContentSize)<br/>
                             </div>
                         </a>
                     </div>

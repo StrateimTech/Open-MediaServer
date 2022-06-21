@@ -20,7 +20,6 @@ namespace Open_MediaServer.Backend.Controllers;
 [Route("/api/[controller]")]
 public class MediaApiController : ControllerBase
 {
-    // https://media.strateim.tech/RPf4BxA/Hello_World.mp4/
     [HttpGet("/api/thumbnail/")]
     public async Task<ActionResult> GetThumbnail([FromQuery] MediaSchema.MediaIdentity identity)
     {
