@@ -1,5 +1,7 @@
 ﻿@page "/{id}/{name}"
+@using System.Text
 @using Microsoft.AspNetCore.Http.Extensions
+@using Microsoft.AspNetCore.Mvc.Routing
 @using Open_MediaServer
 @using Open_MediaServer.Content
 @using Open_MediaServer.Database.Schema
@@ -126,7 +128,7 @@
                 <div class="content-failed">
                     Failed to find the content you were looking for...<br/>
                     <div>
-                        @Request.GetDisplayUrl()
+                        @Request.GetDisplayUrl(Program.ConfigManager.Config.FrontendDomain);
                     </div>
                 </div>
             }
@@ -136,7 +138,7 @@
             <div class="content-failed">
                 Failed to find the content you were looking for...<br/>
                 <div>
-                    @Request.GetDisplayUrl()
+                    @Request.GetDisplayUrl(Program.ConfigManager.Config.FrontendDomain);
                 </div>
             </div>
         }
@@ -146,7 +148,7 @@
         <div class="content-failed">
             Failed to find the content you were looking for...<br/>
             <div>
-                @Request.GetDisplayUrl()
+                @Request.GetDisplayUrl(Program.ConfigManager.Config.FrontendDomain);
             </div>
         </div>
     }

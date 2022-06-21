@@ -1,5 +1,8 @@
 ﻿using System;
 using System.Linq;
+using System.Text;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.Extensions;
 
 namespace Open_MediaServer.Utils;
 
@@ -33,4 +36,25 @@ public static class StringUtils
         "" => throw new ArgumentException($"{nameof(input)} cannot be empty", nameof(input)),
         _ => string.Concat(input[0].ToString().ToUpper(), input.AsSpan(1))
     };
+
+    public static string GetDisplayUrl(this HttpRequest request, string host = null)
+    {
+        var scheme = request.Scheme ?? string.Empty;
+        host ??= request.Host.Value ?? string.Empty;
+        var pathBase = request.PathBase.Value ?? string.Empty;
+        var path = request.Path.Value ?? string.Empty;
+        var queryString = request.QueryString.Value ?? string.Empty;
+
+        var length = scheme.Length + Uri.SchemeDelimiter.Length + host.Length
+                     + pathBase.Length + path.Length + queryString.Length;
+
+        return new StringBuilder(length)
+            .Append(scheme)
+            .Append(Uri.SchemeDelimiter)
+            .Append(host)
+            .Append(pathBase)
+            .Append(path)
+            .Append(queryString)
+            .ToString();
+    }
 }
