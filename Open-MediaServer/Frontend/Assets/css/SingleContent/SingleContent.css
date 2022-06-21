@@ -1,11 +1,91 @@
-﻿.video-container {
+﻿.content-flex {
+    height: calc(100% - 56px);
+    width: auto;
     display: flex;
     
+    align-items: center;
     justify-content: center;
-    align-content: center;
 }
 
-video {
-    width: 800px;
-    height: 800px;
+.content-container {
+    background: rgb(4, 8, 8);
+    border-radius: 4px;
+    padding: 4px;
+    
+    height: calc(100% - 56px);
+}
+
+.content {
+    aspect-ratio: 1 / 1;
+    width: 100%;
+    height: calc(100% - 56px);
+}
+
+.content-text {
+    width: 100%;
+    margin-top: 4px;
+    
+    height: 56px;
+    padding: 2px;
+    
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+
+    font-family: 'Lato Light', sans-serif;
+    font-size: 16px;
+    color: white;
+}
+
+.content-text > form {
+    display: inline-block;
+}
+
+.content-delete {
+    float: right;
+    width: 64px;
+    overflow: hidden;
+    
+    margin-right: 4px;
+}
+
+.content-delete-button {
+    margin-top: auto;
+    width: 100%;
+    padding: 4px;
+
+    background-color: rgb(185, 43, 61);
+    color: white;
+
+    display: inline-block;
+    border: none;
+    border-radius: 4px;
+
+    box-sizing: border-box;
+
+    cursor: pointer;
+}
+
+.content-delete-button:active {
+    background-color: rgb(153, 36, 48);
+    color: rgb(240, 240, 240);
+    opacity: 0.9;
+}
+
+.content-failed {
+    margin: 16px;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+
+    font-family: 'Lato', sans-serif;
+    font-size: 24px;
+    color: white;
+}
+
+.content-failed > div {
+    font-family: 'Lato Light', sans-serif;
+    font-size: 16px;
 }

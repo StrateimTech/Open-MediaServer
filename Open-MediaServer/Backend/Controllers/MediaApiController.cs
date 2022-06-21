@@ -136,7 +136,7 @@ public class MediaApiController : ControllerBase
             {
                 return StatusCode(StatusCodes.Status404NotFound);
             }
-            
+
             if (Request.GetTypedHeaders().IfModifiedSince?.UtcDateTime >= media.UploadDate)
             {
                 return StatusCode(StatusCodes.Status304NotModified);
@@ -147,7 +147,7 @@ public class MediaApiController : ControllerBase
             {
                 bytes = LZ4Pickler.Unpickle(bytes);
             }
-            
+
             var responseHeaders = Response.GetTypedHeaders();
             responseHeaders.CacheControl = new CacheControlHeaderValue
             {
@@ -266,7 +266,7 @@ public class MediaApiController : ControllerBase
                 content = upload.Content;
                 contentCompressed = false;
             }
-            
+
             var mediaSchema = new DatabaseSchema.Media()
             {
                 // TODO: Actually generate a unique ID
@@ -339,8 +339,9 @@ public class MediaApiController : ControllerBase
         return StatusCode(StatusCodes.Status400BadRequest, ModelState);
     }
 
-    [HttpPost("/api/delete/")]
-    public async Task<ActionResult> PostDeleteContent(MediaSchema.MediaIdentity identity)
+    [HttpGet("/api/delete/")]
+    public async Task<ActionResult> GetDeleteContent([FromQuery] MediaSchema.MediaIdentity identity,
+        [FromQuery] string returnUrl)
     {
         if (ModelState.IsValid)
         {
@@ -370,7 +371,13 @@ public class MediaApiController : ControllerBase
                 return StatusCode(StatusCodes.Status403Forbidden);
             }
 
-            await Program.Database.MediaDatabase.DeleteAsync<DatabaseSchema.Media>(media);
+            await Program.Database.MediaDatabase.DeleteAsync<DatabaseSchema.Media>(media.Id);
+
+            if (returnUrl != null)
+            {
+                return RedirectToPage(returnUrl);
+            }
+
             return StatusCode(StatusCodes.Status200OK);
         }
 
