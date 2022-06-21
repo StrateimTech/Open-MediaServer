@@ -87,9 +87,9 @@
                         {
                             <div class="content-item">
                                 <a class="content-href" href="/@media.Id/@media.Name@media.Extension">
-                                    <img class="content-item-thumbnail" src="@Url.Action("GetThumbnail", "MediaApi", new {Id = media.Id, Name = media.Name}, Request.Scheme, Program.ConfigManager.Config.FrontendDomain)" alt="@media.Name"/>
+                                    <img class="content-item-thumbnail" src="@Url.Action("GetThumbnail", "MediaApi", new {Id = media.Id, Name = media.Name}, Request.Scheme, Program.ConfigManager.Config.FrontendDomain)" alt="@Uri.UnescapeDataString(media.Name)"/>
                                     <div class="content-item-text">
-                                        @media.Name@media.Extension<br/>
+                                        @Uri.UnescapeDataString(media.Name)@media.Extension<br/>
                                         @media.UploadDate.ToString("MM/dd/yy HH:mm")<br/>
                                         Size: @StringUtils.FormatBytesWithIdentifier(media.ContentSize)<br/>
                                         Public: @media.Public<br/>
@@ -105,7 +105,7 @@
                                         No Thumbnail
                                     </div>
                                     <div class="content-item-text">
-                                        @media.Name@media.Extension<br/>
+                                        @Uri.UnescapeDataString(media.Name)@media.Extension<br/>
                                         @media.UploadDate.ToString("MM/dd/yy HH:mm")<br/>
                                         Size: @StringUtils.FormatBytesWithIdentifier(media.ContentSize)<br/>
                                         Public: @media.Public<br/>

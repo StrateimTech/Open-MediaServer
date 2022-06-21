@@ -28,8 +28,7 @@ public class ConfigManager
         string serializedJson = JsonConvert.SerializeObject(Config, new JsonSerializerSettings
         {
             Formatting = Formatting.Indented,
-            NullValueHandling = NullValueHandling.Include,
-            
+            NullValueHandling = NullValueHandling.Include
         });
         File.WriteAllText(file, serializedJson);
     }

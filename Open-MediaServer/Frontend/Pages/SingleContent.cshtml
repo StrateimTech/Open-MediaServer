@@ -58,7 +58,7 @@
     if (RouteData.Values["id"] != null && RouteData.Values["name"] != null)
     {
         string mediaId = RouteData.Values["id"].ToString();
-        string mediaName = System.IO.Path.GetFileNameWithoutExtension(RouteData.Values["name"].ToString());
+        string mediaName = Uri.EscapeDataString(System.IO.Path.GetFileNameWithoutExtension(RouteData.Values["name"].ToString())!);
         try
         {
             var media = await Program.Database.MediaDatabase.FindWithChildrenAsync<DatabaseSchema.Media>(mediaId);
@@ -72,7 +72,7 @@
                             switch (ContentUtils.GetContentType(media.Extension))
                             {
                                 case ContentType.Image:
-                                    <img src="@mediaUrl" alt="@media.Name" class="content">
+                                    <img src="@mediaUrl" alt="@Uri.UnescapeDataString(media.Name)" class="content">
                                     break;
                                 case ContentType.Video:
                                     <video controls="" onloadstart="this.volume=0.01" class="content">
@@ -83,7 +83,7 @@
                                     break;
                             }
                             <div class="content-text">
-                                @media.Name@media.Extension<br/>
+                                @Uri.UnescapeDataString(media.Name)@media.Extension<br/>
                                 @{
                                     var sinceUpload = DateTime.UtcNow.Subtract(media.UploadDate);
                                     if (sinceUpload.Days <= 1)

@@ -58,7 +58,7 @@
                     {
                         if (Boolean.TryParse(nameSort[0], out bool value) && value)
                         {
-                            mediaList = mediaList.OrderBy(media => media.Name).ToList();
+                            mediaList = mediaList.OrderBy(media => Uri.UnescapeDataString(media.Name)).ToList();
                         }
                     }
                 }
@@ -125,7 +125,7 @@
                         <a class="content-href" href="/@media.Id/@media.Name@media.Extension">
                             <img class="content-item-thumbnail" src="@Url.Action("GetThumbnail", "MediaApi", new {Id = media.Id, Name = media.Name}, Request.Scheme, Program.ConfigManager.Config.FrontendDomain)" alt="@media.Name"/>
                             <div class="content-item-text">
-                                @media.Name.FirstCharToUpper()@media.Extension<br/>
+                                @Uri.UnescapeDataString(media.Name).FirstCharToUpper()@media.Extension<br/>
                                 @{
                                     if (author == null)
                                     {
@@ -154,7 +154,7 @@
                                 No Thumbnail
                             </div>
                             <div class="content-item-text">
-                                @media.Name.FirstCharToUpper()@media.Extension<br/>
+                                @Uri.UnescapeDataString(media.Name).FirstCharToUpper()@media.Extension<br/>
                                 @{
                                     if (author == null)
                                     {

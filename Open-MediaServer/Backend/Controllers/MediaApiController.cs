@@ -127,7 +127,7 @@ public class MediaApiController : ControllerBase
     {
         if (ModelState.IsValid)
         {
-            var fileName = Path.GetFileNameWithoutExtension(identity.Name);
+            var fileName = Uri.EscapeDataString(Path.GetFileNameWithoutExtension(identity.Name)!);
             var media = Program.Database.MediaDatabase.FindAsync<DatabaseSchema.Media>(media =>
                 media.Id == identity.Id && media.Name == fileName).Result;
 
@@ -221,7 +221,6 @@ public class MediaApiController : ControllerBase
         return statSchema;
     }
 
-    //TODO: Correctly parse name to a safe url standard
     //TODO: Add name length limit 1-64 chars
     //TODO: Add file size limit
     [HttpPost("/api/upload/")]
@@ -272,7 +271,7 @@ public class MediaApiController : ControllerBase
             {
                 // TODO: Actually generate a unique ID
                 Id = StringUtils.RandomString(Program.ConfigManager.Config.UniqueIdLength),
-                Name = upload.Name.Replace(" ", "_"),
+                Name = Uri.EscapeDataString(upload.Name),
                 Extension = upload.Extension,
                 UploadDate = DateTime.UtcNow,
                 ContentSize = content.Length,
