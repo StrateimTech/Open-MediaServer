@@ -42,7 +42,7 @@
     display: inline-block;
 }
 
-.content-delete {
+.content-form {
     float: right;
     width: 64px;
     overflow: hidden;
@@ -50,12 +50,11 @@
     margin-right: 4px;
 }
 
-.content-delete-button {
+.content-button {
     margin-top: auto;
     width: 100%;
     padding: 4px;
 
-    background-color: rgb(185, 43, 61);
     color: white;
 
     display: inline-block;
@@ -65,6 +64,20 @@
     box-sizing: border-box;
 
     cursor: pointer;
+}
+
+.content-download-button {
+    background-color: rgb(8, 140, 40);
+}
+
+.content-download-button:active {
+    background-color: rgb(11, 125, 30);
+    color: rgb(240, 240, 240);
+    opacity: 0.9;
+}
+
+.content-delete-button {
+    background-color: rgb(185, 43, 61);
 }
 
 .content-delete-button:active {

@@ -105,14 +105,20 @@
                                         var user = await UserUtils.GetUser(Request.Cookies["user_session"]);
                                         if (user.Id == media.AuthorId)
                                         {
-                                            @using (Html.BeginForm("GetDeleteContent", "MediaApi", FormMethod.Get, new {@class = "content-delete"}))
+                                            @using (Html.BeginForm("GetDeleteContent", "MediaApi", FormMethod.Get, new {@class = "content-form"}))
                                             {
                                                 @Html.TextBox("Id", media.Id, new {@type = "hidden"})
                                                 @Html.TextBox("Name", media.Name, new {@type = "hidden"})
                                                 @Html.TextBox("returnURL", "/Content", new {@type = "hidden"})
-                                                <input type="submit" class="content-delete-button" value="Delete"/>
+                                                <input type="submit" class="content-button content-delete-button" value="Delete"/>
                                             }
                                         }
+                                    }
+                                    @using (Html.BeginForm("GetMedia", "MediaApi", FormMethod.Get, new {@class = "content-form"}))
+                                    {
+                                        @Html.TextBox("Id", media.Id, new {@type = "hidden"})
+                                        @Html.TextBox("Name", media.Name, new {@type = "hidden"})
+                                        <input type="submit" class="content-button content-download-button" value="Download"/>
                                     }
                                 }
                             </div>
