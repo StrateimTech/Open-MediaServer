@@ -136,12 +136,24 @@ public class MediaApiController : ControllerBase
             {
                 return StatusCode(StatusCodes.Status404NotFound);
             }
+            
+            if (Request.GetTypedHeaders().IfModifiedSince?.UtcDateTime >= media.UploadDate)
+            {
+                return StatusCode(StatusCodes.Status304NotModified);
+            }
 
             var bytes = await System.IO.File.ReadAllBytesAsync(media.ContentPath);
             if (media.ContentCompressed)
             {
                 bytes = LZ4Pickler.Unpickle(bytes);
             }
+            
+            var responseHeaders = Response.GetTypedHeaders();
+            responseHeaders.CacheControl = new CacheControlHeaderValue
+            {
+                NoCache = true
+            };
+            responseHeaders.LastModified = new DateTimeOffset(media.UploadDate);
 
             var file = $"{media.Name}{media.Extension}";
             var fileContentType = new FileExtensionContentTypeProvider().TryGetContentType(file, out string contentType)

@@ -31,10 +31,11 @@
                     case ContentType.Image:
                         <meta property="og:image" content="@mediaUrl"/>
                         <meta property="og:image:secure_url" content="@mediaUrl"/>
-                        <meta property="og:image:type" content="@media.ContentMime"/>
+                        <meta property="og:image:type" content="@media.ContentMime"/> 
                         <meta property="og:image:width" content="@media.ContentDiemsions.width"/>
                         <meta property="og:image:height" content="@media.ContentDiemsions.height"/>
                         <meta property="og:image:alt" content="@media.Name"/>
+                        <meta name="twitter:card" content="summary_large_image">
                         break;
                     case ContentType.Video:
                         <meta property="og:video" content="@mediaUrl"/>
@@ -59,16 +60,14 @@
     if (RouteData.Values["id"] != null && RouteData.Values["name"] != null)
     {
         string mediaId = RouteData.Values["id"].ToString();
-        var fileName = System.IO.Path.GetFileNameWithoutExtension(RouteData.Values["name"].ToString());
-        var media = Program.Database.MediaDatabase.FindAsync<DatabaseSchema.Media>(media =>
-            media.Id == mediaId && media.Name == fileName).Result;
+        var media = Program.Database.MediaDatabase.FindWithChildrenAsync<DatabaseSchema.Media>(mediaId).Result;
         if (media != null)
         {
             var mediaUrl = Url.Action("GetMedia", "MediaApi", new {Id = RouteData.Values["id"], Name = RouteData.Values["name"]}, Request.Scheme, Program.ConfigManager.Config.FrontendDomain);
             switch (ContentUtils.GetContentType(media.Extension))
             {
                 case ContentType.Image:
-                    <img src="@mediaUrl" alt="@media.Name" width="100%" height="100%">
+                    <img src="@mediaUrl" alt="@media.Name" width="@media.ContentDiemsions.width" height="@media.ContentDiemsions.height">
                     break;
                 case ContentType.Video:
                     <div class="video-container">
