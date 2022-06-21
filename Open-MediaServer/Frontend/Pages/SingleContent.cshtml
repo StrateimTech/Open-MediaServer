@@ -17,7 +17,7 @@
     @{
         if (RouteData.Values["id"] != null && RouteData.Values["name"] != null)
         {
-            string mediaId = RouteData.Values["id"].ToString();
+            string mediaId = RouteData.Values["id"].ToString(); 
             var media = Program.Database.MediaDatabase.FindWithChildrenAsync<DatabaseSchema.Media>(mediaId).Result;
             if (media != null)
             {
@@ -26,7 +26,7 @@
                 var mediaUrl = Url.Action("GetMedia", "MediaApi", new {Id = RouteData.Values["id"], Name = RouteData.Values["name"]}, Request.Scheme, Program.ConfigManager.Config.FrontendDomain);
 
                 <meta property="og:title" content="@media.Name"/>
-                switch (ContentUtils.GetContentType(extension))
+                switch (ContentUtils.GetContentType(media.Extension))
                 {
                     case ContentType.Image:
                         <meta property="og:image" content="@mediaUrl"/>
