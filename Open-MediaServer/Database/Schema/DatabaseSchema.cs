@@ -18,8 +18,8 @@ public class DatabaseSchema
         public int ContentSize { get; set; }
         public bool ContentCompressed { get; set; }
         public ContentType ContentType { get; set; }
-        [TextBlob(nameof(ContentDiemsionsBlobbed))] public (int width, int height) ContentDiemsions { get; set; }
-        public string ContentDiemsionsBlobbed { get; set; }
+        [TextBlob(nameof(ContentDimensionsBlobbed))] public (int width, int height) ContentDimensions { get; set; }
+        public string ContentDimensionsBlobbed { get; set; }
         public string ContentMime { get; set; }
         public string ContentPath { get; set; }
         public string ThumbnailPath { get; set; }

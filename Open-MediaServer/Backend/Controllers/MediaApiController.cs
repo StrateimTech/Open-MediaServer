@@ -290,7 +290,7 @@ public class MediaApiController : ControllerBase
 
             if (contentType == ContentType.Video || contentType == ContentType.Image)
             {
-                mediaSchema.ContentDiemsions = ContentUtils.GetDimensions(upload.Content, (ContentType) contentType);
+                mediaSchema.ContentDimensions = ContentUtils.GetDimensions(upload.Content, (ContentType) contentType);
                 if (Program.ConfigManager.Config.Thumbnails && Program.ConfigManager.Config.PreComputeThumbnails)
                 {
                     var thumbnail = await ContentUtils.GetThumbnail(upload.Content,
