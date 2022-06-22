@@ -8,7 +8,9 @@
     Layout = "_Layout.cshtml";
 
     var mediaTableQuery = Program.Database.MediaDatabase.Table<DatabaseSchema.Media>();
+    var userTableQuery = Program.Database.UserDatabase.Table<DatabaseSchema.User>();
     int uploadCount = await mediaTableQuery.CountAsync();
+    int userCount = await userTableQuery.CountAsync();
     int totalContentSize = (await mediaTableQuery.ToListAsync()).Sum(media => media.ContentSize);
     string contentSize = StringUtils.FormatBytesWithIdentifier(totalContentSize);
 }
@@ -28,6 +30,9 @@
         SERVING @uploadCount UPLOADS
     </div>
     <div style="animation: fade-in-move-down 1.5s;" class="fade-text loading-text">
+        HANDLING @userCount USERS
+    </div>
+    <div style="animation: fade-in-move-down 1s;" class="fade-text loading-text">
         STORING @contentSize
     </div>
 </div>

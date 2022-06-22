@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Linq;
 using System.Security.Cryptography;
-using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 using Microsoft.AspNetCore.Http;
@@ -66,15 +65,7 @@ public class UserApiController : ControllerBase
                 Uploads = new()
             };
 
-            Console.WriteLine("Inserting user into sqlite db");
             await Program.Database.UserDatabase.InsertWithChildrenAsync(userSchema);
-
-            string serializedJson = JsonSerializer.Serialize(userSchema, new JsonSerializerOptions()
-            {
-                WriteIndented = true,
-                ReadCommentHandling = JsonCommentHandling.Skip
-            });
-            Console.WriteLine(serializedJson);
 
             if (returnUrl != null)
             {
@@ -122,13 +113,12 @@ public class UserApiController : ControllerBase
                     });
                     user.SessionKey = Convert.ToBase64String(sessionKey);
                     await Program.Database.UserDatabase.UpdateWithChildrenAsync(user);
+                }
 
-                    string serializedJson = JsonSerializer.Serialize(user, new JsonSerializerOptions()
-                    {
-                        WriteIndented = true,
-                        ReadCommentHandling = JsonCommentHandling.Skip
-                    });
-                    Console.WriteLine(serializedJson);
+                if (Request.Cookies["user_session"] != null &&
+                    !Request.Cookies["user_session"].SequenceEqual(user.SessionKey))
+                {
+                    Response.Cookies.Delete("user_session");
                 }
 
                 if (Request.Cookies["user_session"] == null)
@@ -157,7 +147,8 @@ public class UserApiController : ControllerBase
     }
 
     [HttpGet("/api/account/delete/")]
-    public async Task<ActionResult> GetDelete([FromQuery] UserSchema.UserDelete userDelete, [FromQuery] string returnUrl)
+    public async Task<ActionResult> GetDelete([FromQuery] UserSchema.UserDelete userDelete,
+        [FromQuery] string returnUrl)
     {
         if (ModelState.IsValid)
         {
@@ -193,16 +184,17 @@ public class UserApiController : ControllerBase
                 }
 
                 await Program.Database.UserDatabase.DeleteAsync<DatabaseSchema.User>(user.Id);
-                
+
                 if (Request.Cookies["user_session"] != null)
                 {
                     Response.Cookies.Delete("user_session");
                 }
-                
+
                 if (returnUrl != null)
                 {
                     return RedirectToPage(returnUrl);
                 }
+
                 return StatusCode(StatusCodes.Status200OK);
             }
         }

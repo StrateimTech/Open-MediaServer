@@ -1,7 +1,6 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
-using System.Text.Json;
 using System.Threading.Tasks;
 using K4os.Compression.LZ4;
 using Microsoft.AspNetCore.Http;
@@ -31,8 +30,8 @@ public class MediaApiController : ControllerBase
             }
 
             var fileName = Path.GetFileNameWithoutExtension(identity.Name);
-            var media = Program.Database.MediaDatabase.FindAsync<DatabaseSchema.Media>(media =>
-                media.Id == identity.Id && media.Name == fileName).Result;
+            var media = await Program.Database.MediaDatabase.FindAsync<DatabaseSchema.Media>(media =>
+                media.Id == identity.Id && media.Name == fileName);
 
             if (media == null)
             {
@@ -125,8 +124,8 @@ public class MediaApiController : ControllerBase
         if (ModelState.IsValid)
         {
             var fileName = Uri.EscapeDataString(Path.GetFileNameWithoutExtension(identity.Name)!);
-            var media = Program.Database.MediaDatabase.FindAsync<DatabaseSchema.Media>(media =>
-                media.Id == identity.Id && media.Name == fileName).Result;
+            var media = await Program.Database.MediaDatabase.FindAsync<DatabaseSchema.Media>(media =>
+                media.Id == identity.Id && media.Name == fileName);
 
             if (media == null)
             {
@@ -205,7 +204,7 @@ public class MediaApiController : ControllerBase
     {
         var mediaTableQuery = Program.Database.MediaDatabase.Table<DatabaseSchema.Media>();
         var totalContent = await mediaTableQuery.CountAsync();
-        var totalContentSize = mediaTableQuery.ToListAsync().Result.Sum(media => media.ContentSize);
+        var totalContentSize = (await mediaTableQuery.ToListAsync()).Sum(media => media.ContentSize);
 
         var statSchema = new MediaSchema.MediaStats()
         {
@@ -289,7 +288,7 @@ public class MediaApiController : ControllerBase
 
             mediaSchema.ContentPath = Program.ContentManager.SaveContent(content, mediaSchema.Id, mediaSchema.Name,
                 mediaSchema.Extension, (ContentType) contentType);
-
+            // Array.Clear(content);
             if ((contentType == ContentType.Video || contentType == ContentType.Image) &&
                 Program.ConfigManager.Config.Thumbnails && Program.ConfigManager.Config.PreComputeThumbnails)
             {
@@ -301,6 +300,7 @@ public class MediaApiController : ControllerBase
                     mediaSchema.ThumbnailPath = Program.ContentManager.SaveThumbnail(thumbnail, mediaSchema.Id,
                         mediaSchema.Name, Program.ConfigManager.Config.ThumbnailFormat.FileExtensions.ToList()[0],
                         (ContentType) contentType);
+                    // Array.Clear(thumbnail);
                 }
                 else
                 {
@@ -309,7 +309,6 @@ public class MediaApiController : ControllerBase
                 }
             }
 
-            Console.WriteLine("Inserting media into sqlite db");
             await Program.Database.MediaDatabase.InsertWithChildrenAsync(mediaSchema);
 
             user.Uploads.Add(new MediaSchema.MediaIdentity()
@@ -318,20 +317,6 @@ public class MediaApiController : ControllerBase
                 Name = mediaSchema.Name
             });
             await Program.Database.UserDatabase.UpdateWithChildrenAsync(user);
-
-            string serializedJson = JsonSerializer.Serialize(mediaSchema, new JsonSerializerOptions()
-            {
-                WriteIndented = true,
-                ReadCommentHandling = JsonCommentHandling.Skip
-            });
-            Console.WriteLine(serializedJson);
-            string serializedJson2 = JsonSerializer.Serialize(user, new JsonSerializerOptions()
-            {
-                WriteIndented = true,
-                ReadCommentHandling = JsonCommentHandling.Skip
-            });
-            Console.WriteLine(serializedJson2);
-
             return StatusCode(StatusCodes.Status200OK);
         }
 
@@ -357,8 +342,8 @@ public class MediaApiController : ControllerBase
             }
 
             var fileName = Path.GetFileNameWithoutExtension(identity.Name);
-            var media = Program.Database.MediaDatabase.FindAsync<DatabaseSchema.Media>(media =>
-                media.Id == identity.Id && media.Name == fileName).Result;
+            var media = await Program.Database.MediaDatabase.FindAsync<DatabaseSchema.Media>(media =>
+                media.Id == identity.Id && media.Name == fileName);
 
             if (media == null)
             {
