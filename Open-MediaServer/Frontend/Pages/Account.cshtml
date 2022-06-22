@@ -91,8 +91,7 @@
                                     <div class="content-item-text">
                                         @Uri.UnescapeDataString(media.Name)@media.Extension<br/>
                                         @media.UploadDate.ToString("MM/dd/yy HH:mm")<br/>
-                                        Size: @StringUtils.FormatBytesWithIdentifier(media.ContentSize)<br/>
-                                        Public: @media.Public<br/>
+                                        @(media.Public ? "Public" : "Private") • @StringUtils.FormatBytesWithIdentifier(media.ContentSize)
                                     </div>
                                 </a>
                             </div>
@@ -107,8 +106,7 @@
                                     <div class="content-item-text">
                                         @Uri.UnescapeDataString(media.Name)@media.Extension<br/>
                                         @media.UploadDate.ToString("MM/dd/yy HH:mm")<br/>
-                                        Size: @StringUtils.FormatBytesWithIdentifier(media.ContentSize)<br/>
-                                        Public: @media.Public<br/>
+                                        @(media.Public ? "Public" : "Private") • @StringUtils.FormatBytesWithIdentifier(media.ContentSize)
                                     </div>
                                 </a>
                             </div>

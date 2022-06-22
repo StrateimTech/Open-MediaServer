@@ -217,7 +217,7 @@
 .content-item-no-thumbnail {
     flex: 0 0 50%;
     width: 50%;
-    height: 100%;
+    min-height: 140px;
 
     display: flex;
     align-items: center;
