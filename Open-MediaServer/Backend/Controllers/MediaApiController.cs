@@ -275,7 +275,6 @@ public class MediaApiController : ControllerBase
                 UploadDate = DateTime.UtcNow,
                 ContentSize = content.Length,
                 ContentCompressed = contentCompressed,
-                ContentDiemsions = ContentUtils.GetDimensions(upload.Content, (ContentType) contentType),
                 ContentMime =
                     new FileExtensionContentTypeProvider().TryGetContentType($"{upload.Name}{upload.Extension}",
                         out string mimeType)
@@ -288,24 +287,26 @@ public class MediaApiController : ControllerBase
 
             mediaSchema.ContentPath = Program.ContentManager.SaveContent(content, mediaSchema.Id, mediaSchema.Name,
                 mediaSchema.Extension, (ContentType) contentType);
-            // Array.Clear(content);
-            if ((contentType == ContentType.Video || contentType == ContentType.Image) &&
-                Program.ConfigManager.Config.Thumbnails && Program.ConfigManager.Config.PreComputeThumbnails)
+
+            if (contentType == ContentType.Video || contentType == ContentType.Image)
             {
-                var thumbnail = await ContentUtils.GetThumbnail(upload.Content,
-                    Program.ConfigManager.Config.ThumbnailWidth, (ContentType) contentType,
-                    Program.ConfigManager.Config.ThumbnailFormat);
-                if (thumbnail != null)
+                mediaSchema.ContentDiemsions = ContentUtils.GetDimensions(upload.Content, (ContentType) contentType);
+                if (Program.ConfigManager.Config.Thumbnails && Program.ConfigManager.Config.PreComputeThumbnails)
                 {
-                    mediaSchema.ThumbnailPath = Program.ContentManager.SaveThumbnail(thumbnail, mediaSchema.Id,
-                        mediaSchema.Name, Program.ConfigManager.Config.ThumbnailFormat.FileExtensions.ToList()[0],
-                        (ContentType) contentType);
-                    // Array.Clear(thumbnail);
-                }
-                else
-                {
-                    Console.WriteLine(
-                        $"Failed to pre compute thumbnail (ID: {mediaSchema.Id}, Name: {mediaSchema.Name}, Extension: {mediaSchema.Extension})");
+                    var thumbnail = await ContentUtils.GetThumbnail(upload.Content,
+                        Program.ConfigManager.Config.ThumbnailWidth, (ContentType) contentType,
+                        Program.ConfigManager.Config.ThumbnailFormat);
+                    if (thumbnail != null)
+                    {
+                        mediaSchema.ThumbnailPath = Program.ContentManager.SaveThumbnail(thumbnail, mediaSchema.Id,
+                            mediaSchema.Name, Program.ConfigManager.Config.ThumbnailFormat.FileExtensions.ToList()[0],
+                            (ContentType) contentType);
+                    }
+                    else
+                    {
+                        Console.WriteLine(
+                            $"Failed to pre compute thumbnail (ID: {mediaSchema.Id}, Name: {mediaSchema.Name}, Extension: {mediaSchema.Extension})");
+                    }
                 }
             }
 
