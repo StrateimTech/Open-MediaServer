@@ -62,7 +62,7 @@
     }
 }
 
-@section AdditionalHead
+@section AdditionalMeta
 {
     @{
         var mediaUrl = Url.Action("GetMedia", "MediaApi", new {Id = RouteData.Values["id"], Name = RouteData.Values["name"]}, Request.Scheme, Program.ConfigManager.Config.FrontendDomain);
@@ -155,7 +155,7 @@
                         @using (Html.BeginForm("GetMedia", "MediaApi", FormMethod.Get, new {@class = "content-form"}))
                         {
                             @Html.TextBox("Id", media.Id, new {@type = "hidden"})
-                            @Html.TextBox("Name", media.Name, new {@type = "hidden"})
+                            @Html.TextBox("Name", $"{media.Name}{media.Extension}", new {@type = "hidden"})
                             <input type="submit" class="content-button content-download-button" value="Download"/>
                         }
                     }

@@ -123,7 +123,7 @@ public class MediaApiController : ControllerBase
     {
         if (ModelState.IsValid)
         {
-            var fileName = Uri.EscapeDataString(Path.GetFileNameWithoutExtension(identity.Name)!);
+            var fileName = Uri.EscapeDataString(Uri.UnescapeDataString(Path.GetFileNameWithoutExtension(identity.Name)!));
             var media = await Program.Database.MediaDatabase.FindAsync<DatabaseSchema.Media>(media =>
                 media.Id == identity.Id && media.Name == fileName);
 
