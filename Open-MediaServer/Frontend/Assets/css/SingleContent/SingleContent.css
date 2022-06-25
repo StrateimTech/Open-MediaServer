@@ -36,6 +36,25 @@
     }
 }
 
+.no-content-available {
+    display: flex;
+    
+    width: 400px; 
+    height: 400px;
+
+    align-items: center;
+    justify-content: center;
+
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+
+    font-family: 'Lato Light', sans-serif;
+    font-size: 24px;
+    color: white;
+}
+
 .content-text {
     width: 100%;
     
