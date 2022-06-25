@@ -7,7 +7,7 @@
 
 @{
     Layout = "_Layout.cshtml";
-    
+
     DatabaseSchema.User user = null;
     if (Request.Cookies["user_session"] != null && UserUtils.IsAuthed(Request.Cookies["user_session"]))
     {
@@ -66,7 +66,7 @@
                 return media.Public == false;
             });
         }
-        
+
         if (mediaList.Count <= 0)
         {
             <div class="main-text">
@@ -166,19 +166,9 @@
                             <div class="content-item-text">
                                 @Uri.UnescapeDataString(media.Name).FirstCharToUpper()@media.Extension<br/>
                                 @{
-                                    var sinceUpload = DateTime.UtcNow.Subtract(media.UploadDate);
-                                    if (sinceUpload.Days <= 1)
-                                    {
-                                        <div>
-                                            @(author.Username.FirstCharToUpper() ?? "Account Deleted") • Uploaded today
-                                        </div>
-                                    }
-                                    else
-                                    {
-                                        <div>
-                                            @(author.Username.FirstCharToUpper() ?? "Account Deleted") • @sinceUpload.Days days ago
-                                        </div>
-                                    }
+                                    <div>
+                                        @(author.Username.FirstCharToUpper() ?? "Account Deleted") • @media.UploadDate.ToFormattedString()
+                                    </div>
                                 }
                                 @(media.Public ? "Public" : "Private") • @StringUtils.FormatBytesWithIdentifier(media.ContentSize)<br/>
                             </div>
@@ -195,21 +185,11 @@
                             <div class="content-item-text">
                                 @Uri.UnescapeDataString(media.Name).FirstCharToUpper()@media.Extension<br/>
                                 @{
-                                    if (author == null)
-                                    {
-                                        <div>
-                                            Account Deleted
-                                        </div>
-                                    }
-                                    else
-                                    {
-                                        <div>
-                                            Author: @author.Username.FirstCharToUpper()<br/>
-                                        </div>
-                                    }
+                                    <div>
+                                        @(author.Username.FirstCharToUpper() ?? "Account Deleted") • @media.UploadDate.ToFormattedString()
+                                    </div>
                                 }
-                                Date: @media.UploadDate.ToString("MM/dd/yy")<br/>
-                                Size: @StringUtils.FormatBytesWithIdentifier(media.ContentSize)<br/>
+                                @(media.Public ? "Public" : "Private") • @StringUtils.FormatBytesWithIdentifier(media.ContentSize)<br/>
                             </div>
                         </a>
                     </div>

@@ -70,6 +70,7 @@
         <meta property="og:title" content="@Uri.UnescapeDataString(media.Name)"/>
         <meta property="og:url" content="@Request.GetDisplayUrl(Program.ConfigManager.Config.FrontendDomain)"/>
         <meta property="og:description" content="@author.Username • @StringUtils.FormatBytesWithIdentifier(media.ContentSize)"/>
+        <meta name="twitter:card" content="summary_large_image">
         switch (ContentUtils.GetContentType(media.Extension))
         {
             case ContentType.Image:
@@ -79,7 +80,6 @@
                 <meta property="og:image:width" content="@media.ContentDimensions.width"/>
                 <meta property="og:image:height" content="@media.ContentDimensions.height"/>
                 <meta property="og:image:alt" content="@Uri.UnescapeDataString(media.Name)"/>
-                <meta name="twitter:card" content="summary_large_image">
                 break;
             case ContentType.Video:
                 <meta property="og:video" content="@mediaUrl"/>
@@ -123,19 +123,9 @@
                 <div class="content-text">
                     @Uri.UnescapeDataString(media.Name)@media.Extension<br/>
                     @{
-                        var sinceUpload = DateTime.UtcNow.Subtract(media.UploadDate);
-                        if (sinceUpload.Days <= 1)
-                        {
-                            <div>
-                                @author.Username • Uploaded today • @StringUtils.FormatBytesWithIdentifier(media.ContentSize) • @(media.Public ? "Public" : "Private")
-                            </div>
-                        }
-                        else
-                        {
-                            <div>
-                                @author.Username • Uploaded @sinceUpload.Days days ago • @StringUtils.FormatBytesWithIdentifier(media.ContentSize) • @(media.Public ? "Public" : "Private")
-                            </div>
-                        }
+                        <div>
+                            @author.Username • @media.UploadDate.ToFormattedString() • @StringUtils.FormatBytesWithIdentifier(media.ContentSize) • @(media.Public ? "Public" : "Private")
+                        </div>
                     }
                     @{
                         if (Request.Cookies["user_session"] != null && UserUtils.IsAuthed(Request.Cookies["user_session"]))

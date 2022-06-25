@@ -36,6 +36,40 @@ public static class StringUtils
         _ => string.Concat(input[0].ToString().ToUpper(), input.AsSpan(1))
     };
 
+    public static string ToFormattedString(this DateTime uploadDate)
+    {
+        var sinceDate = DateTime.UtcNow.Subtract(uploadDate);
+
+        if (sinceDate.TotalDays <= 364)
+        {
+            var avgMonths = sinceDate.Days / 30;
+            if (avgMonths <= 0)
+            {
+                if (sinceDate.TotalHours <= 23)
+                {
+                    if (sinceDate.TotalMinutes <= 59)
+                    {
+                        if (sinceDate.Minutes <= 0)
+                        {
+                            return "less than a minute ago";
+                        }
+
+                        return $"{sinceDate.Minutes} minute{(sinceDate.Minutes > 1 ? "s" : String.Empty)} ago";
+                    }
+
+                    return $"{sinceDate.Hours} hour{(sinceDate.Hours > 1 ? "s" : String.Empty)} ago";
+                }
+
+                return $"{sinceDate.Days} day{(sinceDate.Days > 1 ? "s" : String.Empty)} ago";
+            }
+
+            return $"{avgMonths} month{(avgMonths > 1 ? "s" : String.Empty)} ago";
+        }
+
+        var years = sinceDate.Days / 365;
+        return $"{years} year{(years > 1 ? "s" : String.Empty)} ago";
+    }
+
     public static string GetDisplayUrl(this HttpRequest request, string host = null)
     {
         var scheme = request.Scheme ?? string.Empty;
