@@ -16,14 +16,59 @@
 @section AdditionalHead
 {
     <title>@Program.ConfigManager.Config.FrontendName Media - Upload</title>
+    <link rel="stylesheet" href="~/Frontend/Assets/css/Upload/Upload.css">
 }
 
 <!DOCTYPE html>
 
 <html lang="en">
-<body>
-<div>
 
-</div>
+<script>
+var id = 0;
+function dragOverHandler(ev) {
+  ev.preventDefault();
+}
+function dropHandler(ev) {
+    ev.preventDefault();
+    if (ev.dataTransfer.files) {
+        for (let i = 0; i < ev.dataTransfer.files.length; i++) {
+            let file = ev.dataTransfer.files[i];
+            addContainer(ev);
+            document.getElementById("Name " + id).value = file.name;
+            document.getElementById("File " + id).files = ev.dataTransfer.files;
+        }
+    }
+}
+
+function addContainer(ev) {
+    if (id >= 9) {
+        return;
+    }
+    id++;
+    document.getElementById("file-drag-container").insertAdjacentHTML("beforebegin",
+                '<div class="file-upload">\n<input type="file" id="File ' + id + '" name="file" onchange="itemChange(this, 0)">\n<input type="text" id="Name ' + id +'" name="Name ' + id +'">\n<input type="checkbox" id="Private ' + id + '" name="Private ' + id +'">\n</div>');
+}
+
+function itemChange(input, id) {
+    if (input.files) {
+        let file = input.files[0];
+        document.getElementById("Name " + id).value = file.name;
+    }
+}
+</script>
+
+<body ondrop="dropHandler(event);" ondragover="dragOverHandler(event);">
+
+@using (Html.BeginForm("PostUploadContentForm", "MediaApi", FormMethod.Post, new {@autocomplete = "off", @class = "file-upload-container", @enctype = "multipart/form-data"}))
+{
+    <div class="file-upload">
+        <input type="file" id="File 0" name="file" onchange="itemChange(this, 0);">
+        <input type="text" id="Name 0" name="Name">
+        <input type="checkbox" id="Private 0" name="Private">
+    </div>
+    <div id="file-drag-container"></div>
+    @Html.TextBox("returnURL", "/Content", new {@type = "hidden"})
+    <input type="submit"/>
+}
 </body>
 </html>

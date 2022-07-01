@@ -28,7 +28,7 @@ public class MediaSchema
         [Required] public string Name { get; set; }
         [Required] public string Extension { get; set; }
         [Required] public byte[] Content { get; set; }
-        public bool Public { get; set; }
+        [Required] public bool Public { get; set; }
     }
 
     public class MediaParameterMass

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -123,7 +124,8 @@ public class MediaApiController : ControllerBase
     {
         if (ModelState.IsValid)
         {
-            var fileName = Uri.EscapeDataString(Uri.UnescapeDataString(Path.GetFileNameWithoutExtension(identity.Name)!));
+            var fileName =
+                Uri.EscapeDataString(Uri.UnescapeDataString(Path.GetFileNameWithoutExtension(identity.Name)!));
             var media = await Program.Database.MediaDatabase.FindAsync<DatabaseSchema.Media>(media =>
                 media.Id == identity.Id && media.Name == fileName);
 
@@ -215,6 +217,80 @@ public class MediaApiController : ControllerBase
             OtherContent = Program.ConfigManager.Config.AllowOther
         };
         return statSchema;
+    }
+
+    [HttpPost("/api/upload/file/")]
+    public async Task<ActionResult> PostUploadContentForm()
+    {
+        if (ModelState.IsValid)
+        {
+            var formFiles = HttpContext.Request.Form.Files.DistinctBy(file => file.FileName).ToList();
+            if (formFiles.Count <= 0)
+            {
+                return StatusCode(StatusCodes.Status400BadRequest);
+            }
+
+            for (int i = 0; i < formFiles.Count; i++)
+            {
+                var file = formFiles[i];
+                bool visible = true;
+                var fileName = Path.GetFileNameWithoutExtension(file.FileName);
+                var fileExtension = Path.GetExtension(file.FileName);
+                if (HttpContext.Request.Form.ContainsKey($"Name {i}"))
+                {
+                    var name = HttpContext.Request.Form[$"Name {i}"];
+                    fileName = Path.GetFileNameWithoutExtension(name);
+                }
+
+                if (HttpContext.Request.Form.ContainsKey($"Private {i}"))
+                {
+                    if (HttpContext.Request.Form[$"Private {i}"] == "on")
+                        visible = false;
+                }
+
+                byte[] data = new byte[file.Length];
+                if (file.Length > 0)
+                {
+                    using var memStream = new MemoryStream(data);
+                    await file.CopyToAsync(memStream);
+                }
+                else
+                {
+                    continue;
+                }
+
+                if (fileName.Length > Program.ConfigManager.Config.UploadNameLimit)
+                {
+                    if (file.FileName.Length > Program.ConfigManager.Config.UploadNameLimit)
+                    {
+                        continue;
+                    }
+
+                    fileName = Path.GetFileNameWithoutExtension(file.FileName);
+                }
+
+                var safeFileName =
+                    Uri.EscapeDataString(Uri.UnescapeDataString(fileName.Trim()));
+
+                var upload = new MediaSchema.MediaUpload()
+                {
+                    Name = safeFileName,
+                    Extension = fileExtension,
+                    Content = data,
+                    Public = visible
+                };
+                await PostUploadContent(upload);
+            }
+
+            if (HttpContext.Request.Form.ContainsKey("returnURL"))
+            {
+                return RedirectToPage(HttpContext.Request.Form["returnURL"]);
+            }
+
+            return StatusCode(StatusCodes.Status200OK);
+        }
+
+        return StatusCode(StatusCodes.Status400BadRequest);
     }
 
     [HttpPost("/api/upload/")]
