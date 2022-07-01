@@ -20,6 +20,8 @@ namespace Open_MediaServer.Backend.Controllers;
 [Route("/api/[controller]")]
 public class MediaApiController : ControllerBase
 {
+    private static readonly FileExtensionContentTypeProvider FileExtensionContentTypeProvider = new();
+
     [HttpGet("/api/thumbnail/")]
     public async Task<ActionResult> GetThumbnail([FromQuery] MediaSchema.MediaIdentity identity)
     {
@@ -153,7 +155,7 @@ public class MediaApiController : ControllerBase
             responseHeaders.LastModified = new DateTimeOffset(media.UploadDate);
 
             var file = $"{media.Name}{media.Extension}";
-            var fileContentType = new FileExtensionContentTypeProvider().TryGetContentType(file, out string contentType)
+            var fileContentType = FileExtensionContentTypeProvider.TryGetContentType(file, out string contentType)
                 ? contentType
                 : "application/octet-stream";
             return File(bytes, fileContentType, file);
@@ -224,6 +226,11 @@ public class MediaApiController : ControllerBase
     {
         if (ModelState.IsValid)
         {
+            if (Request.Cookies["user_session"] == null || !UserUtils.IsAuthed(Request.Cookies["user_session"]))
+            {
+                return StatusCode(StatusCodes.Status401Unauthorized);
+            }
+
             var formFiles = HttpContext.Request.Form.Files.DistinctBy(file => file.FileName).ToList();
             if (formFiles.Count <= 0)
             {
@@ -351,11 +358,10 @@ public class MediaApiController : ControllerBase
                 UploadDate = DateTime.UtcNow,
                 ContentSize = content.Length,
                 ContentCompressed = contentCompressed,
-                ContentMime =
-                    new FileExtensionContentTypeProvider().TryGetContentType($"{upload.Name}{upload.Extension}",
-                        out string mimeType)
-                        ? mimeType
-                        : "application/octet-stream",
+                ContentMime = FileExtensionContentTypeProvider.TryGetContentType($"{upload.Name}{upload.Extension}",
+                    out string mimeType)
+                    ? mimeType
+                    : "application/octet-stream",
                 ContentType = (ContentType) contentType,
                 Public = upload.Public,
                 AuthorId = user.Id
