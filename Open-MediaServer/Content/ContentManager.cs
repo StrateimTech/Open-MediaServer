@@ -36,4 +36,13 @@ public class ContentManager
 
         return filePath;
     }
+    
+    public void DeleteContent(string id, string name, string extension, ContentType contentType)
+    {
+        var filePath = Path.Combine(_contentDirectory, "Media", contentType.GetDisplayName(), id, $"{name}{extension}");
+        if (Directory.Exists(Path.GetDirectoryName(filePath)))
+        {
+            Directory.Delete(Path.GetDirectoryName(filePath)!, true);
+        }
+    }
 }

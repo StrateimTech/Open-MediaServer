@@ -430,7 +430,7 @@ public class MediaApiController : ControllerBase
                 return StatusCode(StatusCodes.Status401Unauthorized);
             }
 
-            DatabaseSchema.User user = await UserUtils.GetUser(Request.Cookies["user_session"]);
+            DatabaseSchema.User user = await UserUtils.GetUserWithChildren(Request.Cookies["user_session"]);
 
             if (user == null)
             {
@@ -449,8 +449,15 @@ public class MediaApiController : ControllerBase
             {
                 return StatusCode(StatusCodes.Status403Forbidden);
             }
-
+            
+            Program.ContentManager.DeleteContent(media.Id, media.Name, media.Extension, media.ContentType);
+            user.Uploads.Remove(new MediaSchema.MediaIdentity()
+            {
+                Id = media.Id,
+                Name = media.Name
+            });
             await Program.Database.MediaDatabase.DeleteAsync<DatabaseSchema.Media>(media.Id);
+            await Program.Database.UserDatabase.UpdateWithChildrenAsync(user);
 
             if (returnUrl != null)
             {
