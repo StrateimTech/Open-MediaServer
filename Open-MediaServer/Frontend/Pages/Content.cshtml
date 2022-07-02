@@ -28,7 +28,7 @@
 @{
     if (user != null)
     {
-        <text>@Html.Raw(@"<body ondrop='dropHandler(event, ""@Url.Action(""PostUploadContentForm"", ""MediaApi"")"");' ondragover=""dragOverHandler(event);"">")</text>
+        <text>@Html.Raw($@"<body ondrop='dropHandler(event, ""{Url.Action("PostUploadContentForm", "MediaApi")}"");' ondragover=""dragOverHandler(event);"">")</text>
     }
     else
     {
