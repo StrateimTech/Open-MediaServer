@@ -25,7 +25,16 @@
 <!DOCTYPE html>
 
 <html lang="en">
-<body>
+@{
+    if (user != null)
+    {
+        <text>@Html.Raw(@"<body ondrop='dropHandler(event, ""@Url.Action(""PostUploadContentForm"", ""MediaApi"")"");' ondragover=""dragOverHandler(event);"">")</text>
+    }
+    else
+    {
+        <text>@Html.Raw(@"<body>")</text>
+    }
+}
 <div class="sort-navbar">
     <a class="sort-item" onclick="updateQueryURL('name', window);">
         Name
@@ -198,5 +207,5 @@
         }
     }
 </div>
-</body>
+@Html.Raw("</body>");
 </html>
