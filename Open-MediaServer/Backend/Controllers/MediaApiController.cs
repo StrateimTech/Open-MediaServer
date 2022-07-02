@@ -430,9 +430,8 @@ public class MediaApiController : ControllerBase
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
 
-            var fileName = Path.GetFileNameWithoutExtension(identity.Name);
             var media = await Program.Database.MediaDatabase.FindAsync<DatabaseSchema.Media>(media =>
-                media.Id == identity.Id && media.Name == fileName);
+                media.Id == identity.Id && media.Name == identity.Name);
 
             if (media == null)
             {
