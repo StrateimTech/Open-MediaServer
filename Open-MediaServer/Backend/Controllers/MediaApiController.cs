@@ -359,7 +359,7 @@ public class MediaApiController : ControllerBase
             {
                 // TODO: Actually generate a unique ID
                 Id = StringUtils.RandomString(Program.ConfigManager.Config.UniqueIdLength),
-                Name = Uri.EscapeDataString(upload.Name),
+                Name = Uri.EscapeDataString(Uri.UnescapeDataString(upload.Name)),
                 Extension = upload.Extension,
                 UploadDate = DateTime.UtcNow,
                 ContentSize = content.Length,
