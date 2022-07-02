@@ -44,12 +44,6 @@
                     </div>
                     @Html.TextBox("Name", user.Username, new {@class = "profile-input", @placeholder = "Name"})
                 </div>
-                <div>
-                    <div class="light-text container-desc-text">
-                        Bio
-                    </div>
-                    @Html.TextArea("Bio", user.Bio, new {@class = "profile-input", @placeholder = "Empty bio..."})
-                </div>
                 @Html.TextBox("returnURL", "/Account", new {@type = "hidden"})
                 <input type="submit" class="profile-update-button profile-button" value="Update Account"/>
             }

@@ -31,7 +31,6 @@ public class DatabaseSchema
     {
         [PrimaryKey, AutoIncrement] public int Id { get; set; }
         [ForeignKey(typeof(string))] public string Username { get; set; }
-        public string Bio { get; set; }
         public byte[] Salt { get; set; }
         public string Password { get; set; }
         public string SessionKey { get; set; }

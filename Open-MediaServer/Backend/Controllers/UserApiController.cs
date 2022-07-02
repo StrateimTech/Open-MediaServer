@@ -234,7 +234,6 @@ public class UserApiController : ControllerBase
                     user.Username = userUpdate.Name;
                 }
 
-                user.Bio = userUpdate.Bio;
                 await Program.Database.UserDatabase.UpdateAsync(user);
                 if (returnUrl != null)
                 {
