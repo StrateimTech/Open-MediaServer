@@ -176,6 +176,13 @@ public class MediaApiController : ControllerBase
                 var userWithoutChildren =
                     await Program.Database.UserDatabase.FindAsync<DatabaseSchema.User>(user =>
                         user.Username == parameterMass.Username);
+                
+                if (userWithoutChildren == null)
+                {
+                    Response.StatusCode = StatusCodes.Status500InternalServerError;
+                    return null;
+                }
+                
                 var user =
                     await Program.Database.UserDatabase.FindWithChildrenAsync<DatabaseSchema.User>(
                         userWithoutChildren.Id);
@@ -198,7 +205,7 @@ public class MediaApiController : ControllerBase
                 Media = mediaIdentities
             };
         }
-
+        Response.StatusCode = StatusCodes.Status400BadRequest;
         return null;
     }
 
