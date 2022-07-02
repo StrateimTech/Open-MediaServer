@@ -83,10 +83,12 @@
 .file-input-area {
     display: flex;
     flex-direction: column;
-    gap: 4px;
+    gap: 8px;
 }
 
 .file-name-input-label {
+    margin-bottom: 4px;
+    
     -webkit-user-select: none;
     -moz-user-select: none;
     -ms-user-select: none;
@@ -98,6 +100,9 @@
 }
 
 .file-name-input {
+    background-color: rgb(24, 24, 24);
+    color: white;
+    
     border: none;
     border-radius: 2px;
     
@@ -107,6 +112,8 @@
 }
 
 .file-private-input-label {
+    margin-bottom: 4px;
+    
     -webkit-user-select: none;
     -moz-user-select: none;
     -ms-user-select: none;
