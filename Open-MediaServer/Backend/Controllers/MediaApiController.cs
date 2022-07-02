@@ -32,9 +32,8 @@ public class MediaApiController : ControllerBase
                 return StatusCode(StatusCodes.Status403Forbidden);
             }
 
-            var fileName = Path.GetFileNameWithoutExtension(identity.Name);
             var media = await Program.Database.MediaDatabase.FindAsync<DatabaseSchema.Media>(media =>
-                media.Id == identity.Id && media.Name == fileName);
+                media.Id == identity.Id && media.Name == identity.Name);
 
             if (media == null)
             {
@@ -239,19 +238,26 @@ public class MediaApiController : ControllerBase
 
             for (int i = 0; i < formFiles.Count; i++)
             {
+                var id = i;
                 var file = formFiles[i];
                 bool visible = true;
                 var fileName = Path.GetFileNameWithoutExtension(file.FileName);
                 var fileExtension = Path.GetExtension(file.FileName);
-                if (HttpContext.Request.Form.ContainsKey($"Name {i}"))
+
+                if (HttpContext.Request.Form.Count(form => form.Key.Contains("Name")) > formFiles.Count)
                 {
-                    var name = HttpContext.Request.Form[$"Name {i}"];
+                    id++;
+                }
+
+                if (HttpContext.Request.Form.ContainsKey($"Name {id}"))
+                {
+                    var name = HttpContext.Request.Form[$"Name {id}"];
                     fileName = Path.GetFileNameWithoutExtension(name);
                 }
 
-                if (HttpContext.Request.Form.ContainsKey($"Private {i}"))
+                if (HttpContext.Request.Form.ContainsKey($"Private {id}"))
                 {
-                    if (HttpContext.Request.Form[$"Private {i}"] == "on")
+                    if (HttpContext.Request.Form[$"Private {id}"] == "on")
                         visible = false;
                 }
 
