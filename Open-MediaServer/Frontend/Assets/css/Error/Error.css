@@ -1,0 +1,16 @@
+﻿.content-failed {
+    margin: 16px;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+
+    font-family: 'Lato', sans-serif;
+    font-size: 32px;
+    color: white;
+}
+
+.content-failed > div {
+    font-family: 'Lato Light', sans-serif;
+    font-size: 24px;
+}

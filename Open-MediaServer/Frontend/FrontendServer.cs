@@ -94,6 +94,8 @@ public class FrontendServer
 
         app.UseRouting();
 
+        app.UseStatusCodePagesWithRedirects("/404");
+        
         app.UseAuthorization();
 
         app.MapRazorPages();
