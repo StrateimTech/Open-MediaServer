@@ -35,6 +35,19 @@
     user-select: none;
 }
 
+.register-error-text {
+    box-sizing: border-box;
+
+    font-family: 'Lato', sans-serif;
+    font-size: 16px;
+    color: rgb(232, 13, 13);
+
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
 .login-href {
     color: rgb(120, 112, 236);
 }

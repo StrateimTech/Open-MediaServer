@@ -1,16 +1,12 @@
 ﻿@page "/Account/Delete"
 @using Open_MediaServer
 @using Open_MediaServer.Utils
-@model Open_MediaServer.Frontend.Pages.AccountDelete
+@using Open_MediaServer.Backend.Schema
+@model UserSchema.UserDelete
+@* @model Open_MediaServer.Frontend.Pages.AccountDelete *@
 
 @{
     Layout = "_Layout.cshtml";
-
-    if (Request.Cookies["user_session"] == null || !UserUtils.IsAuthed(Request.Cookies["user_session"]))
-    {
-        Response.Redirect("/Login?returnUrl=Account");
-        return;
-    }
 }
 
 @section AdditionalHead
@@ -27,15 +23,18 @@
     <div class="delete-form-text">
         Account Deletion
     </div>
-    @using (Html.BeginForm("GetDelete", "UserApi", FormMethod.Get, new {@class = "delete-form", @autocomplete = "off"}))
+    @using (Html.BeginForm("PostDelete", "UserApi", FormMethod.Post, new {@class = "delete-form", @autocomplete = "off"}))
     {
-        @Html.TextBox("User.Username", null, new {@placeholder = "Username", @class = "delete-form-input", @required = "required"})
-        @Html.TextBox("User.Password", null, new {@placeholder = "Password", @class = "delete-form-input", @required = "required", @type = "password"})
+        @Html.ValidationSummary(true)
+        @Html.TextBoxFor(x => x.User.Username, null, new {@placeholder = "Username", @class = "delete-form-input", @required = "required"})
+        @Html.TextBoxFor(x => x.User.Password, null, new {@placeholder = "Password", @class = "delete-form-input", @required = "required", @type = "password"})
         <div class="delete-content">
-            @Html.CheckBox("DeleteContent", null)
+            @Html.CheckBoxFor(x => x.DeleteContent)
             <label for="DeleteContent">Delete Content</label>
         </div>
-        @Html.TextBox("returnURL", "/Index", new {@type = "hidden"})
+        <div>
+            @Html.ValidationMessage("ErrorMessage", null, new {@class = "delete-error-text"}, null)
+        </div>
         <button type="submit">Delete Account</button>
     }
 </div>

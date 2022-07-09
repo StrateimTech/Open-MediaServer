@@ -1,12 +1,13 @@
 ﻿@page
 @using Open_MediaServer
+@using Open_MediaServer.Backend.Schema
 @using Open_MediaServer.Utils
-@model Open_MediaServer.Frontend.Pages.Login
+@model UserSchema.User
 
 @{
     Layout = "_Layout.cshtml";
 
-    if (Request.Cookies["user_session"] != null && UserUtils.IsAuthed(Request.Cookies["user_session"]))
+    if (Request is {Cookies: { } } && Request.Cookies["user_session"] != null && UserUtils.IsAuthed(Request.Cookies["user_session"]))
     {
         Response.Redirect("/Account");
         return;
@@ -27,15 +28,18 @@
     <div class="login-form-text">
         Login
     </div>
-    @using (Html.BeginForm("GetLogin", "UserApi", FormMethod.Get, new {@class = "login-form", @autocomplete = "off"}))
+    @using (Html.BeginForm("PostLogin", "UserApi", FormMethod.Post, new {@class = "login-form", @autocomplete = "off"}))
     {
-        @Html.TextBox("Username", null, new {@placeholder = "Username", @required = "required"})
-        @Html.TextBox("Password", null, new {@placeholder = "Password", @required = "required", @type = "password"})
+        @Html.ValidationSummary(true)
+        @Html.TextBoxFor(x => x.Username, null, new {@placeholder = "Username", @required = "required"})
+        @Html.TextBoxFor(x => x.Password, null, new {@placeholder = "Password", @required = "required", @type = "password"})
         if (Program.ConfigManager.Config.AllowRegistering)
         {
             <label class="login-register-text">Don't have an account? <a class="register-href" href="/Register">Register</a></label>
         }
-        @Html.TextBox("returnURL", "/Account", new {@type = "hidden"})
+        <div>
+            @Html.ValidationMessage("ErrorMessage", null, new {@class = "login-error-text"}, null)
+        </div>
         <button type="submit">Login</button>
     }
 </div>

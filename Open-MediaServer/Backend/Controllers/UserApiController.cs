@@ -14,10 +14,10 @@ namespace Open_MediaServer.Backend.Controllers;
 
 [ApiController]
 [Route("/api/[controller]")]
-public class UserApiController : ControllerBase
+public class UserApiController : Controller
 {
-    [HttpGet("/api/account/register/")]
-    public async Task<ActionResult> GetRegister([FromQuery] UserSchema.User userRegister, [FromQuery] string returnUrl)
+    [HttpPost("/api/account/register/")]
+    public async Task<ActionResult> PostRegister([FromForm] UserSchema.User userRegister)
     {
         if (ModelState.IsValid)
         {
@@ -31,7 +31,8 @@ public class UserApiController : ControllerBase
 
             if (usernameExists)
             {
-                return StatusCode(StatusCodes.Status403Forbidden, "Profile username already in use.");
+                ModelState.AddModelError("ErrorMessage", "Username is already in use!");
+                return View("~/Frontend/Pages/Register.cshtml", userRegister);
             }
 
             byte[] salt = new byte[128 / 8];
@@ -67,19 +68,14 @@ public class UserApiController : ControllerBase
 
             await Program.Database.UserDatabase.InsertWithChildrenAsync(userSchema);
 
-            if (returnUrl != null)
-            {
-                return RedirectToPage(returnUrl);
-            }
-
-            return StatusCode(StatusCodes.Status200OK);
+            return RedirectToPage("/Account");
         }
 
         return StatusCode(StatusCodes.Status400BadRequest, ModelState);
     }
 
-    [HttpGet("/api/account/login/")]
-    public async Task<ActionResult> GetLogin([FromQuery] UserSchema.User userLogin, [FromQuery] string returnUrl)
+    [HttpPost("/api/account/login/")]
+    public async Task<ActionResult> PostLogin([FromForm] UserSchema.User userLogin)
     {
         if (ModelState.IsValid)
         {
@@ -87,8 +83,8 @@ public class UserApiController : ControllerBase
                 .FindAsync<DatabaseSchema.User>(user => user.Username == userLogin.Username);
             if (user == null)
             {
-                return StatusCode(StatusCodes.Status400BadRequest,
-                    "No user has a account associated with that username.");
+                ModelState.AddModelError("ErrorMessage", "Username or Password is incorrect!");
+                return View("~/Frontend/Pages/Login.cshtml", userLogin);
             }
 
             string hashedPassword = Convert.ToBase64String(KeyDerivation.Pbkdf2(
@@ -131,24 +127,19 @@ public class UserApiController : ControllerBase
                         Expires = DateTime.Now.AddDays(30)
                     });
                 }
-
-                if (returnUrl != null)
-                {
-                    return RedirectToPage(returnUrl);
-                }
-
-                return StatusCode(StatusCodes.Status200OK);
+             
+                return RedirectToPage("/Account");
             }
-
-            return StatusCode(StatusCodes.Status401Unauthorized);
+            
+            ModelState.AddModelError("ErrorMessage", "Username or Password is incorrect!");
+            return View("~/Frontend/Pages/Login.cshtml", userLogin);
         }
 
         return StatusCode(StatusCodes.Status400BadRequest, ModelState);
     }
 
-    [HttpGet("/api/account/delete/")]
-    public async Task<ActionResult> GetDelete([FromQuery] UserSchema.UserDelete userDelete,
-        [FromQuery] string returnUrl)
+    [HttpPost("/api/account/delete/")]
+    public async Task<ActionResult> PostDelete([FromForm] UserSchema.UserDelete userDelete)
     {
         if (ModelState.IsValid)
         {
@@ -156,7 +147,8 @@ public class UserApiController : ControllerBase
                 user.Username == userDelete.User.Username);
             if (userWithoutChildren == null)
             {
-                return StatusCode(StatusCodes.Status400BadRequest, "Unable to find account associated with username.");
+                ModelState.AddModelError("ErrorMessage", "Username or password is incorrect!");
+                return View("~/Frontend/Pages/AccountDelete.cshtml", userDelete);
             }
 
             var user =
@@ -164,7 +156,8 @@ public class UserApiController : ControllerBase
 
             if (user == null)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError);
+                ModelState.AddModelError("ErrorMessage", "Username or password is incorrect!");
+                return View("~/Frontend/Pages/AccountDelete.cshtml", userDelete);
             }
 
             string hashedPassword = Convert.ToBase64String(KeyDerivation.Pbkdf2(
@@ -190,13 +183,11 @@ public class UserApiController : ControllerBase
                     Response.Cookies.Delete("user_session");
                 }
 
-                if (returnUrl != null)
-                {
-                    return RedirectToPage(returnUrl);
-                }
-
-                return StatusCode(StatusCodes.Status200OK);
+                return RedirectToPage("/");
             }
+
+            ModelState.AddModelError("ErrorMessage", "Username or password is incorrect!");
+            return View("~/Frontend/Pages/AccountDelete.cshtml", userDelete);
         }
 
         return StatusCode(StatusCodes.Status400BadRequest, ModelState);
