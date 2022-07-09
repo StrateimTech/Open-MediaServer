@@ -4,6 +4,7 @@
 @model Open_MediaServer.Frontend.Pages.Admin
 
 @{
+    // TODO: Implement an admin statistical page with both user accounts and content managing.
     Layout = "_Layout.cshtml";
 
     if (Request.Cookies["user_session"] == null || !UserUtils.IsAuthed(Request.Cookies["user_session"]))

@@ -12,8 +12,6 @@ namespace Open_MediaServer.Frontend;
 
 public class FrontendServer
 {
-    //TODO: Handle errors from form submissions
-    //TODO: Error page / 404 page
     public FrontendServer()
     {
         var builder = WebApplication.CreateBuilder(new WebApplicationOptions()

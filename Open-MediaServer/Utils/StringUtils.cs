@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
+using Open_MediaServer.Database.Schema;
+using SQLite;
 
 namespace Open_MediaServer.Utils;
 
@@ -89,5 +92,16 @@ public static class StringUtils
             .Append(path)
             .Append(queryString)
             .ToString();
+    }
+
+    public static async Task<string> GenerateUniqueMediaId(this SQLiteAsyncConnection db, int length = 8)
+    {
+        var id = RandomString(length);
+        if (await db.FindAsync<DatabaseSchema.Media>(media => media.Id == id) != null)
+        {
+            return await GenerateUniqueMediaId(db, length);
+        }
+
+        return id;
     }
 }
