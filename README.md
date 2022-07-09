@@ -18,3 +18,4 @@ File sharing application focused on simple video/picture distribution
 * Allowing/Disallowing certain file formats
 * Configurable Domain support
 * Configurable File upload size limit
+* Discord meta tags supported
