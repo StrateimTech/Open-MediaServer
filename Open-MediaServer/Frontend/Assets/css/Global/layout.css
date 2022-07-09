@@ -1,0 +1,46 @@
+﻿.navbar {
+    height: 56px;
+    width: 100%;
+    background-color: rgb(32, 24, 24);
+    
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+}
+
+.navbar-item {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+
+    padding: 0;
+}
+
+.navbar-item li {
+    display: inline-block;
+    margin: 0 8px 0 8px;
+    font-family: 'Lato', sans-serif;
+    font-size: 16px;
+    color: white;
+    text-decoration: none;
+}
+
+.navbar-item li a {
+    text-decoration: none;
+    color: white;
+}
+
+.navbar-item:first-of-type {
+    margin-right: auto;
+    margin-left: 24px;
+}
+
+.navbar-item:last-of-type {
+    margin-right: 24px;
+}
+
+.background {
+    height: 100vh;
+    background: rgb(16, 16, 16);
+}

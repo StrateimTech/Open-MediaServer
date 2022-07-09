@@ -1,15 +1,14 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
 
     <PropertyGroup>
-        <TargetFramework>net5.0</TargetFramework>
+        <TargetFramework>net6.0</TargetFramework>
         <RootNamespace>Open_MediaServer</RootNamespace>
+        <LangVersion>Latest</LangVersion>
     </PropertyGroup>
 
     <ItemGroup>
-      <Folder Include="Media\Cache" />
-      <Folder Include="Media\Images" />
-      <Folder Include="Media\Other" />
-      <Folder Include="Media\Videos" />
+        <!-- extends watching group to include *.cshtml and *.razor files -->
+        <Watch Include="**\*.cshtml;*.razor;*.js;*.css" Exclude="**\obj\**\*;bin\**\*" />
     </ItemGroup>
 
     <ItemGroup>
@@ -19,10 +18,27 @@
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="ImageSharp.AVCodecFormats" Version="2.2.5" />
-      <PackageReference Include="ImageSharp.AVCodecFormats.Native.linux-x64" Version="1.4.0" />
-      <PackageReference Include="SixLabors.ImageSharp" Version="1.0.4" />
-      <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
+      <PackageReference Include="ImageSharp.AVCodecFormats" Version="3.0.8" />
+      <PackageReference Include="ImageSharp.AVCodecFormats.Native.linux-x64" Version="1.6.0" />
+      <PackageReference Include="ImageSharp.AVCodecFormats.Native.win-x64" Version="1.6.0" />
+      <PackageReference Include="K4os.Compression.LZ4" Version="1.2.16" />
+      <PackageReference Include="Newtonsoft.Json" Version="13.0.2-beta1" />
+      <PackageReference Include="SixLabors.ImageSharp" Version="2.1.3" />
+      <PackageReference Include="sqlite-net-pcl" Version="1.8.116" />
+      <PackageReference Include="SQLiteNetExtensions" Version="2.1.0" />
+      <PackageReference Include="SQLiteNetExtensions.Async" Version="2.1.0" />
+      <PackageReference Include="Swashbuckle.AspNetCore" Version="6.3.1" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Frontend\Assets\css\Admin" />
+      <Folder Include="Frontend\Assets\font\Lato" />
+      <Folder Include="Frontend\Assets\images" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <_ContentIncludedByDefault Remove="Frontend\Pages\Account\Login.cshtml" />
+      <_ContentIncludedByDefault Remove="Frontend\Pages\Account\Delete.cshtml" />
     </ItemGroup>
 
 </Project>

@@ -1,0 +1,161 @@
+﻿@page "/{id}/{name}"
+@using Open_MediaServer
+@using Open_MediaServer.Content
+@using Open_MediaServer.Database.Schema
+@using Open_MediaServer.Utils
+@using SQLiteNetExtensionsAsync.Extensions
+@model Open_MediaServer.Frontend.Pages.SingleContent
+
+@section AdditionalHead
+{
+    <title>@Program.ConfigManager.Config.FrontendName Media - @RouteData.Values["name"]</title>
+    <link rel="stylesheet" href="~/Frontend/Assets/css/SingleContent/SingleContent.css">
+}
+
+@{
+    Layout = "_Layout.cshtml";
+
+    DatabaseSchema.Media media;
+    DatabaseSchema.User author;
+
+    void ContentError()
+    {
+        <div class="content-failed">
+            Failed to find the content you were looking for...<br/>
+            <div>
+                @Request.GetDisplayUrl(Program.ConfigManager.Config.FrontendDomain)
+            </div>
+        </div>
+    }
+
+    if (RouteData.Values["id"] != null && RouteData.Values["name"] != null)
+    {
+        string mediaId = RouteData.Values["id"].ToString();
+        string mediaName = Uri.EscapeDataString(System.IO.Path.GetFileNameWithoutExtension(RouteData.Values["name"].ToString())!);
+        try
+        {
+            media = await Program.Database.MediaDatabase.FindWithChildrenAsync<DatabaseSchema.Media>(mediaId);
+        }
+        catch (Exception ignore)
+        {
+            ContentError();
+            return;
+        }
+
+        if (media == null || media.Name != mediaName)
+        {
+            ContentError();
+            return;
+        }
+
+        author = await Program.Database.UserDatabase.FindAsync<DatabaseSchema.User>(user => user.Id == media.AuthorId);
+        if (author == null)
+        {
+            ContentError();
+            return;
+        }
+    }
+    else
+    {
+        ContentError();
+        return;
+    }
+}
+
+@section AdditionalMeta
+{
+    @{
+        var mediaUrl = Url.Action("GetMedia", "MediaApi", new {Id = RouteData.Values["id"], Name = RouteData.Values["name"]}, Request.Scheme, Program.ConfigManager.Config.FrontendDomain);
+
+        <meta property="og:title" content="@Uri.UnescapeDataString(media.Name)"/>
+        <meta property="og:url" content="@Request.GetDisplayUrl(Program.ConfigManager.Config.FrontendDomain)"/>
+        <meta property="og:description" content="@author.Username • @StringUtils.FormatBytesWithIdentifier(media.ContentSize)"/>
+        <meta name="twitter:card" content="summary_large_image">
+        switch (ContentUtils.GetContentType(media.Extension))
+        {
+            case ContentType.Image:
+                <meta property="og:image" content="@mediaUrl"/>
+                <meta property="og:image:secure_url" content="@mediaUrl"/>
+                <meta property="og:image:type" content="@media.ContentMime"/>
+                <meta property="og:image:width" content="@media.ContentDimensions.width"/>
+                <meta property="og:image:height" content="@media.ContentDimensions.height"/>
+                <meta property="og:image:alt" content="@Uri.UnescapeDataString(media.Name)"/>
+                break;
+            case ContentType.Video:
+                <meta property="og:video" content="@mediaUrl"/>
+                <meta property="og:video:url" content="@mediaUrl"/>
+                <meta property="og:video:secure_url" content="@mediaUrl"/>
+                <meta property="og:video:type" content="@media.ContentMime"/>
+                <meta property="og:video:width" content="@media.ContentDimensions.width"/>
+                <meta property="og:video:height" content="@media.ContentDimensions.height"/>
+                <meta property="og:type" content="video.other"/>
+                break;
+        }
+    }
+}
+
+<!DOCTYPE html>
+
+<html lang="en">
+<body>
+@{
+    <div class="content-flex">
+        <div class="content-container">
+            @{
+                <div class="content-aspect-ratio">
+                    @{
+                        var mediaUrl = Url.Action("GetMedia", "MediaApi", new {Id = RouteData.Values["id"], Name = RouteData.Values["name"]}, Request.Scheme, Program.ConfigManager.Config.FrontendDomain);
+                        switch (ContentUtils.GetContentType(media.Extension))
+                        {
+                            case ContentType.Image:
+                                <img src="@mediaUrl" alt="@Uri.UnescapeDataString(media.Name)" class="content">
+                                break;
+                            case ContentType.Video:
+                                <video controls="" onloadstart="this.volume=0.01" class="content">
+                                    <source src="@mediaUrl" type="@media.ContentMime"/>
+                                </video>
+                                break;
+                            case ContentType.Other:
+                                <div class="content no-content-available">
+                                    No viewable content available
+                                </div>
+                                break;
+                        }
+                    }
+                </div>
+                <div class="content-text">
+                    @Uri.UnescapeDataString(media.Name)@media.Extension<br/>
+                    @{
+                        <div>
+                            @author.Username • @media.UploadDate.ToFormattedString() • @StringUtils.FormatBytesWithIdentifier(media.ContentSize) • @(media.Public ? "Public" : "Private")
+                        </div>
+                    }
+                    @{
+                        if (Request.Cookies["user_session"] != null && UserUtils.IsAuthed(Request.Cookies["user_session"]))
+                        {
+                            var user = await UserUtils.GetUser(Request.Cookies["user_session"]);
+                            if (user.Id == media.AuthorId)
+                            {
+                                @using (Html.BeginForm("GetDeleteContent", "MediaApi", FormMethod.Get, new {@class = "content-form"}))
+                                {
+                                    @Html.TextBox("Id", media.Id, new {@type = "hidden"})
+                                    @Html.TextBox("Name", media.Name, new {@type = "hidden"})
+                                    @Html.TextBox("returnURL", "/Content", new {@type = "hidden"})
+                                    <input type="submit" class="content-button content-delete-button" value="Delete"/>
+                                }
+                            }
+                        }
+                        @using (Html.BeginForm("GetMedia", "MediaApi", FormMethod.Get, new {@class = "content-form"}))
+                        {
+                            @Html.TextBox("Id", media.Id, new {@type = "hidden"})
+                            @Html.TextBox("Name", $"{media.Name}{media.Extension}", new {@type = "hidden"})
+                            <input type="submit" class="content-button content-download-button" value="Download"/>
+                        }
+                    }
+                </div>
+            }
+        </div>
+    </div>
+}
+</body>
+</html>

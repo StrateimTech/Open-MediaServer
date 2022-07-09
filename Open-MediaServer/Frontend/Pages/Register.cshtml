@@ -1,0 +1,50 @@
+﻿@page
+@using Open_MediaServer
+@using Open_MediaServer.Utils
+@using Open_MediaServer.Backend.Schema
+@model UserSchema.User
+
+@{
+    Layout = "_Layout.cshtml";
+
+    if (Request is {Cookies: { } } && Request.Cookies["user_session"] != null && UserUtils.IsAuthed(Request.Cookies["user_session"]))
+    {
+        Response.Redirect("/Account");
+        return;
+    }
+
+    if (!Program.ConfigManager.Config.AllowRegistering)
+    {
+        Response.Redirect("/Login");
+        return;
+    }
+}
+
+@section AdditionalHead
+{
+    <title>@Program.ConfigManager.Config.FrontendName Media - Register</title>
+    <link rel="stylesheet" href="~/Frontend/Assets/css/Register/Register.css">
+}
+
+<!DOCTYPE html>
+
+<html lang="en">
+<body>
+<div class="register-flex">
+    <div class="register-form-text">
+        Register
+    </div>
+    @using (Html.BeginForm("PostRegister", "UserApi", FormMethod.Post, new {@class = "register-form", @autocomplete = "off"}))
+    {
+        @Html.ValidationSummary(true)
+        @Html.TextBoxFor(x => x.Username, null, new {@placeholder = "Username", @required = "required"})
+        @Html.TextBoxFor(x => x.Password, null, new {@placeholder = "Password", @required = "required", @type = "password"})
+        <label class="login-register-text">Already have an account? <a class="login-href" href="/Login">Login</a></label>
+        <div>
+            @Html.ValidationMessage("ErrorMessage", null, new {@class = "register-error-text"}, null)
+        </div>
+        <button type="submit">Register</button>
+    }
+</div>
+</body>
+</html>

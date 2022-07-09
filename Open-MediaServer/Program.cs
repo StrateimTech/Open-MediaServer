@@ -1,29 +1,27 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
+using System.Threading;
+using Open_MediaServer.Backend;
+using Open_MediaServer.Config;
+using Open_MediaServer.Content;
+using Open_MediaServer.Database;
+using Open_MediaServer.Frontend;
 
-namespace Open_MediaServer
+namespace Open_MediaServer;
+
+public class Program
 {
-    public class Program
-    {
-        public static void Main(string[] args)
-        {
-            CreateHostBuilder(args).Build().Run();
-        }
+    public static ConfigManager ConfigManager;
+    private static BackendServer _backend;
+    private static FrontendServer _frontend;
+    public static SqDatabase Database;
+    public static ContentManager ContentManager;
 
-        private static IHostBuilder CreateHostBuilder(string[] args) =>
-            Host.CreateDefaultBuilder(args)
-                .ConfigureWebHostDefaults(webBuilder =>
-                {
-                    webBuilder.UseStartup<Startup>().UseKestrel(options =>
-                    {
-                        options.Limits.MaxRequestBodySize = null;
-                    });
-                });
+    public static void Main(string[] args)
+    {
+        ConfigManager = new ConfigManager(Environment.CurrentDirectory);
+        ContentManager = new ContentManager(ConfigManager.Config.WorkingDirectory ?? Environment.CurrentDirectory);
+        Database = new SqDatabase(ConfigManager.Config.WorkingDirectory ?? Environment.CurrentDirectory);
+        new Thread(() => _backend = new BackendServer()).Start();
+        new Thread(() => _frontend = new FrontendServer()).Start();
     }
 }

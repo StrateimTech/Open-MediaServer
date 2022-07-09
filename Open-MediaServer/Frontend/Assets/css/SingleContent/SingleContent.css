@@ -1,0 +1,140 @@
+﻿.content-flex {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: calc(100vh - 56px);
+}
+
+.content-container {
+    display: flex;
+    flex-direction: column;
+    background: rgb(4, 8, 8);
+    border-radius: 4px;
+    padding: 4px;
+    
+    align-items: center;
+    justify-content: center;
+}
+
+.content-aspect-ratio {
+    height: auto;
+    align-items: center;
+    justify-content: center;
+}
+
+.content {
+    width: auto;
+    height: calc(100vh - 168px);
+}
+
+@media only screen and (max-width: 600px) {
+    .content {
+        width: auto;
+        height: auto;
+        max-width: 100%;
+        max-height: calc(100vh - 168px);
+    }
+}
+
+.no-content-available {
+    display: flex;
+    
+    width: 400px; 
+    height: 400px;
+
+    align-items: center;
+    justify-content: center;
+
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+
+    font-family: 'Lato Light', sans-serif;
+    font-size: 24px;
+    color: white;
+}
+
+.content-text {
+    width: 100%;
+    
+    padding: 2px;
+    
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+
+    font-family: 'Lato Light', sans-serif;
+    font-size: 16px;
+    color: white;
+}
+
+.content-text > div {
+    display: inline-block
+}
+
+.content-text > form {
+    display: inline-block;
+}
+
+.content-form {
+    float: right;
+    width: 64px;
+    overflow: hidden;
+    
+    margin-right: 4px;
+}
+
+.content-button {
+    margin-top: auto;
+    width: 100%;
+    padding: 4px;
+
+    color: white;
+
+    display: inline-block;
+    border: none;
+    border-radius: 4px;
+
+    box-sizing: border-box;
+
+    cursor: pointer;
+}
+
+.content-download-button {
+    background-color: rgb(8, 140, 40);
+}
+
+.content-download-button:active {
+    background-color: rgb(11, 125, 30);
+    color: rgb(240, 240, 240);
+    opacity: 0.9;
+}
+
+.content-delete-button {
+    background-color: rgb(185, 43, 61);
+}
+
+.content-delete-button:active {
+    background-color: rgb(153, 36, 48);
+    color: rgb(240, 240, 240);
+    opacity: 0.9;
+}
+
+.content-failed {
+    margin: 16px;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+
+    font-family: 'Lato', sans-serif;
+    font-size: 24px;
+    color: white;
+}
+
+.content-failed > div {
+    font-family: 'Lato Light', sans-serif;
+    font-size: 16px;
+}

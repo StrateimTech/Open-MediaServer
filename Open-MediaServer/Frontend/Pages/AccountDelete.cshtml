@@ -1,0 +1,42 @@
+﻿@page "/Account/Delete"
+@using Open_MediaServer
+@using Open_MediaServer.Utils
+@using Open_MediaServer.Backend.Schema
+@model UserSchema.UserDelete
+@* @model Open_MediaServer.Frontend.Pages.AccountDelete *@
+
+@{
+    Layout = "_Layout.cshtml";
+}
+
+@section AdditionalHead
+{
+    <title>@Program.ConfigManager.Config.FrontendName Media - Account Deletion</title>
+    <link rel="stylesheet" href="~/Frontend/Assets/css/Account/Delete/Delete.css">
+}
+
+<!DOCTYPE html>
+
+<html lang="en">
+<body>
+<div class="delete-flex">
+    <div class="delete-form-text">
+        Account Deletion
+    </div>
+    @using (Html.BeginForm("PostDelete", "UserApi", FormMethod.Post, new {@class = "delete-form", @autocomplete = "off"}))
+    {
+        @Html.ValidationSummary(true)
+        @Html.TextBoxFor(x => x.User.Username, null, new {@placeholder = "Username", @class = "delete-form-input", @required = "required"})
+        @Html.TextBoxFor(x => x.User.Password, null, new {@placeholder = "Password", @class = "delete-form-input", @required = "required", @type = "password"})
+        <div class="delete-content">
+            @Html.CheckBoxFor(x => x.DeleteContent)
+            <label for="DeleteContent">Delete Content</label>
+        </div>
+        <div>
+            @Html.ValidationMessage("ErrorMessage", null, new {@class = "delete-error-text"}, null)
+        </div>
+        <button type="submit">Delete Account</button>
+    }
+</div>
+</body>
+</html>

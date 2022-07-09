@@ -1,0 +1,255 @@
+#main-content {
+    height: 100%;
+    width: 1280px;
+    position: fixed;
+    
+    right: 0;
+    left: 0;
+    margin: 0 auto 0 auto;
+    
+    background-color: rgb(8, 8, 8);
+}
+
+.main-text {
+    font-family: 'Lato', sans-serif;
+    font-size: 16px;
+    color: white;
+    
+    margin-bottom: 12px;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+.hr-main {
+    border: 1px solid black;
+    margin: 4px 0 0 0;
+}
+
+.light-text {
+    font-family: 'Lato', sans-serif;
+    font-size: 12px;
+    color: white;
+
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+.container-desc-text {
+    margin: 0 0 4px 4px;
+}
+
+.main-container {
+    display: flex;
+    height: calc(100vh - 56px);
+}
+
+.profile-container {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.profile-input {
+    width: 100%;
+    padding: 4px;
+    
+    background-color: rgb(4, 4, 4);
+    color: white;
+    
+    display: inline-block;
+    border: none;
+    border-radius: 4px;
+    
+    box-sizing: border-box;
+    resize: vertical;
+}
+
+.profile-input:focus {
+    outline: rgb(64, 48, 48) solid 1px;
+}
+
+.profile-input::placeholder {
+    color: white;
+    opacity: 0.7;
+}
+
+.profile-input-buttons {
+    display: flex;
+    flex-flow: row;
+    gap: 8px;
+}
+
+.profile-input-form {
+    margin-bottom: 8px;
+    
+    display: flex;
+    flex-flow: column;
+    height: 100%;
+    gap: 8px;
+}
+
+.profile-button {
+    margin-top: auto;
+    width: 100%;
+    padding: 4px;
+
+    color: white;
+
+    display: inline-block;
+    border: none;
+    border-radius: 4px;
+
+    box-sizing: border-box;
+
+    cursor: pointer;
+}
+
+.profile-update-button {
+    background-color: rgb(8, 140, 40);
+}
+
+.profile-update-button:active {
+    background-color: rgb(11, 125, 30);
+    color: rgb(240, 240, 240);
+    opacity: 0.9;
+}
+
+.profile-delete-button {
+    flex: 0 1 50%;
+    
+    text-decoration: none;
+    text-align: center;
+
+    font-family: 'Lato', sans-serif;
+    font-size: 13px;
+    color: white;
+
+    background-color: rgb(185, 43, 61);
+}
+
+.profile-delete-button:active {
+    background-color: rgb(153, 36, 48);
+    color: rgb(240, 240, 240);
+    opacity: 0.9;
+}
+
+.profile-logout-form {
+    flex: 0 0 50%;
+}
+
+.profile-logout-button {
+    background-color: rgb(48, 48, 48);
+}
+
+.profile-logout-button:active {
+    background-color: rgb(32, 32, 32);
+    color: rgb(240, 240, 240);
+    opacity: 0.9;
+}
+
+.div-update-button {
+    margin-top: auto;
+}
+
+.main-flex-item {
+    padding: 16px;
+    flex-grow: 1;
+}
+
+@media screen and (max-width: 576px) {
+    .main-container {
+        flex-direction: column;
+    }
+}
+
+.main-flex-item:first-of-type {
+    flex: 0 0 33%;
+}
+
+.content-container {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px;
+}
+
+.content-item {
+    flex: 1 1 288px;
+    background-color: rgb(8, 8, 8);
+
+    max-width: 288px;
+    max-height: 288px;
+
+    box-sizing: border-box;
+    padding: 4px;
+
+    border-radius: 2px;
+    cursor: pointer;
+
+    text-decoration: none;
+}
+
+.content-item-text {
+    flex: 0 0 50%;
+    text-align: left;
+    
+    font-family: 'Lato', sans-serif;
+    font-size: 12px;
+    color: white;
+    margin-left: 4px;
+
+    word-break: break-all;
+    overflow: hidden;
+}
+
+.content-item-thumbnail {
+    flex: 0 0 50%;
+    width: 50%;
+    height: 100%;
+    aspect-ratio: 1 / 1;
+}
+
+.content-item-no-thumbnail {
+    flex: 0 0 50%;
+    width: 50%;
+    min-height: 140px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-family: 'Lato', sans-serif;
+    font-size: 16px;
+    color: white;
+}
+
+.content-href {
+    display: flex;
+    height: 100%;
+    
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    
+    text-decoration: none;
+}
+
+.no-content-available {
+    width: 100%;
+
+    font-family: 'Lato', sans-serif;
+    color: white;
+    text-align: center;
+    font-size: 24px;
+
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}

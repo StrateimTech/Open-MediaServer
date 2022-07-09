@@ -1,0 +1,115 @@
+﻿@page
+@using Open_MediaServer
+@using Open_MediaServer.Database.Schema
+@using Open_MediaServer.Utils
+@using SQLiteNetExtensionsAsync.Extensions
+@model Open_MediaServer.Frontend.Pages.Account
+
+@{
+    Layout = "_Layout.cshtml";
+
+    if (Request.Cookies["user_session"] == null || !UserUtils.IsAuthed(Request.Cookies["user_session"]))
+    {
+        Response.Redirect("/Login?returnUrl=Account");
+        return;
+    }
+
+    var user = await UserUtils.GetUser(Request.Cookies["user_session"]);
+}
+
+@section AdditionalHead
+{
+    <title>@Program.ConfigManager.Config.FrontendName Media - Account</title>
+    <link rel="stylesheet" href="~/Frontend/Assets/css/Account/Account.css">
+}
+
+<!DOCTYPE html>
+
+<html lang="en">
+<body>
+<div class="main-container">
+    <div class="main-flex-item">
+        <div class="profile-container">
+            <div class="main-text">
+                Account
+                <hr class="hr-main"/>
+            </div>
+
+            @using (Html.BeginForm("GetUpdate", "UserApi", FormMethod.Get, new {@class = "profile-input-form", @autocomplete = "off"}))
+            {
+                @Html.TextBox("Username", user.Username, new {@type = "hidden"})
+                <div>
+                    <div class="light-text container-desc-text">
+                        Name
+                    </div>
+                    @Html.TextBox("Name", user.Username, new {@class = "profile-input", @placeholder = "Name"})
+                </div>
+                @Html.TextBox("returnURL", "/Account", new {@type = "hidden"})
+                <input type="submit" class="profile-update-button profile-button" value="Update Account"/>
+            }
+            <div class="profile-input-buttons">
+                @using (Html.BeginForm("GetLogout", "UserApi", FormMethod.Get, new {@class = "profile-logout-form"}))
+                {
+                    @Html.TextBox("returnURL", "/Login", new {@type = "hidden"})
+                    <input type="submit" class="profile-logout-button profile-button" value="Logout"/>
+                }
+                <a class="profile-delete-button profile-button" href="/Account/Delete">Delete Account</a>
+            </div>
+        </div>
+    </div>
+    <div class="main-flex-item">
+        <div class="main-text media-main-text">
+            Content
+            <hr class="hr-main"/>
+        </div>
+        <div class="content-container">
+            @{
+                var mediaList = await Program.Database.MediaDatabase.GetAllWithChildrenAsync<DatabaseSchema.Media>();
+                mediaList.RemoveAll(media => media.AuthorId != user.Id);
+                if (mediaList.Count <= 0)
+                {
+                    <div class="no-content-available">
+                        This account has no media associated with it.<br/>
+                        Try uploading a video!
+                    </div>
+                }
+                else
+                {
+                    foreach (var media in mediaList)
+                    {
+                        if (media.ThumbnailPath != null)
+                        {
+                            <div class="content-item">
+                                <a class="content-href" href="/@media.Id/@media.Name@media.Extension">
+                                    <img class="content-item-thumbnail" src="@Url.Action("GetThumbnail", "MediaApi", new {Id = media.Id, Name = media.Name}, Request.Scheme, Program.ConfigManager.Config.FrontendDomain)" alt="@Uri.UnescapeDataString(media.Name)"/>
+                                    <div class="content-item-text">
+                                        @Uri.UnescapeDataString(media.Name)@media.Extension<br/>
+                                        @media.UploadDate.ToString("MM/dd/yy HH:mm")<br/>
+                                        @(media.Public ? "Public" : "Private") • @StringUtils.FormatBytesWithIdentifier(media.ContentSize)
+                                    </div>
+                                </a>
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="content-item">
+                                <a class="content-href" href="/@media.Id/@media.Name@media.Extension">
+                                    <div class="content-item-no-thumbnail">
+                                        No Thumbnail
+                                    </div>
+                                    <div class="content-item-text">
+                                        @Uri.UnescapeDataString(media.Name)@media.Extension<br/>
+                                        @media.UploadDate.ToString("MM/dd/yy HH:mm")<br/>
+                                        @(media.Public ? "Public" : "Private") • @StringUtils.FormatBytesWithIdentifier(media.ContentSize)
+                                    </div>
+                                </a>
+                            </div>
+                        }
+                    }
+                }
+            }
+        </div>
+    </div>
+</div>
+</body>
+</html>

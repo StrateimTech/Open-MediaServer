@@ -1,0 +1,153 @@
+﻿.file-upload-container {
+    padding: 8px 0 8px 0;
+    height: calc(100% - 56px - 16px);
+    width: 100%;
+    
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+
+    align-items: flex-end;
+    justify-content: center;
+    
+    gap: 8px;
+}
+
+.file-upload {
+    display: flex;
+    flex-direction: row;
+    
+    flex-shrink: 1;
+
+    height: 200px;
+    width: 100%;
+    max-width: 500px;
+
+    box-sizing: border-box;
+    background: rgb(8, 8, 8);
+    border-radius: 4px;
+    padding: 4px;
+    
+    gap: 4px;
+}
+
+.file-upload > div {
+    flex: 0 0 50%;
+}
+
+.file-upload > div:first-of-type {
+    background: rgb(16, 16, 16);
+}
+
+.file-upload-preview {
+    display: none;
+    width: 100%;
+    height: 100%;
+}
+
+.file-no-preview {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    
+    height: 100%;
+    
+    font-family: 'Lato', sans-serif;
+    font-size: 24px;
+    color: white;
+}
+
+.file-upload-input {
+    display: none;
+}
+
+.file-upload-input-label {
+    display: inline-block;
+    
+    border-radius: 2px;
+    background-color: white;
+    padding: 2px;
+
+    font-family: 'Lato', sans-serif;
+    font-size: 16px;
+    color: black;
+
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+
+    cursor: pointer;
+}
+
+.file-input-area {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.file-name-input-label {
+    margin-bottom: 4px;
+    
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+
+    font-family: 'Lato', sans-serif;
+    font-size: 16px;
+    color: white;
+}
+
+.file-name-input {
+    background-color: rgb(24, 24, 24);
+    color: white;
+    
+    border: none;
+    border-radius: 2px;
+    
+    box-sizing: border-box;
+    
+    width: calc(100% - 4px);
+}
+
+.file-private-input-label {
+    margin-bottom: 4px;
+    
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+
+    font-family: 'Lato', sans-serif;
+    font-size: 16px;
+    color: white;
+}
+
+.file-private-input {
+    margin: 0;
+}
+
+.file-upload-button {
+    flex-basis: 100%;
+    
+    margin: 16px;
+    
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+
+    cursor: pointer;
+    
+    border: none;
+    border-radius: 2px;
+    
+    padding: 4px;
+
+    background-color: rgb(8, 140, 40);
+    color: white;
+
+    font-family: 'Lato', sans-serif;
+    font-size: 16px;
+}

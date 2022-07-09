@@ -1,0 +1,62 @@
+﻿@page
+@using Open_MediaServer
+@using Open_MediaServer.Utils
+@model Open_MediaServer.Frontend.Pages.Upload
+
+@{
+    Layout = "_Layout.cshtml";
+
+    if (Request.Cookies["user_session"] == null || !UserUtils.IsAuthed(Request.Cookies["user_session"]))
+    {
+        Response.Redirect("/Login?returnUrl=Upload");
+        return;
+    }
+}
+
+@section AdditionalHead
+{
+    <title>@Program.ConfigManager.Config.FrontendName Media - Upload</title>
+    <link rel="stylesheet" href="~/Frontend/Assets/css/Upload/Upload.css">
+    <script src="~/Frontend/Assets/js/Upload/Upload.js"></script>
+}
+
+<!DOCTYPE html>
+
+<html lang="en">
+
+<body ondrop="dropHandler(event);" ondragover="dragOverHandler(event);">
+@using (Html.BeginForm("PostUploadContentForm", "MediaApi", FormMethod.Post, new {@autocomplete = "off", @class = "file-upload-container", @enctype = "multipart/form-data"}))
+{
+    <div class="file-upload">
+        <div>
+            <video class="file-upload-preview" id="Video Preview 0" muted></video>
+            <img class="file-upload-preview" id="Img Preview 0"/>
+            <div class="file-no-preview" id="No Preview 0">No file preview</div>
+        </div>
+        <div class="file-input-area">
+            <div>
+                <input class="file-upload-input" type="file" id="File 0" name="File 0" onchange="itemChange(this, 0, 0);">
+                <label class="file-upload-input-label" for="File 0">
+                    <span>Change file</span>
+                </label>
+            </div>
+            <div>
+                <div class="file-name-input-label">
+                    <span>Name</span>
+                </div>
+                <input class="file-name-input" type="text" id="Name 0" name="Name 0">
+            </div>
+            <div>
+                <div class="file-private-input-label">
+                    <span>Private</span>
+                </div>
+                <input class="file-private-input" type="checkbox" id="Private 0" name="Private 0">
+            </div>
+        </div>
+    </div>
+    <div id="file-drag-container"></div>
+    @Html.TextBox("returnURL", "/Content", new {@type = "hidden"})
+    <input class="file-upload-button" id="form-upload-button" type="submit" value="Upload"/>
+}
+</body>
+</html>

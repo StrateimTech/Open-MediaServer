@@ -1,0 +1,114 @@
+﻿.login-flex {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    
+    justify-content: center;
+    align-items: center;
+
+    gap: 32px;
+}
+
+.login-form-text {
+    margin-top: 64px;
+
+    font-family: 'Lato', sans-serif;
+    font-size: 24px;
+    color: white;
+
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+.login-register-text {
+    box-sizing: border-box;
+
+    font-family: 'Lato', sans-serif;
+    font-size: 16px;
+    color: white;
+
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+.login-error-text {
+    box-sizing: border-box;
+
+    font-family: 'Lato', sans-serif;
+    font-size: 16px;
+    color: rgb(232, 13, 13);
+
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+.register-href {
+    color: rgb(120, 112, 236);
+}
+
+.login-form {
+    max-width: 450px;
+    
+    background: rgb(32, 24, 24);
+    
+    position: relative;
+    border-radius: 8px;
+    padding: 32px;
+    text-align: center;
+}
+
+.login-form input {
+    width: 100%;
+    
+    margin: 0 0 16px 0;
+
+    background: rgb(240, 240, 240);
+    
+    outline: 0;
+    border: 0;
+    
+    border-radius: 4px;
+    padding: 12px;
+    box-sizing: border-box;
+
+    font-family: 'Lato', sans-serif;
+    font-size: 12px;
+}
+
+.login-form input:focus {
+    background: rgb(220, 220, 220);
+}
+
+.login-form button {
+    width: 100%;
+    
+    margin-top: 48px;
+    
+    background: rgb(75, 108, 183);
+    color: white;
+    
+    text-transform: uppercase;
+
+    outline: 0;
+    border: 0;
+    
+    border-radius: 4px;
+    padding: 12px;
+    
+    -webkit-transition: all 1.3s ease;
+    transition: all 1.3s ease;
+    cursor: pointer;
+
+    font-family: 'Lato', sans-serif;
+    font-size: 14px;
+}
+
+.login-form button:active {
+    background: rgb(57, 85, 145);
+}

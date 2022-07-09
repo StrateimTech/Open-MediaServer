@@ -1,0 +1,211 @@
+﻿@page
+@using Open_MediaServer
+@using Open_MediaServer.Database.Schema
+@using Open_MediaServer.Utils
+@using SQLiteNetExtensionsAsync.Extensions
+@model Open_MediaServer.Frontend.Pages.Media
+
+@{
+    Layout = "_Layout.cshtml";
+
+    DatabaseSchema.User user = null;
+    if (Request.Cookies["user_session"] != null && UserUtils.IsAuthed(Request.Cookies["user_session"]))
+    {
+        user = await UserUtils.GetUser(Request.Cookies["user_session"]);
+    }
+}
+
+@section AdditionalHead
+{
+    <title>@Program.ConfigManager.Config.FrontendName Media - Content</title>
+    <link rel="stylesheet" href="~/Frontend/Assets/css/Content/Content.css">
+    <script src="~/Frontend/Assets/js/Content/Content.js"></script>
+}
+
+<!DOCTYPE html>
+
+<html lang="en">
+@{
+    if (user != null)
+    {
+        <text>@Html.Raw($@"<body ondrop='dropHandler(event, ""{Url.Action("PostUploadContentForm", "MediaApi")}"");' ondragover=""dragOverHandler(event);"">")</text>
+    }
+    else
+    {
+        <text>@Html.Raw(@"<body>")</text>
+    }
+}
+<div class="sort-navbar">
+    <a class="sort-item" onclick="updateQueryURL('name', window);">
+        Name
+    </a>
+    <a class="sort-item" onclick="updateQueryURL('author', window);">
+        Author
+    </a>
+    <a class="sort-item" onclick="updateQueryURL('date', window);">
+        Date
+    </a>
+    <a class="sort-item" onclick="updateQueryURL('type', window);">
+        Type
+    </a>
+    <a class="sort-item" onclick="updateQueryURL('size', window);">
+        Size
+    </a>
+    @{
+        if (user != null)
+        {
+            <a class="sort-item" onclick="updateQueryURL('visibility', window);">
+                Visibility
+            </a>
+        }
+    }
+</div>
+<div class="content-container">
+    @{
+        var mediaList = await Program.Database.MediaDatabase.GetAllWithChildrenAsync<DatabaseSchema.Media>();
+
+        if (user == null || user is {Admin: false })
+        {
+            mediaList.RemoveAll(media =>
+            {
+                if (user != null && media.AuthorId == user.Id)
+                {
+                    return false;
+                }
+                return media.Public == false;
+            });
+        }
+
+        if (mediaList.Count <= 0)
+        {
+            <div class="main-text">
+                This server has no content associated with it.
+            </div>
+        }
+        else
+        {
+            if (Request.Query.Count > 0)
+            {
+                if (Request.Query.ContainsKey("name"))
+                {
+                    var nameSort = Request.Query["name"];
+                    if (nameSort[0] != null)
+                    {
+                        if (Boolean.TryParse(nameSort[0], out bool value) && value)
+                        {
+                            mediaList = mediaList.OrderBy(media => Uri.UnescapeDataString(media.Name)).ToList();
+                        }
+                    }
+                }
+
+                if (Request.Query.ContainsKey("author"))
+                {
+                    var authorSort = Request.Query["author"];
+
+                    if (authorSort[0] != null)
+                    {
+                        if (Boolean.TryParse(authorSort[0], out bool value) && value)
+                        {
+                            mediaList = mediaList.OrderBy(media => media.AuthorId).ToList();
+                        }
+                    }
+                }
+
+                if (Request.Query.ContainsKey("date"))
+                {
+                    var dateSort = Request.Query["date"];
+
+                    if (dateSort[0] != null)
+                    {
+                        if (Boolean.TryParse(dateSort[0], out bool value) && value)
+                        {
+                            mediaList = mediaList.OrderBy(media => media.UploadDate).Reverse().ToList();
+                        }
+                    }
+                }
+
+                if (Request.Query.ContainsKey("type"))
+                {
+                    var typeSort = Request.Query["type"];
+
+                    if (typeSort[0] != null)
+                    {
+                        if (Boolean.TryParse(typeSort[0], out bool value) && value)
+                        {
+                            mediaList = mediaList.OrderBy(media => media.Extension).ToList();
+                        }
+                    }
+                }
+
+                if (Request.Query.ContainsKey("size"))
+                {
+                    var sizeSort = Request.Query["size"];
+
+                    if (sizeSort[0] != null)
+                    {
+                        if (Boolean.TryParse(sizeSort[0], out bool value) && value)
+                        {
+                            mediaList = mediaList.OrderBy(media => media.ContentSize).Reverse().ToList();
+                        }
+                    }
+                }
+
+                if (Request.Query.ContainsKey("visibility"))
+                {
+                    var visibilitySort = Request.Query["visibility"];
+
+                    if (visibilitySort[0] != null)
+                    {
+                        if (Boolean.TryParse(visibilitySort[0], out bool value) && value)
+                        {
+                            mediaList = mediaList.OrderBy(media => media.Public).ToList();
+                        }
+                    }
+                }
+            }
+
+            foreach (var media in mediaList)
+            {
+                var author = await Program.Database.UserDatabase.FindAsync<DatabaseSchema.User>(dbUser => dbUser.Id == media.AuthorId);
+                if (media.ThumbnailPath != null)
+                {
+                    <div class="content-item">
+                        <a class="content-href" href="/@media.Id/@media.Name@media.Extension">
+                            <img class="content-item-thumbnail" src="@Url.Action("GetThumbnail", "MediaApi", new {Id = media.Id, Name = media.Name}, Request.Scheme, Program.ConfigManager.Config.FrontendDomain)" alt="@media.Name"/>
+                            <div class="content-item-text">
+                                @Uri.UnescapeDataString(media.Name).FirstCharToUpper()@media.Extension<br/>
+                                @{
+                                    <div>
+                                        @(author.Username.FirstCharToUpper() ?? "Account Deleted") • @media.UploadDate.ToFormattedString()
+                                    </div>
+                                }
+                                @(media.Public ? "Public" : "Private") • @StringUtils.FormatBytesWithIdentifier(media.ContentSize)<br/>
+                            </div>
+                        </a>
+                    </div>
+                }
+                else
+                {
+                    <div class="content-item">
+                        <a class="content-href" href="/@media.Id/@media.Name@media.Extension">
+                            <div class="content-item-no-thumbnail">
+                                No Thumbnail
+                            </div>
+                            <div class="content-item-text">
+                                @Uri.UnescapeDataString(media.Name).FirstCharToUpper()@media.Extension<br/>
+                                @{
+                                    <div>
+                                        @(author.Username.FirstCharToUpper() ?? "Account Deleted") • @media.UploadDate.ToFormattedString()
+                                    </div>
+                                }
+                                @(media.Public ? "Public" : "Private") • @StringUtils.FormatBytesWithIdentifier(media.ContentSize)<br/>
+                            </div>
+                        </a>
+                    </div>
+                }
+            }
+        }
+    }
+</div>
+@Html.Raw("</body>")
+</html>
