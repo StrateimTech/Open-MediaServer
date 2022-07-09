@@ -364,7 +364,6 @@ public class MediaApiController : ControllerBase
 
             var mediaSchema = new DatabaseSchema.Media()
             {
-                // TODO: Actually generate a unique ID
                 Id = await Program.Database.MediaDatabase.GenerateUniqueMediaId(Program.ConfigManager.Config.UniqueIdLength),
                 Name = Uri.EscapeDataString(Uri.UnescapeDataString(upload.Name)),
                 Extension = upload.Extension,
