@@ -1,0 +1,26 @@
+﻿@page "/400"
+@using Open_MediaServer
+@model Open_MediaServer.Frontend.Pages.Codes.BadRequest
+
+@{
+    Layout = "../_Layout.cshtml";
+}
+
+@section AdditionalHead
+{
+    <title>@Program.ConfigManager.Config.FrontendName Media - 400</title>
+    <link rel="stylesheet" href="~/Frontend/Assets/css/Codes/Generic.css">
+}
+
+<!DOCTYPE html>
+
+<html lang="en">
+<body>
+<div class="content-failed">
+    Failed to perform malformed or invalid request!<br/>
+    <div>
+        Internal 400 error occured..<br/>
+    </div>
+</div>
+</body>
+</html>

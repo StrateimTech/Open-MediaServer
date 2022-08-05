@@ -64,13 +64,6 @@ function dropHandler(ev, action) {
             form.appendChild(filePrivate);
         }
         
-        let returnURL = document.createElement("input");
-        returnURL.type = "hidden";
-        returnURL.name = "returnURL";
-        returnURL.value = "/Content";
-        returnURL.style.display = "none";
-        form.appendChild(returnURL);
-        
         document.body.appendChild(form);
         form.submit();
     }

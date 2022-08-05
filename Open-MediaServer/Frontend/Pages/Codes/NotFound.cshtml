@@ -1,16 +1,15 @@
 ﻿@page "/404"
 @using Open_MediaServer
-@using Open_MediaServer.Utils
-@model Open_MediaServer.Frontend.Pages.Error
+@model Open_MediaServer.Frontend.Pages.Codes.Error
 
 @{
-    Layout = "_Layout.cshtml";
+    Layout = "../_Layout.cshtml";
 }
 
 @section AdditionalHead
 {
     <title>@Program.ConfigManager.Config.FrontendName Media - 404</title>
-    <link rel="stylesheet" href="~/Frontend/Assets/css/Error/Error.css">
+    <link rel="stylesheet" href="~/Frontend/Assets/css/Codes/Generic.css">
 }
 
 <!DOCTYPE html>
@@ -18,10 +17,10 @@
 <html lang="en">
 <body>
 <div class="content-failed">
-    Failed to find the page you were looking for...<br/>
+    Failed to find the page you were looking for!<br/>
     <div>
         Please try navigating to different url<br/>
-        Internal 404 Error occured..<br/>
+        Internal 404 error occured..<br/>
     </div>
 </div>
 </body>

@@ -36,7 +36,7 @@
         {
             media = await Program.Database.MediaDatabase.FindWithChildrenAsync<DatabaseSchema.Media>(mediaId);
         }
-        catch (Exception ignore)
+        catch (Exception)
         {
             ContentError();
             return;
@@ -140,7 +140,6 @@
                                 {
                                     @Html.TextBox("Id", media.Id, new {@type = "hidden"})
                                     @Html.TextBox("Name", media.Name, new {@type = "hidden"})
-                                    @Html.TextBox("returnURL", "/Content", new {@type = "hidden"})
                                     <input type="submit" class="content-button content-delete-button" value="Delete"/>
                                 }
                             }

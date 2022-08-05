@@ -1,0 +1,26 @@
+﻿@page "/403"
+@using Open_MediaServer
+@model Open_MediaServer.Frontend.Pages.Codes.Forbidden
+
+@{
+    Layout = "../_Layout.cshtml";
+}
+
+@section AdditionalHead
+{
+    <title>@Program.ConfigManager.Config.FrontendName Media - 403</title>
+    <link rel="stylesheet" href="~/Frontend/Assets/css/Codes/Generic.css">
+}
+
+<!DOCTYPE html>
+
+<html lang="en">
+<body>
+<div class="content-failed">
+    You don't have permission to access this page or content!<br/>
+    <div>
+        Internal 403 error occured..<br/>
+    </div>
+</div>
+</body>
+</html>

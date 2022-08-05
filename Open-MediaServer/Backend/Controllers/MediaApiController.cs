@@ -176,13 +176,13 @@ public class MediaApiController : ControllerBase
                 var userWithoutChildren =
                     await Program.Database.UserDatabase.FindAsync<DatabaseSchema.User>(user =>
                         user.Username == parameterMass.Username);
-                
+
                 if (userWithoutChildren == null)
                 {
                     Response.StatusCode = StatusCodes.Status500InternalServerError;
                     return null;
                 }
-                
+
                 var user =
                     await Program.Database.UserDatabase.FindWithChildrenAsync<DatabaseSchema.User>(
                         userWithoutChildren.Id);
@@ -205,6 +205,7 @@ public class MediaApiController : ControllerBase
                 Media = mediaIdentities
             };
         }
+
         Response.StatusCode = StatusCodes.Status400BadRequest;
         return null;
     }
@@ -234,13 +235,13 @@ public class MediaApiController : ControllerBase
         {
             if (Request.Cookies["user_session"] == null || !UserUtils.IsAuthed(Request.Cookies["user_session"]))
             {
-                return StatusCode(StatusCodes.Status401Unauthorized);
+                return RedirectToPage("/401");
             }
 
             var formFiles = HttpContext.Request.Form.Files.DistinctBy(file => file.FileName).ToList();
             if (formFiles.Count <= 0)
             {
-                return StatusCode(StatusCodes.Status400BadRequest);
+                return RedirectToPage("/400");
             }
 
             for (int i = 0; i < formFiles.Count; i++)
@@ -302,15 +303,10 @@ public class MediaApiController : ControllerBase
                 await PostUploadContent(upload);
             }
 
-            if (HttpContext.Request.Form.ContainsKey("returnURL"))
-            {
-                return RedirectToPage(HttpContext.Request.Form["returnURL"]);
-            }
-
-            return StatusCode(StatusCodes.Status200OK);
+            return RedirectToPage("/Content");
         }
 
-        return StatusCode(StatusCodes.Status400BadRequest);
+        return RedirectToPage("/400");
     }
 
     [HttpPost("/api/upload/")]
@@ -364,7 +360,8 @@ public class MediaApiController : ControllerBase
 
             var mediaSchema = new DatabaseSchema.Media()
             {
-                Id = await Program.Database.MediaDatabase.GenerateUniqueMediaId(Program.ConfigManager.Config.UniqueIdLength),
+                Id = await Program.Database.MediaDatabase.GenerateUniqueMediaId(Program.ConfigManager.Config
+                    .UniqueIdLength),
                 Name = Uri.EscapeDataString(Uri.UnescapeDataString(upload.Name)),
                 Extension = upload.Extension,
                 UploadDate = DateTime.UtcNow,
@@ -419,21 +416,20 @@ public class MediaApiController : ControllerBase
     }
 
     [HttpGet("/api/delete/")]
-    public async Task<ActionResult> GetDeleteContent([FromQuery] MediaSchema.MediaIdentity identity,
-        [FromQuery] string returnUrl)
+    public async Task<ActionResult> GetDeleteContent([FromQuery] MediaSchema.MediaIdentity identity)
     {
         if (ModelState.IsValid)
         {
             if (Request.Cookies["user_session"] == null || !UserUtils.IsAuthed(Request.Cookies["user_session"]))
             {
-                return StatusCode(StatusCodes.Status401Unauthorized);
+                return RedirectToPage("/Login");
             }
 
             DatabaseSchema.User user = await UserUtils.GetUserWithChildren(Request.Cookies["user_session"]);
 
             if (user == null)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError);
+                return RedirectToPage("/404");
             }
 
             var media = await Program.Database.MediaDatabase.FindAsync<DatabaseSchema.Media>(media =>
@@ -441,14 +437,14 @@ public class MediaApiController : ControllerBase
 
             if (media == null)
             {
-                return StatusCode(StatusCodes.Status404NotFound);
+                return RedirectToPage("/404");
             }
 
             if (media.AuthorId != user.Id && !user.Admin)
             {
-                return StatusCode(StatusCodes.Status403Forbidden);
+                return RedirectToPage("/403");
             }
-            
+
             Program.ContentManager.DeleteContent(media.Id, media.Name, media.Extension, media.ContentType);
             user.Uploads.Remove(new MediaSchema.MediaIdentity()
             {
@@ -458,12 +454,7 @@ public class MediaApiController : ControllerBase
             await Program.Database.MediaDatabase.DeleteAsync<DatabaseSchema.Media>(media.Id);
             await Program.Database.UserDatabase.UpdateWithChildrenAsync(user);
 
-            if (returnUrl != null)
-            {
-                return RedirectToPage(returnUrl);
-            }
-
-            return StatusCode(StatusCodes.Status200OK);
+            return RedirectToPage("/Content");
         }
 
         return StatusCode(StatusCodes.Status400BadRequest, ModelState);

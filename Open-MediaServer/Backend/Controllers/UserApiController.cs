@@ -127,10 +127,10 @@ public class UserApiController : Controller
                         Expires = DateTime.Now.AddDays(30)
                     });
                 }
-             
+
                 return RedirectToPage("/Account");
             }
-            
+
             ModelState.AddModelError("ErrorMessage", "Username or Password is incorrect!");
             return View("~/Frontend/Pages/Login.cshtml", userLogin);
         }
@@ -194,8 +194,7 @@ public class UserApiController : Controller
     }
 
     [HttpGet("/api/account/update/")]
-    public async Task<ActionResult> GetUpdate([FromQuery] UserSchema.UserUpdate userUpdate,
-        [FromQuery] string returnUrl)
+    public async Task<ActionResult> GetUpdate([FromQuery] UserSchema.UserUpdate userUpdate)
     {
         if (ModelState.IsValid)
         {
@@ -215,7 +214,7 @@ public class UserApiController : Controller
                 user.Username == userUpdate.Username);
             if (user == null)
             {
-                return StatusCode(StatusCodes.Status400BadRequest, "Unable to find account associated with username.");
+                return RedirectToPage("/400");
             }
 
             if (cookieUser.Id == user.Id)
@@ -226,33 +225,23 @@ public class UserApiController : Controller
                 }
 
                 await Program.Database.UserDatabase.UpdateAsync(user);
-                if (returnUrl != null)
-                {
-                    return RedirectToPage(returnUrl);
-                }
-
-                return StatusCode(StatusCodes.Status200OK);
+                return Redirect("/Account");
             }
 
-            return StatusCode(StatusCodes.Status401Unauthorized);
+            return RedirectToPage("/401");
         }
 
         return StatusCode(StatusCodes.Status400BadRequest, ModelState);
     }
 
     [HttpGet("/api/account/logout/")]
-    public ActionResult GetLogout([FromQuery] string returnUrl)
+    public ActionResult GetLogout()
     {
         if (Request.Cookies["user_session"] != null)
         {
             Response.Cookies.Delete("user_session");
         }
 
-        if (returnUrl != null)
-        {
-            return RedirectToPage(returnUrl);
-        }
-
-        return StatusCode(StatusCodes.Status200OK);
+        return RedirectToPage("/Login");
     }
 }

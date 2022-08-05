@@ -1,4 +1,6 @@
-﻿using K4os.Compression.LZ4;
+﻿#nullable enable
+using System;
+using K4os.Compression.LZ4;
 using Newtonsoft.Json;
 using SixLabors.ImageSharp.Formats;
 using SixLabors.ImageSharp.Formats.Webp;
@@ -7,9 +9,9 @@ namespace Open_MediaServer.Config;
 
 public class Config
 {
-    public string FrontendName { get; set; }
+    public string FrontendName { get; set; } = String.Empty;
 
-    public string FrontendDomain { get; set; }
+    public string FrontendDomain { get; set; } = String.Empty;
 
     public (short http, short https) FrontendPorts { get; set; } = (80, 443);
     public (short http, short https) BackendPorts { get; set; } = (2000, 2001);
