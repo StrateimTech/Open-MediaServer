@@ -54,7 +54,7 @@ public static class StringUtils
                     {
                         if (sinceDate.Minutes <= 0)
                         {
-                            return "less than a minute ago";
+                            return "moments ago";
                         }
 
                         return $"{sinceDate.Minutes} minute{(sinceDate.Minutes > 1 ? "s" : String.Empty)} ago";
