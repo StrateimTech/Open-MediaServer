@@ -296,6 +296,9 @@ public class MediaApiController : ControllerBase
                                                (fileName.Length - Program.ConfigManager.Config.UploadNameLimit));
                 }
 
+                if (Program.ConfigManager.Config.ReplaceUnderscores)
+                {
+                    fileName = fileName.Replace("_", " ");
                 }
 
                 var safeFileName =

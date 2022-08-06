@@ -15,7 +15,7 @@ public class Config
 
     public (short http, short https) FrontendPorts { get; set; } = (80, 443);
     public (short http, short https) BackendPorts { get; set; } = (2000, 2001);
-    
+
     public string? WorkingDirectory { get; set; } = null;
 
     // Length of generated uid 
@@ -38,13 +38,14 @@ public class Config
     public bool AllowOther { get; set; } = true;
 
     public int UploadNameLimit { get; set; } = 64;
+    public bool ReplaceUnderscores { get; set; } = true;
     public bool Thumbnails { get; set; } = true;
     public bool PreComputeThumbnails { get; set; } = true;
 
     // Only the thumbnail's width is needed (Keeps the original content's aspect ratio for clarity)
     public int ThumbnailWidth { get; set; } = 200;
 
-    [JsonProperty( TypeNameHandling = TypeNameHandling.Objects )]
+    [JsonProperty(TypeNameHandling = TypeNameHandling.Objects)]
     public IImageFormat ThumbnailFormat { get; set; } = WebpFormat.Instance;
 
     public string[] ImageTypes { get; set; } =
