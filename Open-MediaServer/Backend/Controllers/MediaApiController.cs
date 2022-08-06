@@ -104,12 +104,15 @@ public class MediaApiController : ControllerBase
                 }
             }
 
-            var responseHeaders = Response.GetTypedHeaders();
-            responseHeaders.CacheControl = new CacheControlHeaderValue
+            if (Program.ConfigManager.Config.Caching)
             {
-                NoCache = true
-            };
-            responseHeaders.LastModified = new DateTimeOffset(media.UploadDate);
+                var responseHeaders = Response.GetTypedHeaders();
+                responseHeaders.CacheControl = new CacheControlHeaderValue
+                {
+                    NoCache = true
+                };
+                responseHeaders.LastModified = new DateTimeOffset(media.UploadDate);
+            }
 
             var file = $"{media.Name}.{Program.ConfigManager.Config.ThumbnailFormat.FileExtensions.ToList()[0]}";
             return File(thumbnailBytes, Program.ConfigManager.Config.ThumbnailFormat.DefaultMimeType, file);
@@ -145,12 +148,15 @@ public class MediaApiController : ControllerBase
                 bytes = LZ4Pickler.Unpickle(bytes);
             }
 
-            var responseHeaders = Response.GetTypedHeaders();
-            responseHeaders.CacheControl = new CacheControlHeaderValue
+            if (Program.ConfigManager.Config.Caching)
             {
-                NoCache = true
-            };
-            responseHeaders.LastModified = new DateTimeOffset(media.UploadDate);
+                var responseHeaders = Response.GetTypedHeaders();
+                responseHeaders.CacheControl = new CacheControlHeaderValue
+                {
+                    NoCache = true
+                };
+                responseHeaders.LastModified = new DateTimeOffset(media.UploadDate);
+            }
 
             var file = $"{media.Name}{media.Extension}";
             var fileContentType = FileExtensionContentTypeProvider.TryGetContentType(file, out string contentType)

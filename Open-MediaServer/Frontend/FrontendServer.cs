@@ -19,12 +19,12 @@ public class FrontendServer
             ContentRootPath = $"{Directory.GetCurrentDirectory()}{Path.DirectorySeparatorChar}Frontend{Path.DirectorySeparatorChar}",
             WebRootPath = "Assets"
         });
-        
+
         if (!Program.ConfigManager.Config.ShowConsoleProviders)
         {
             builder.Logging.ClearProviders();
         }
-        
+
         builder.Services.AddControllers();
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen(options =>
@@ -40,12 +40,12 @@ public class FrontendServer
                     }
                 });
         });
-        
+
         builder.WebHost.UseKestrel(options =>
         {
             options.ListenAnyIP(Program.ConfigManager.Config.FrontendPorts.http);
             options.ListenAnyIP(Program.ConfigManager.Config.FrontendPorts.https, configure => configure.UseHttps());
-                
+
             int? fileUploadMax = Program.ConfigManager.Config.FileNetworkUploadMax;
             if (fileUploadMax != null)
             {
@@ -55,10 +55,7 @@ public class FrontendServer
             options.Limits.MaxRequestBodySize = fileUploadMax;
         });
 
-        builder.Services.AddRazorPages(options =>
-        {
-            options.RootDirectory = "/Frontend/Pages";
-        });
+        builder.Services.AddRazorPages(options => { options.RootDirectory = "/Frontend/Pages"; });
 
         var app = builder.Build();
 
@@ -67,7 +64,7 @@ public class FrontendServer
             app.UseExceptionHandler("/Error");
             app.UseHsts();
         }
-        
+
         if (Program.ConfigManager.Config.ShowSwaggerUi)
         {
             app.UseSwagger();
@@ -81,8 +78,9 @@ public class FrontendServer
         {
             app.UseHttpsRedirection();
         }
+
         app.UseStaticFiles();
-        
+
         app.UseStaticFiles(new StaticFileOptions
         {
             FileProvider = new PhysicalFileProvider(
@@ -93,15 +91,12 @@ public class FrontendServer
         app.UseRouting();
 
         app.UseStatusCodePagesWithRedirects("/404");
-        
+
         app.UseAuthorization();
 
         app.MapRazorPages();
-        
-        app.UseEndpoints(endpoints =>
-        {
-            endpoints.MapControllers();
-        });
+
+        app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
 
         app.Run();
     }

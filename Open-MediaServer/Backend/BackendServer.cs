@@ -16,12 +16,12 @@ public class BackendServer
         {
             builder.Logging.ClearProviders();
         }
-        
+
         builder.WebHost.UseKestrel(options =>
         {
             options.ListenAnyIP(Program.ConfigManager.Config.BackendPorts.http);
             options.ListenAnyIP(Program.ConfigManager.Config.BackendPorts.https, configure => configure.UseHttps());
-            
+
             int? fileUploadMax = Program.ConfigManager.Config.FileNetworkUploadMax;
             if (fileUploadMax != null)
             {
@@ -67,7 +67,7 @@ public class BackendServer
         }
 
         app.UseAuthorization();
-        
+
         app.MapControllers();
 
         app.Run();

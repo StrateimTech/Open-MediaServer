@@ -64,4 +64,6 @@ public class Config
 
     public bool LosslessCompression { get; set; } = true;
     public LZ4Level LosslessCompressionLevel { get; set; } = LZ4Level.L12_MAX;
+
+    public bool Caching { get; set; } = true;
 }
