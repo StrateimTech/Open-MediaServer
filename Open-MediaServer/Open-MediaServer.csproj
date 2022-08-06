@@ -34,7 +34,6 @@
       <Folder Include="Frontend\Assets\css\Admin" />
       <Folder Include="Frontend\Assets\font\Lato" />
       <Folder Include="Frontend\Assets\images" />
-      <Folder Include="Frontend\Assets\js\Account" />
     </ItemGroup>
 
     <ItemGroup>

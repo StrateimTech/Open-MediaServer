@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using Open_MediaServer.Content;
-using SQLite;
 
 namespace Open_MediaServer.Backend.Schema;
 

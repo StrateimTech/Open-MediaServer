@@ -1,5 +1,4 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using SQLiteNetExtensions.Attributes;
 
 namespace Open_MediaServer.Backend.Schema;
 
