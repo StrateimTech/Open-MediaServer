@@ -287,12 +287,15 @@ public class MediaApiController : ControllerBase
 
                 if (fileName.Length > Program.ConfigManager.Config.UploadNameLimit)
                 {
-                    if (file.FileName.Length > Program.ConfigManager.Config.UploadNameLimit)
+                    if (Path.HasExtension(fileName))
                     {
-                        continue;
+                        fileName = Path.GetFileNameWithoutExtension(fileName);
                     }
 
-                    fileName = Path.GetFileNameWithoutExtension(file.FileName);
+                    fileName = fileName.Remove(fileName.Length -
+                                               (fileName.Length - Program.ConfigManager.Config.UploadNameLimit));
+                }
+
                 }
 
                 var safeFileName =
@@ -441,7 +444,7 @@ public class MediaApiController : ControllerBase
                 media.Id == identity.Id && media.Name == identity.Name);
 
             if (media == null)
-            { 
+            {
                 return Redirect("/404");
             }
 
