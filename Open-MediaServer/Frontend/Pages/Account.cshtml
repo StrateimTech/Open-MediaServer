@@ -21,6 +21,7 @@
 {
     <title>@Program.ConfigManager.Config.FrontendName Media - Account</title>
     <link rel="stylesheet" href="~/Frontend/Assets/css/Account/Account.css">
+    <script src="~/Frontend/Assets/js/Account/Account.js"></script>
 }
 
 <!DOCTYPE html>
@@ -28,119 +29,137 @@
 <html lang="en">
 <body>
 <div class="main-container">
-    <div class="main-flex-item">
-        <div class="profile-container">
-            <div class="main-text">
-                Account
-                <hr class="hr-main"/>
-            </div>
-
-            @using (Html.BeginForm("GetUpdate", "UserApi", FormMethod.Get, new {@class = "profile-input-form", @autocomplete = "off"}))
-            {
-                @Html.TextBox("Username", user.Username, new {@type = "hidden"})
-                <div>
-                    <div class="light-text container-desc-text">
-                        Name
-                    </div>
-                    @Html.TextBox("Name", user.Username, new {@class = "profile-input", @placeholder = "Name"})
-                </div>
-                @* <input type="submit" class="profile-update-button profile-button" value="Update Account"/> *@
-                <input type="submit" style="display: none"/>
-            }
-
-            <div class="main-text">
-                Password
-                <hr class="hr-main"/>
-            </div>
-
-            @using (Html.BeginForm("GetPasswordChange", "UserApi", FormMethod.Get, new {@class = "profile-input-form", @autocomplete = "off"}))
-            {
-                @Html.TextBox("Username", user.Username, new {@type = "hidden"})
-                <div>
-                    <div class="light-text container-desc-text">
-                        Current Password
-                    </div>
-                    @Html.TextBox("CurrentPassword", null, new {@class = "profile-input", @placeholder = "Current Password"})
-                </div>
-
-                <div>
-                    <div class="light-text container-desc-text">
-                        Password
-                    </div>
-                    @Html.TextBox("Password", null, new {@class = "profile-input", @placeholder = "Password"})
-                </div>
-
-                <div>
-                    <div class="light-text container-desc-text">
-                        Confirm Password
-                    </div>
-                    @Html.TextBox("PasswordConfirm", null, new {@class = "profile-input", @placeholder = "Confirm Password"})
-                </div>
-                <input type="submit" style="display: none"/>
-            }
-
-            <div class="profile-input-buttons">
-                @using (Html.BeginForm("GetLogout", "UserApi", FormMethod.Get, new {@class = "profile-logout-form"}))
-                {
-                    <input type="submit" class="profile-logout-button profile-button" value="Logout"/>
-                }
-                <a class="profile-delete-button profile-button" href="/account/delete">Delete Account</a>
-            </div>
-        </div>
-    </div>
-    <div class="main-flex-item">
-        <div class="main-text media-main-text">
-            Content
+<div class="main-flex-item">
+    <div class="profile-container">
+        <div class="main-text">
+            Account
             <hr class="hr-main"/>
         </div>
-        <div class="content-container">
-            @{
-                var mediaList = await Program.Database.MediaDatabase.GetAllWithChildrenAsync<DatabaseSchema.Media>();
-                mediaList.RemoveAll(media => media.AuthorId != user.Id);
-                if (mediaList.Count <= 0)
+
+        @using (Html.BeginForm("GetUpdate", "UserApi", FormMethod.Get, new {@class = "profile-input-form", @autocomplete = "off"}))
+        {
+            @Html.TextBox("Username", user.Username, new {@type = "hidden"})
+            <div>
+                <div class="light-text container-desc-text">
+                    Name
+                </div>
+                @Html.TextBox("Name", user.Username, new {@class = "profile-input", @placeholder = "Name"})
+            </div>
+                @* <input type="submit" class="profile-update-button profile-button" value="Update Account"/> *@
+            <input type="submit" style="display: none"/>
+        }
+
+        <div class="main-text">
+            Password
+            <hr class="hr-main"/>
+        </div>
+
+        @using (Html.BeginForm("GetPasswordChange", "UserApi", FormMethod.Get, new {@class = "profile-input-form", @autocomplete = "off"}))
+        {
+            @Html.TextBox("Username", user.Username, new {@type = "hidden"})
+            <div>
+                <div class="light-text container-desc-text">
+                    Current Password
+                </div>
+                @Html.TextBox("CurrentPassword", null, new {@class = "profile-input", @placeholder = "Current Password"})
+            </div>
+
+            <div>
+                <div class="light-text container-desc-text">
+                    Password
+                </div>
+                @Html.TextBox("Password", null, new {@class = "profile-input", @placeholder = "Password"})
+            </div>
+
+            <div>
+                <div class="light-text container-desc-text">
+                    Confirm Password
+                </div>
+                @Html.TextBox("PasswordConfirm", null, new {@class = "profile-input", @placeholder = "Confirm Password"})
+            </div>
+            <input type="submit" style="display: none"/>
+        }
+
+        <div class="profile-input-buttons">
+            @using (Html.BeginForm("GetLogout", "UserApi", FormMethod.Get, new {@class = "profile-logout-form"}))
+            {
+                <input type="submit" class="profile-logout-button profile-button" value="Logout"/>
+            }
+            <a class="profile-delete-button profile-button" href="/account/delete">Delete Account</a>
+        </div>
+    </div>
+</div>
+<div class="main-flex-item">
+    <div class="main-text media-main-text">
+        Content
+        <hr class="hr-main"/>
+    </div>
+    <div class="sort-navbar">
+        <a class="sort-item" onclick="updateQueryURL('name', window);">
+            Name
+        </a>
+        <a class="sort-item" onclick="updateQueryURL('date', window);">
+            Date
+        </a>
+        <a class="sort-item" onclick="updateQueryURL('type', window);">
+            Type
+        </a>
+        <a class="sort-item" onclick="updateQueryURL('size', window);">
+            Size
+        </a>
+        <a class="sort-item" onclick="updateQueryURL('visibility', window);">
+            Visibility
+        </a>
+    </div>
+    <div class="content-container">
+        @{
+            var mediaList = await Program.Database.MediaDatabase.GetAllWithChildrenAsync<DatabaseSchema.Media>();
+            mediaList.RemoveAll(media => media.AuthorId != user.Id);
+            if (mediaList.Count <= 0)
+            {
+                <div class="no-content-available">
+                    This account has no media associated with it.<br/>
+                    Try uploading a video!
+                </div>
+            }
+            else
+            {
+                mediaList = mediaList.SortMediaFromQuery(Request.Query);
+                foreach (var media in mediaList)
                 {
-                    <div class="no-content-available">
-                        This account has no media associated with it.<br/>
-                        Try uploading a video!
-                    </div>
-                }
-                else
-                {
-                    foreach (var media in mediaList)
+                    if (media.ThumbnailPath != null)
                     {
-                        if (media.ThumbnailPath != null)
-                        {
-                            <div class="content-item">
-                                <a class="content-href" href="/@media.Id/@media.Name@media.Extension">
-                                    <img class="content-item-thumbnail" src="@Url.Action("GetThumbnail", "MediaApi", new {Id = media.Id, Name = media.Name}, Request.Scheme, Program.ConfigManager.Config.FrontendDomain)" alt="@Uri.UnescapeDataString(media.Name)"/>
-                                    <div class="content-item-text">
-                                        @Uri.UnescapeDataString(media.Name)@media.Extension<br/>
-                                        @media.UploadDate.ToString("MM/dd/yy HH:mm")<br/>
-                                        @(media.Public ? "Public" : "Private") • @StringUtils.FormatBytesWithIdentifier(media.ContentSize)
-                                    </div>
-                                </a>
-                            </div>
-                        }
-                        else
-                        {
-                            <div class="content-item">
-                                <a class="content-href" href="/@media.Id/@media.Name@media.Extension">
-                                    <div class="content-item-no-thumbnail">
-                                        No Thumbnail
-                                    </div>
-                                    <div class="content-item-text">
-                                        @Uri.UnescapeDataString(media.Name)@media.Extension<br/>
-                                        @media.UploadDate.ToString("MM/dd/yy HH:mm")<br/>
-                                        @(media.Public ? "Public" : "Private") • @StringUtils.FormatBytesWithIdentifier(media.ContentSize)
-                                    </div>
-                                </a>
-                            </div>
-                        }
+                        <div class="content-item">
+                            <a class="content-href" href="/@media.Id/@media.Name@media.Extension">
+                                <img class="content-item-thumbnail" src="@Url.Action("GetThumbnail", "MediaApi", new {Id = media.Id, Name = media.Name}, Request.Scheme, Program.ConfigManager.Config.FrontendDomain)" alt="@Uri.UnescapeDataString(media.Name)"/>
+                                <div class="content-item-text">
+                                    @Uri.UnescapeDataString(media.Name)@media.Extension<br/>
+                                    @media.UploadDate.ToString("MM/dd/yy HH:mm")<br/>
+                                    @(media.Public ? "Public" : "Private") • @StringUtils.FormatBytesWithIdentifier(media.ContentSize)
+                                </div>
+                            </a>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="content-item">
+                            <a class="content-href" href="/@media.Id/@media.Name@media.Extension">
+                                <div class="content-item-no-thumbnail">
+                                    No Thumbnail
+                                </div>
+                                <div class="content-item-text">
+                                    @Uri.UnescapeDataString(media.Name)@media.Extension<br/>
+                                    @media.UploadDate.ToString("MM/dd/yy HH:mm")<br/>
+                                    @(media.Public ? "Public" : "Private") • @StringUtils.FormatBytesWithIdentifier(media.ContentSize)
+                                </div>
+                            </a>
+                        </div>
                     }
                 }
             }
-        </div>
+        }
     </div>
+</div>
 </div>
 </body>
 </html>

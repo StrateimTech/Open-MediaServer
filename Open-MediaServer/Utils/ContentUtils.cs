@@ -1,9 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using HeyRed.ImageSharp.AVCodecFormats;
+using Microsoft.AspNetCore.Http;
 using Open_MediaServer.Content;
+using Open_MediaServer.Database.Schema;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Formats;
 using SixLabors.ImageSharp.PixelFormats;
@@ -65,5 +68,89 @@ public static class ContentUtils
         using var ms = new MemoryStream();
         await image.SaveAsync(ms, format);
         return ms.ToArray();
+    }
+
+    public static List<DatabaseSchema.Media> SortMediaFromQuery(this List<DatabaseSchema.Media> mediaList, IQueryCollection queryCollection)
+    {
+        if (queryCollection.Count > 0)
+        {
+            if (queryCollection.ContainsKey("name"))
+            {
+                var nameSort = queryCollection["name"];
+                if (nameSort[0] != null)
+                {
+                    if (Boolean.TryParse(nameSort[0], out bool value) && value)
+                    {
+                        mediaList = mediaList.OrderBy(media => Uri.UnescapeDataString(media.Name)).ToList();
+                    }
+                }
+            }
+
+            if (queryCollection.ContainsKey("author"))
+            {
+                var authorSort = queryCollection["author"];
+
+                if (authorSort[0] != null)
+                {
+                    if (Boolean.TryParse(authorSort[0], out bool value) && value)
+                    {
+                        mediaList = mediaList.OrderBy(media => media.AuthorId).ToList();
+                    }
+                }
+            }
+
+            if (queryCollection.ContainsKey("date"))
+            {
+                var dateSort = queryCollection["date"];
+
+                if (dateSort[0] != null)
+                {
+                    if (Boolean.TryParse(dateSort[0], out bool value) && value)
+                    {
+                        mediaList = mediaList.OrderBy(media => media.UploadDate).Reverse().ToList();
+                    }
+                }
+            }
+
+            if (queryCollection.ContainsKey("type"))
+            {
+                var typeSort = queryCollection["type"];
+
+                if (typeSort[0] != null)
+                {
+                    if (Boolean.TryParse(typeSort[0], out bool value) && value)
+                    {
+                        mediaList = mediaList.OrderBy(media => media.Extension).ToList();
+                    }
+                }
+            }
+
+            if (queryCollection.ContainsKey("size"))
+            {
+                var sizeSort = queryCollection["size"];
+
+                if (sizeSort[0] != null)
+                {
+                    if (Boolean.TryParse(sizeSort[0], out bool value) && value)
+                    {
+                        mediaList = mediaList.OrderBy(media => media.ContentSize).Reverse().ToList();
+                    }
+                }
+            }
+
+            if (queryCollection.ContainsKey("visibility"))
+            {
+                var visibilitySort = queryCollection["visibility"];
+
+                if (visibilitySort[0] != null)
+                {
+                    if (Boolean.TryParse(visibilitySort[0], out bool value) && value)
+                    {
+                        mediaList = mediaList.OrderBy(media => media.Public).ToList();
+                    }
+                }
+            }
+        }
+        return mediaList;
     }
 }
