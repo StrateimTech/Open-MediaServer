@@ -68,7 +68,7 @@ public class UserApiController : Controller
 
             await Program.Database.UserDatabase.InsertWithChildrenAsync(userSchema);
 
-            return RedirectToPage("/Account");
+            return RedirectToPage("/account");
         }
 
         return StatusCode(StatusCodes.Status400BadRequest, ModelState);
@@ -128,7 +128,7 @@ public class UserApiController : Controller
                     });
                 }
 
-                return RedirectToPage("/Account");
+                return RedirectToPage("/account");
             }
 
             ModelState.AddModelError("ErrorMessage", "Username or Password is incorrect!");
@@ -200,7 +200,7 @@ public class UserApiController : Controller
         {
             if (Request.Cookies["user_session"] == null || !UserUtils.IsAuthed(Request.Cookies["user_session"]))
             {
-                return RedirectToPage("/Login");
+                return RedirectToPage("/login");
             }
 
             DatabaseSchema.User cookieUser = await UserUtils.GetUser(Request.Cookies["user_session"]);
@@ -225,7 +225,7 @@ public class UserApiController : Controller
                 }
 
                 await Program.Database.UserDatabase.UpdateAsync(user);
-                return Redirect("/Account");
+                return Redirect("/account");
             }
 
             return RedirectToPage("/401");
@@ -242,6 +242,6 @@ public class UserApiController : Controller
             Response.Cookies.Delete("user_session");
         }
 
-        return RedirectToPage("/Login");
+        return RedirectToPage("/login");
     }
 }

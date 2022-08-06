@@ -1,4 +1,4 @@
-﻿@page
+﻿@page "/register"
 @using Open_MediaServer
 @using Open_MediaServer.Utils
 @using Open_MediaServer.Backend.Schema
@@ -15,7 +15,7 @@
 
     if (!Program.ConfigManager.Config.AllowRegistering)
     {
-        Response.Redirect("/Login");
+        Response.Redirect("/login");
         return;
     }
 }
@@ -39,7 +39,7 @@
         @Html.ValidationSummary(true)
         @Html.TextBoxFor(x => x.Username, null, new {@placeholder = "Username", @required = "required"})
         @Html.TextBoxFor(x => x.Password, null, new {@placeholder = "Password", @required = "required", @type = "password"})
-        <label class="login-register-text">Already have an account? <a class="login-href" href="/Login">Login</a></label>
+        <label class="login-register-text">Already have an account? <a class="login-href" href="/login">Login</a></label>
         <div>
             @Html.ValidationMessage("ErrorMessage", null, new {@class = "register-error-text"}, null)
         </div>

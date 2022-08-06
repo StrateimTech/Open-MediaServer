@@ -303,7 +303,7 @@ public class MediaApiController : ControllerBase
                 await PostUploadContent(upload);
             }
 
-            return RedirectToPage("/Content");
+            return RedirectToPage("/content");
         }
 
         return RedirectToPage("/400");
@@ -422,7 +422,7 @@ public class MediaApiController : ControllerBase
         {
             if (Request.Cookies["user_session"] == null || !UserUtils.IsAuthed(Request.Cookies["user_session"]))
             {
-                return RedirectToPage("/Login");
+                return RedirectToPage("/login");
             }
 
             DatabaseSchema.User user = await UserUtils.GetUserWithChildren(Request.Cookies["user_session"]);
@@ -454,7 +454,7 @@ public class MediaApiController : ControllerBase
             await Program.Database.MediaDatabase.DeleteAsync<DatabaseSchema.Media>(media.Id);
             await Program.Database.UserDatabase.UpdateWithChildrenAsync(user);
 
-            return RedirectToPage("/Content");
+            return RedirectToPage("/content");
         }
 
         return StatusCode(StatusCodes.Status400BadRequest, ModelState);

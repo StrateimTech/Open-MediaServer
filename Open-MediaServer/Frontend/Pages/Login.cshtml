@@ -1,4 +1,4 @@
-﻿@page
+﻿@page "/login"
 @using Open_MediaServer
 @using Open_MediaServer.Backend.Schema
 @using Open_MediaServer.Utils
@@ -9,7 +9,7 @@
 
     if (Request is {Cookies: { } } && Request.Cookies["user_session"] != null && UserUtils.IsAuthed(Request.Cookies["user_session"]))
     {
-        Response.Redirect("/Account");
+        Response.Redirect("/account");
         return;
     }
 }
@@ -35,7 +35,7 @@
         @Html.TextBoxFor(x => x.Password, null, new {@placeholder = "Password", @required = "required", @type = "password"})
         if (Program.ConfigManager.Config.AllowRegistering)
         {
-            <label class="login-register-text">Don't have an account? <a class="register-href" href="/Register">Register</a></label>
+            <label class="login-register-text">Don't have an account? <a class="register-href" href="/register">Register</a></label>
         }
         <div>
             @Html.ValidationMessage("ErrorMessage", null, new {@class = "login-error-text"}, null)

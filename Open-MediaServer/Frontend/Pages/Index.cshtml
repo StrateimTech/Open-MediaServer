@@ -27,13 +27,32 @@
 <body>
 <div class="fade-div">
     <div style="animation: fade-in-move-down 2s;" class="fade-text loading-text">
-        SERVING @uploadCount UPLOADS
+        SERVING @uploadCount UPLOAD@{
+                                       if (uploadCount > 1 || uploadCount <= 0)
+                                       {
+                                           <text>S</text>
+                                       }
+                                   }
     </div>
     <div style="animation: fade-in-move-down 1.5s;" class="fade-text loading-text">
-        HANDLING @userCount USERS
+        HANDLING @userCount USER@{
+                                    if (userCount > 1 || userCount <= 0)
+                                    {
+                                        <text>S</text>
+                                    }
+                                }
     </div>
     <div style="animation: fade-in-move-down 1s;" class="fade-text loading-text">
-        STORING @contentSize
+        STORING @{
+                    if (totalContentSize <= 0)
+                    {
+                        <text>NOTHING</text>
+                    }
+                    else
+                    {
+                        <text>@contentSize</text>;
+                    }
+                }
     </div>
 </div>
 </body>

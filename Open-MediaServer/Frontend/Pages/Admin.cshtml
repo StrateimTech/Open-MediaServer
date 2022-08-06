@@ -1,4 +1,4 @@
-﻿@page
+﻿@page "/admin"
 @using Open_MediaServer
 @using Open_MediaServer.Utils
 @model Open_MediaServer.Frontend.Pages.Admin
@@ -9,7 +9,7 @@
 
     if (Request.Cookies["user_session"] == null || !UserUtils.IsAuthed(Request.Cookies["user_session"]))
     {
-        Response.Redirect("/Login?returnUrl=Admin");
+        Response.Redirect("/login");
         return;
     }
 

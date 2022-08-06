@@ -1,4 +1,4 @@
-﻿@page
+﻿@page "/upload"
 @using Open_MediaServer
 @using Open_MediaServer.Utils
 @model Open_MediaServer.Frontend.Pages.Upload
@@ -8,7 +8,7 @@
 
     if (Request.Cookies["user_session"] == null || !UserUtils.IsAuthed(Request.Cookies["user_session"]))
     {
-        Response.Redirect("/Login?returnUrl=Upload");
+        Response.Redirect("/login");
         return;
     }
 }

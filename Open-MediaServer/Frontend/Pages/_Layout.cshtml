@@ -4,13 +4,13 @@
 
 @{
     string accountText = "LOGIN";
-    string accountUrl = "/Login";
+    string accountUrl = "/login";
     if (Context.Request.Cookies["user_session"] != null && UserUtils.IsAuthed(Context.Request.Cookies["user_session"]))
     {
         var user = await UserUtils.GetUser(Context.Request.Cookies["user_session"]);
 
         accountText = user.Username.ToUpper();
-        accountUrl = "/Account";
+        accountUrl = "/account";
     }
 }
 
@@ -43,7 +43,7 @@
             </a>
         </li>
         <li>
-            <a href="/Content">
+            <a href="/content">
                 CONTENT
             </a>
         </li>
@@ -51,7 +51,7 @@
             if (Context.Request.Cookies["user_session"] != null && UserUtils.IsAuthed(Context.Request.Cookies["user_session"]))
             {
                 <li>
-                    <a href="/Upload">
+                    <a href="/upload">
                         UPLOAD
                     </a>
                 </li>

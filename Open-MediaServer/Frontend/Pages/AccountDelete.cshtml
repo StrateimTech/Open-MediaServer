@@ -1,12 +1,17 @@
-﻿@page "/Account/Delete"
+﻿@page "/account/delete"
 @using Open_MediaServer
 @using Open_MediaServer.Utils
 @using Open_MediaServer.Backend.Schema
 @model UserSchema.UserDelete
-@* @model Open_MediaServer.Frontend.Pages.AccountDelete *@
 
 @{
     Layout = "_Layout.cshtml";
+    
+    if (Request.Cookies["user_session"] == null || !UserUtils.IsAuthed(Request.Cookies["user_session"]))
+    {
+        Response.Redirect("/login");
+        return;
+    }
 }
 
 @section AdditionalHead

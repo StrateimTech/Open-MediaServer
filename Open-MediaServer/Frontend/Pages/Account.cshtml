@@ -1,4 +1,4 @@
-﻿@page
+﻿@page "/account"
 @using Open_MediaServer
 @using Open_MediaServer.Database.Schema
 @using Open_MediaServer.Utils
@@ -10,7 +10,7 @@
 
     if (Request.Cookies["user_session"] == null || !UserUtils.IsAuthed(Request.Cookies["user_session"]))
     {
-        Response.Redirect("/Login?returnUrl=Account");
+        Response.Redirect("/login");
         return;
     }
 
@@ -51,7 +51,7 @@
                 {
                     <input type="submit" class="profile-logout-button profile-button" value="Logout"/>
                 }
-                <a class="profile-delete-button profile-button" href="/Account/Delete">Delete Account</a>
+                <a class="profile-delete-button profile-button" href="/account/delete">Delete Account</a>
             </div>
         </div>
     </div>
