@@ -267,8 +267,6 @@ public class UserApiController : Controller
                     iterationCount: 100000,
                     numBytesRequested: 256 / 8));
 
-                Console.WriteLine(previousHashedPassword);
-                Console.WriteLine(user.Password);
                 if (previousHashedPassword.SequenceEqual(user.Password))
                 {
                     if (passwordChange.Password.SequenceEqual(passwordChange.PasswordConfirm))
