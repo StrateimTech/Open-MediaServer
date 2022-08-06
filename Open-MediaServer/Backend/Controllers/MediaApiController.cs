@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -235,13 +234,13 @@ public class MediaApiController : ControllerBase
         {
             if (Request.Cookies["user_session"] == null || !UserUtils.IsAuthed(Request.Cookies["user_session"]))
             {
-                return RedirectToPage("/401");
+                return Redirect("/401");
             }
 
             var formFiles = HttpContext.Request.Form.Files.DistinctBy(file => file.FileName).ToList();
             if (formFiles.Count <= 0)
             {
-                return RedirectToPage("/400");
+                return Redirect("/400");
             }
 
             for (int i = 0; i < formFiles.Count; i++)
@@ -306,7 +305,7 @@ public class MediaApiController : ControllerBase
             return RedirectToPage("/content");
         }
 
-        return RedirectToPage("/400");
+        return Redirect("/400");
     }
 
     [HttpPost("/api/upload/")]
@@ -429,20 +428,20 @@ public class MediaApiController : ControllerBase
 
             if (user == null)
             {
-                return RedirectToPage("/404");
+                return Redirect("/404");
             }
 
             var media = await Program.Database.MediaDatabase.FindAsync<DatabaseSchema.Media>(media =>
                 media.Id == identity.Id && media.Name == identity.Name);
 
             if (media == null)
-            {
-                return RedirectToPage("/404");
+            { 
+                return Redirect("/404");
             }
 
             if (media.AuthorId != user.Id && !user.Admin)
             {
-                return RedirectToPage("/403");
+                return Redirect("/403");
             }
 
             Program.ContentManager.DeleteContent(media.Id, media.Name, media.Extension, media.ContentType);

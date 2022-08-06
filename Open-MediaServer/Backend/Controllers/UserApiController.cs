@@ -213,8 +213,8 @@ public class UserApiController : Controller
             var user = await Program.Database.UserDatabase.FindAsync<DatabaseSchema.User>(user =>
                 user.Username == userUpdate.Username);
             if (user == null)
-            {
-                return RedirectToPage("/400");
+            { 
+                return Redirect("/400");
             }
 
             if (cookieUser.Id == user.Id)
@@ -228,7 +228,7 @@ public class UserApiController : Controller
                 return Redirect("/account");
             }
 
-            return RedirectToPage("/401");
+            return Redirect("/401");
         }
 
         return StatusCode(StatusCodes.Status400BadRequest, ModelState);
