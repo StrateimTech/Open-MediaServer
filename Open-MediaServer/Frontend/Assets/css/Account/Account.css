@@ -78,6 +78,7 @@
 }
 
 .profile-input-buttons {
+    margin-top: auto;
     display: flex;
     flex-flow: row;
     gap: 8px;
@@ -88,7 +89,6 @@
     
     display: flex;
     flex-flow: column;
-    height: 100%;
     gap: 8px;
 }
 
@@ -106,16 +106,6 @@
     box-sizing: border-box;
 
     cursor: pointer;
-}
-
-.profile-update-button {
-    background-color: rgb(8, 140, 40);
-}
-
-.profile-update-button:active {
-    background-color: rgb(11, 125, 30);
-    color: rgb(240, 240, 240);
-    opacity: 0.9;
 }
 
 .profile-delete-button {

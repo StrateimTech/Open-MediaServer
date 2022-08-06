@@ -17,7 +17,7 @@ namespace Open_MediaServer.Backend.Controllers;
 public class UserApiController : Controller
 {
     [HttpPost("/api/account/register/")]
-    public async Task<ActionResult> PostRegister([FromForm] UserSchema.User userRegister)
+    public async Task<ActionResult> PostRegister([FromForm] UserSchema.User register)
     {
         if (ModelState.IsValid)
         {
@@ -27,12 +27,12 @@ public class UserApiController : Controller
             }
 
             var usernameExists = Program.Database.UserDatabase.Table<DatabaseSchema.User>().ToListAsync().Result
-                .Any(user => user.Username == userRegister.Username);
+                .Any(user => user.Username == register.Username);
 
             if (usernameExists)
             {
                 ModelState.AddModelError("ErrorMessage", "Username is already in use!");
-                return View("~/Frontend/Pages/Register.cshtml", userRegister);
+                return View("~/Frontend/Pages/Register.cshtml", register);
             }
 
             byte[] salt = new byte[128 / 8];
@@ -40,7 +40,7 @@ public class UserApiController : Controller
             rng.GetNonZeroBytes(salt);
 
             string hashedPassword = Convert.ToBase64String(KeyDerivation.Pbkdf2(
-                password: userRegister.Password,
+                password: register.Password,
                 salt: salt,
                 prf: KeyDerivationPrf.HMACSHA256,
                 iterationCount: 100000,
@@ -58,7 +58,7 @@ public class UserApiController : Controller
 
             var userSchema = new DatabaseSchema.User()
             {
-                Username = userRegister.Username,
+                Username = register.Username,
                 Password = hashedPassword,
                 Salt = salt,
                 SessionKey = Convert.ToBase64String(sessionKey),
@@ -75,20 +75,20 @@ public class UserApiController : Controller
     }
 
     [HttpPost("/api/account/login/")]
-    public async Task<ActionResult> PostLogin([FromForm] UserSchema.User userLogin)
+    public async Task<ActionResult> PostLogin([FromForm] UserSchema.User login)
     {
         if (ModelState.IsValid)
         {
             var user = await Program.Database.UserDatabase
-                .FindAsync<DatabaseSchema.User>(user => user.Username == userLogin.Username);
+                .FindAsync<DatabaseSchema.User>(user => user.Username == login.Username);
             if (user == null)
             {
                 ModelState.AddModelError("ErrorMessage", "Username or Password is incorrect!");
-                return View("~/Frontend/Pages/Login.cshtml", userLogin);
+                return View("~/Frontend/Pages/Login.cshtml", login);
             }
 
             string hashedPassword = Convert.ToBase64String(KeyDerivation.Pbkdf2(
-                password: userLogin.Password,
+                password: login.Password,
                 salt: user.Salt,
                 prf: KeyDerivationPrf.HMACSHA256,
                 iterationCount: 100000,
@@ -132,23 +132,23 @@ public class UserApiController : Controller
             }
 
             ModelState.AddModelError("ErrorMessage", "Username or Password is incorrect!");
-            return View("~/Frontend/Pages/Login.cshtml", userLogin);
+            return View("~/Frontend/Pages/Login.cshtml", login);
         }
 
         return StatusCode(StatusCodes.Status400BadRequest, ModelState);
     }
 
     [HttpPost("/api/account/delete/")]
-    public async Task<ActionResult> PostDelete([FromForm] UserSchema.UserDelete userDelete)
+    public async Task<ActionResult> PostDelete([FromForm] UserSchema.UserDelete delete)
     {
         if (ModelState.IsValid)
         {
             var userWithoutChildren = await Program.Database.UserDatabase.FindAsync<DatabaseSchema.User>(user =>
-                user.Username == userDelete.User.Username);
+                user.Username == delete.User.Username);
             if (userWithoutChildren == null)
             {
                 ModelState.AddModelError("ErrorMessage", "Username or password is incorrect!");
-                return View("~/Frontend/Pages/AccountDelete.cshtml", userDelete);
+                return View("~/Frontend/Pages/AccountDelete.cshtml", delete);
             }
 
             var user =
@@ -157,18 +157,18 @@ public class UserApiController : Controller
             if (user == null)
             {
                 ModelState.AddModelError("ErrorMessage", "Username or password is incorrect!");
-                return View("~/Frontend/Pages/AccountDelete.cshtml", userDelete);
+                return View("~/Frontend/Pages/AccountDelete.cshtml", delete);
             }
 
             string hashedPassword = Convert.ToBase64String(KeyDerivation.Pbkdf2(
-                password: userDelete.User.Password,
+                password: delete.User.Password,
                 salt: user.Salt,
                 prf: KeyDerivationPrf.HMACSHA256,
                 iterationCount: 100000,
                 numBytesRequested: 256 / 8));
             if (hashedPassword.SequenceEqual(user.Password))
             {
-                if (userDelete.DeleteContent)
+                if (delete.DeleteContent)
                 {
                     foreach (var mediaIdentity in user.Uploads)
                     {
@@ -187,14 +187,14 @@ public class UserApiController : Controller
             }
 
             ModelState.AddModelError("ErrorMessage", "Username or password is incorrect!");
-            return View("~/Frontend/Pages/AccountDelete.cshtml", userDelete);
+            return View("~/Frontend/Pages/AccountDelete.cshtml", delete);
         }
 
         return StatusCode(StatusCodes.Status400BadRequest, ModelState);
     }
 
     [HttpGet("/api/account/update/")]
-    public async Task<ActionResult> GetUpdate([FromQuery] UserSchema.UserUpdate userUpdate)
+    public async Task<ActionResult> GetUpdate([FromQuery] UserSchema.UserUpdate update)
     {
         if (ModelState.IsValid)
         {
@@ -211,17 +211,17 @@ public class UserApiController : Controller
             }
 
             var user = await Program.Database.UserDatabase.FindAsync<DatabaseSchema.User>(user =>
-                user.Username == userUpdate.Username);
+                user.Username == update.Username);
             if (user == null)
-            { 
+            {
                 return Redirect("/400");
             }
 
             if (cookieUser.Id == user.Id)
             {
-                if (userUpdate.Name != null)
+                if (update.Name != null)
                 {
-                    user.Username = userUpdate.Name;
+                    user.Username = update.Name;
                 }
 
                 await Program.Database.UserDatabase.UpdateAsync(user);
@@ -232,6 +232,84 @@ public class UserApiController : Controller
         }
 
         return StatusCode(StatusCodes.Status400BadRequest, ModelState);
+    }
+
+    [HttpGet("/api/account/passwordchange/")]
+    public async Task<ActionResult> GetPasswordChange([FromQuery] UserSchema.UserPasswordChange passwordChange)
+    {
+        if (ModelState.IsValid)
+        {
+            if (Request.Cookies["user_session"] == null || !UserUtils.IsAuthed(Request.Cookies["user_session"]))
+            {
+                return RedirectToPage("/login");
+            }
+
+            DatabaseSchema.User cookieUser = await UserUtils.GetUser(Request.Cookies["user_session"]);
+
+            if (cookieUser == null)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
+
+            var user = await Program.Database.UserDatabase.FindAsync<DatabaseSchema.User>(user =>
+                user.Username == passwordChange.Username);
+            if (user == null)
+            {
+                return Redirect("/400");
+            }
+
+            if (cookieUser.Id == user.Id)
+            {
+                string previousHashedPassword = Convert.ToBase64String(KeyDerivation.Pbkdf2(
+                    password: passwordChange.CurrentPassword,
+                    salt: user.Salt,
+                    prf: KeyDerivationPrf.HMACSHA256,
+                    iterationCount: 100000,
+                    numBytesRequested: 256 / 8));
+
+                Console.WriteLine(previousHashedPassword);
+                Console.WriteLine(user.Password);
+                if (previousHashedPassword.SequenceEqual(user.Password))
+                {
+                    if (passwordChange.Password.SequenceEqual(passwordChange.PasswordConfirm))
+                    {
+                        byte[] salt = new byte[128 / 8];
+                        using var rng = RandomNumberGenerator.Create();
+                        rng.GetNonZeroBytes(salt);
+
+                        string hashedPassword = Convert.ToBase64String(KeyDerivation.Pbkdf2(
+                            password: passwordChange.Password,
+                            salt: salt,
+                            prf: KeyDerivationPrf.HMACSHA256,
+                            iterationCount: 100000,
+                            numBytesRequested: 256 / 8));
+
+                        byte[] sessionKey = new byte[64];
+                        rng.GetNonZeroBytes(sessionKey);
+
+                        user.Salt = salt;
+                        user.Password = hashedPassword;
+                        user.SessionKey = Convert.ToBase64String(sessionKey);
+
+                        if (Request.Cookies["user_session"] != null)
+                        {
+                            Response.Cookies.Delete("user_session");
+                        }
+
+                        await Program.Database.UserDatabase.UpdateWithChildrenAsync(user);
+                        return RedirectPermanent("/login");
+                    }
+
+                    return Redirect("/account");
+                }
+
+                return Redirect("/account");
+            }
+
+            return Redirect("/401");
+        }
+
+        return Redirect("/account");
     }
 
     [HttpGet("/api/account/logout/")]

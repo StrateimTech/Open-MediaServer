@@ -22,4 +22,13 @@ public class UserSchema
         [Required] public string Username { get; set; }
         public string Name { get; set; }
     }
+    
+    public class UserPasswordChange
+    {
+        [Required] public string Username { get; set; }
+        public string CurrentPassword { get; set; }
+        
+        public string Password { get; set; }
+        public string PasswordConfirm { get; set; }
+    }
 }

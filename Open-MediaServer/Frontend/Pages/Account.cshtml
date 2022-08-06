@@ -21,6 +21,7 @@
 {
     <title>@Program.ConfigManager.Config.FrontendName Media - Account</title>
     <link rel="stylesheet" href="~/Frontend/Assets/css/Account/Account.css">
+    <script src="~/Frontend/Assets/js/Account/Account.js"></script>
 }
 
 <!DOCTYPE html>
@@ -44,8 +45,41 @@
                     </div>
                     @Html.TextBox("Name", user.Username, new {@class = "profile-input", @placeholder = "Name"})
                 </div>
-                <input type="submit" class="profile-update-button profile-button" value="Update Account"/>
+                @* <input type="submit" class="profile-update-button profile-button" value="Update Account"/> *@
+                <input type="submit" style="display: none"/>
             }
+
+            <div class="main-text">
+                Password
+                <hr class="hr-main"/>
+            </div>
+
+            @using (Html.BeginForm("GetPasswordChange", "UserApi", FormMethod.Get, new {@class = "profile-input-form", @autocomplete = "off"}))
+            {
+                @Html.TextBox("Username", user.Username, new {@type = "hidden"})
+                <div>
+                    <div class="light-text container-desc-text">
+                        Current Password
+                    </div>
+                    @Html.TextBox("CurrentPassword", null, new {@class = "profile-input", @placeholder = "Current Password"})
+                </div>
+
+                <div>
+                    <div class="light-text container-desc-text">
+                        Password
+                    </div>
+                    @Html.TextBox("Password", null, new {@class = "profile-input", @placeholder = "Password"})
+                </div>
+
+                <div>
+                    <div class="light-text container-desc-text">
+                        Confirm Password
+                    </div>
+                    @Html.TextBox("PasswordConfirm", null, new {@class = "profile-input", @placeholder = "Confirm Password"})
+                </div>
+                <input type="submit" style="display: none"/>
+            }
+
             <div class="profile-input-buttons">
                 @using (Html.BeginForm("GetLogout", "UserApi", FormMethod.Get, new {@class = "profile-logout-form"}))
                 {
