@@ -337,7 +337,8 @@ public class MediaApiController : ControllerBase
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
 
-            var contentType = ContentUtils.GetContentType(upload.Extension);
+            var mediaExtension = ContentUtils.GetContentExtension(upload.Content, upload.Extension);
+            var contentType = ContentUtils.GetContentType(mediaExtension);
             if (contentType == null)
             {
                 return StatusCode(StatusCodes.Status400BadRequest);
@@ -374,11 +375,11 @@ public class MediaApiController : ControllerBase
                 Id = await Program.Database.MediaDatabase.GenerateUniqueMediaId(Program.ConfigManager.Config
                     .UniqueIdLength),
                 Name = Uri.EscapeDataString(Uri.UnescapeDataString(upload.Name)),
-                Extension = upload.Extension,
+                Extension = mediaExtension,
                 UploadDate = DateTime.UtcNow,
                 ContentSize = content.Length,
                 ContentCompressed = contentCompressed,
-                ContentMime = FileExtensionContentTypeProvider.TryGetContentType($"{upload.Name}{upload.Extension}",
+                ContentMime = FileExtensionContentTypeProvider.TryGetContentType($"{upload.Name}{mediaExtension}",
                     out string mimeType)
                     ? mimeType
                     : "application/octet-stream",

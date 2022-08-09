@@ -64,6 +64,9 @@ public class Config
         ".txt"
     };
 
+    // Note: since this uses TrID file signatures' you can only use it personally or for non commercial, you'll have you buy a commercial license if not
+    public bool UseMimeDetective { get; set; } = true;
+
     public bool LosslessCompression { get; set; } = true;
     public LZ4Level LosslessCompressionLevel { get; set; } = LZ4Level.L12_MAX;
 

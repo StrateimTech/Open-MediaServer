@@ -1,10 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using HeyRed.ImageSharp.AVCodecFormats;
 using Microsoft.AspNetCore.Http;
+using MimeDetective;
+using MimeDetective.Definitions;
+using MimeDetective.Definitions.Licensing;
+using MimeDetective.Storage;
 using Open_MediaServer.Content;
 using Open_MediaServer.Database.Schema;
 using SixLabors.ImageSharp;
@@ -16,9 +21,8 @@ namespace Open_MediaServer.Utils;
 
 public static class ContentUtils
 {
-    public static ContentType? GetContentType( /*byte[] data,*/ string extension)
+    public static ContentType? GetContentType(string extension)
     {
-        // TODO: This can be easily spoofed just by changing the extension... couldn't find a good file type identifier library
         if (Program.ConfigManager.Config.VideoTypes.Contains(extension, StringComparer.OrdinalIgnoreCase))
         {
             return ContentType.Video;
@@ -36,6 +40,47 @@ public static class ContentUtils
         }
 
         return null;
+    }
+
+    public static string GetContentExtension(byte[] data, string extension)
+    {
+        if (Program.ConfigManager.Config.UseMimeDetective)
+        {
+            var definitions = new CondensedBuilder()
+            {
+                UsageType = UsageType.PersonalNonCommercial
+            }.Build();
+
+            List<string> list = new List<string>();
+            list.AddRange(Program.ConfigManager.Config.VideoTypes);
+            list.AddRange(Program.ConfigManager.Config.ImageTypes);
+            if (Program.ConfigManager.Config.OtherTypes != null)
+            {
+                list.AddRange(Program.ConfigManager.Config.OtherTypes);
+            }
+
+            definitions
+                .ScopeExtensions(list.ToArray())
+                .TrimMeta()
+                .TrimDescription()
+                .TrimMimeType()
+                .ToImmutableArray();
+            
+            var allCondensedDefinitions = new ContentInspectorBuilder()
+            {
+                Definitions = definitions
+            }.Build();
+
+            var extensionMatch = allCondensedDefinitions.Inspect(data).ByFileExtension()[0];
+            extension = extensionMatch.Extension;
+        }
+
+        if (!extension.Contains("."))
+        {
+            extension = extension.Insert(0, ".");
+        }
+
+        return extension;
     }
 
     public static (int, int) GetDimensions(byte[] data, ContentType contentType)
