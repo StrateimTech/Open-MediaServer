@@ -58,7 +58,8 @@ public class Config
         ".mp4", ".avi", ".mkv", ".mov", ".webm", ".wmv"
     };
 
-    public string[] OtherTypes { get; set; } =
+    // If you want to accept all types of content set null
+    public string[]? OtherTypes { get; set; } =
     {
         ".txt"
     };

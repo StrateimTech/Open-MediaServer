@@ -20,11 +20,21 @@ public static class ContentUtils
     {
         // TODO: This can be easily spoofed just by changing the extension... couldn't find a good file type identifier library
         if (Program.ConfigManager.Config.VideoTypes.Contains(extension, StringComparer.OrdinalIgnoreCase))
+        {
             return ContentType.Video;
+        }
+
         if (Program.ConfigManager.Config.ImageTypes.Contains(extension, StringComparer.OrdinalIgnoreCase))
+        {
             return ContentType.Image;
-        if (Program.ConfigManager.Config.OtherTypes.Contains(extension, StringComparer.OrdinalIgnoreCase))
+        }
+
+        if (Program.ConfigManager.Config.OtherTypes == null ||
+            Program.ConfigManager.Config.OtherTypes.Contains(extension, StringComparer.OrdinalIgnoreCase))
+        {
             return ContentType.Other;
+        }
+
         return null;
     }
 
@@ -70,7 +80,8 @@ public static class ContentUtils
         return ms.ToArray();
     }
 
-    public static List<DatabaseSchema.Media> SortMediaFromQuery(this List<DatabaseSchema.Media> mediaList, IQueryCollection queryCollection)
+    public static List<DatabaseSchema.Media> SortMediaFromQuery(this List<DatabaseSchema.Media> mediaList,
+        IQueryCollection queryCollection)
     {
         if (queryCollection.Count > 0)
         {
@@ -151,6 +162,7 @@ public static class ContentUtils
                 }
             }
         }
+
         return mediaList;
     }
 }
