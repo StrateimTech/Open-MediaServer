@@ -1,0 +1,26 @@
+﻿@page "/500"
+@using Open_MediaServer
+@model Open_MediaServer.Frontend.Pages.Codes.ServerError
+
+@{
+    Layout = "../_Layout.cshtml";
+}
+
+@section AdditionalHead
+{
+    <title>@Program.ConfigManager.Config.FrontendName Media - 500</title>
+    <link rel="stylesheet" href="~/Frontend/Assets/css/Codes/Generic.css">
+}
+
+<!DOCTYPE html>
+
+<html lang="en">
+<body>
+<div class="content-failed">
+    An internal server error has occured!<br/>
+    <div>
+        Please try again later if the problem persists<br/>
+    </div>
+</div>
+</body>
+</html>

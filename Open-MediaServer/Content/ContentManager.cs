@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using Microsoft.OpenApi.Extensions;
 
 namespace Open_MediaServer.Content;
@@ -14,7 +15,14 @@ public class ContentManager
 
     public string SaveContent(byte[] content, string id, string name, string extension, ContentType contentType)
     {
-        var filePath = Path.Combine(_contentDirectory, "Media", contentType.GetDisplayName(), id, $"{name}{extension}");
+        var safeName = Path.GetFileNameWithoutExtension(name);
+        var safeExtension = Path.GetExtension(extension);
+
+        var filePath = Path.Join(_contentDirectory, "Media", contentType.GetDisplayName(), id,
+            $"{safeName}{safeExtension}");
+        if (Path.GetFullPath(filePath) != filePath)
+            return null;
+
         Directory.CreateDirectory(Path.GetDirectoryName(filePath)!);
         if (!File.Exists(filePath))
         {
@@ -26,8 +34,14 @@ public class ContentManager
 
     public string SaveThumbnail(byte[] thumbnail, string id, string name, string extension, ContentType contentType)
     {
-        var filePath = Path.Combine(_contentDirectory, "Media", contentType.GetDisplayName(), id,
-            $"{name}_thumbnail.{extension}");
+        var safeName = Path.GetFileNameWithoutExtension(name);
+        var safeExtension = Path.GetExtension(extension.Insert(0, "."));
+
+        var filePath = Path.Join(_contentDirectory, "Media", contentType.GetDisplayName(), id,
+            $"{safeName}_thumbnail{safeExtension}");
+        if (Path.GetFullPath(filePath) != filePath)
+            return null;
+
         Directory.CreateDirectory(Path.GetDirectoryName(filePath)!);
         if (!File.Exists(filePath))
         {
@@ -36,13 +50,22 @@ public class ContentManager
 
         return filePath;
     }
-    
-    public void DeleteContent(string id, string name, string extension, ContentType contentType)
+
+    public bool DeleteContent(string id, string name, string extension, ContentType contentType)
     {
-        var filePath = Path.Combine(_contentDirectory, "Media", contentType.GetDisplayName(), id, $"{name}{extension}");
+        var safeName = Path.GetFileNameWithoutExtension(name);
+        var safeExtension = Path.GetExtension(extension);
+
+        var filePath = Path.Join(_contentDirectory, "Media", contentType.GetDisplayName(), id,
+            $"{safeName}{safeExtension}");
+        if (Path.GetFullPath(filePath) != filePath)
+            return false;
+
         if (Directory.Exists(Path.GetDirectoryName(filePath)))
         {
             Directory.Delete(Path.GetDirectoryName(filePath)!, true);
+            return true;
         }
+        return false;
     }
 }

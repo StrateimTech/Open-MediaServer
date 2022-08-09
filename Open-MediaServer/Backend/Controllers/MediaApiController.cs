@@ -457,16 +457,19 @@ public class MediaApiController : ControllerBase
                 return Redirect("/403");
             }
 
-            Program.ContentManager.DeleteContent(media.Id, media.Name, media.Extension, media.ContentType);
-            user.Uploads.Remove(new MediaSchema.MediaIdentity()
+            if (Program.ContentManager.DeleteContent(media.Id, media.Name, media.Extension, media.ContentType))
             {
-                Id = media.Id,
-                Name = media.Name
-            });
-            await Program.Database.MediaDatabase.DeleteAsync<DatabaseSchema.Media>(media.Id);
-            await Program.Database.UserDatabase.UpdateWithChildrenAsync(user);
+                user.Uploads.Remove(new MediaSchema.MediaIdentity()
+                {
+                    Id = media.Id,
+                    Name = media.Name
+                });
+                await Program.Database.MediaDatabase.DeleteAsync<DatabaseSchema.Media>(media.Id);
+                await Program.Database.UserDatabase.UpdateWithChildrenAsync(user);
+                return RedirectToPage("/content");
+            }
 
-            return RedirectToPage("/content");
+            return Redirect("/500");
         }
 
         return StatusCode(StatusCodes.Status400BadRequest, ModelState);
