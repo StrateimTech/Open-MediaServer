@@ -221,6 +221,14 @@ public class UserApiController : Controller
             {
                 if (update.Name != null)
                 {
+                    var usernameExists = Program.Database.UserDatabase.Table<DatabaseSchema.User>().ToListAsync().Result
+                        .Any(dbUser => dbUser.Username == update.Name);
+
+                    if (usernameExists)
+                    {
+                        return Redirect("/400");
+                    }
+
                     user.Username = update.Name;
                 }
 
