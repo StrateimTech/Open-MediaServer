@@ -46,7 +46,7 @@ public static class ContentUtils
     {
         if (Program.ConfigManager.Config.UseMimeDetective)
         {
-            var definitions = new CondensedBuilder()
+            var definitions = new ExhaustiveBuilder()
             {
                 UsageType = UsageType.PersonalNonCommercial
             }.Build();
