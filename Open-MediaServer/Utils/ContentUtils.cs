@@ -6,6 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using HeyRed.ImageSharp.AVCodecFormats;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Primitives;
 using MimeDetective;
 using MimeDetective.Definitions;
 using MimeDetective.Definitions.Licensing;
@@ -59,13 +60,13 @@ public static class ContentUtils
                 list.AddRange(Program.ConfigManager.Config.OtherTypes);
             }
 
-            definitions
+            definitions = definitions
                 .ScopeExtensions(list.ToArray())
                 .TrimMeta()
                 .TrimDescription()
                 .TrimMimeType()
                 .ToImmutableArray();
-            
+
             var allCondensedDefinitions = new ContentInspectorBuilder()
             {
                 Definitions = definitions
@@ -130,80 +131,33 @@ public static class ContentUtils
     {
         if (queryCollection.Count > 0)
         {
-            if (queryCollection.ContainsKey("name"))
+            foreach (var collection in queryCollection)
             {
-                var nameSort = queryCollection["name"];
-                if (nameSort[0] != null)
+                if (collection.Value[0] == null)
+                    continue;
+                Boolean.TryParse(collection.Value[0], out bool value);
+                if (!value)
+                    continue;
+                switch (collection.Key.ToLower())
                 {
-                    if (Boolean.TryParse(nameSort[0], out bool value) && value)
-                    {
+                    case "name":
                         mediaList = mediaList.OrderBy(media => Uri.UnescapeDataString(media.Name)).ToList();
-                    }
-                }
-            }
-
-            if (queryCollection.ContainsKey("author"))
-            {
-                var authorSort = queryCollection["author"];
-
-                if (authorSort[0] != null)
-                {
-                    if (Boolean.TryParse(authorSort[0], out bool value) && value)
-                    {
+                        break;
+                    case "author":
                         mediaList = mediaList.OrderBy(media => media.AuthorId).ToList();
-                    }
-                }
-            }
-
-            if (queryCollection.ContainsKey("date"))
-            {
-                var dateSort = queryCollection["date"];
-
-                if (dateSort[0] != null)
-                {
-                    if (Boolean.TryParse(dateSort[0], out bool value) && value)
-                    {
+                        break;
+                    case "date":
                         mediaList = mediaList.OrderBy(media => media.UploadDate).Reverse().ToList();
-                    }
-                }
-            }
-
-            if (queryCollection.ContainsKey("type"))
-            {
-                var typeSort = queryCollection["type"];
-
-                if (typeSort[0] != null)
-                {
-                    if (Boolean.TryParse(typeSort[0], out bool value) && value)
-                    {
+                        break;
+                    case "type":
                         mediaList = mediaList.OrderBy(media => media.Extension).ToList();
-                    }
-                }
-            }
-
-            if (queryCollection.ContainsKey("size"))
-            {
-                var sizeSort = queryCollection["size"];
-
-                if (sizeSort[0] != null)
-                {
-                    if (Boolean.TryParse(sizeSort[0], out bool value) && value)
-                    {
+                        break;
+                    case "size":
                         mediaList = mediaList.OrderBy(media => media.ContentSize).Reverse().ToList();
-                    }
-                }
-            }
-
-            if (queryCollection.ContainsKey("visibility"))
-            {
-                var visibilitySort = queryCollection["visibility"];
-
-                if (visibilitySort[0] != null)
-                {
-                    if (Boolean.TryParse(visibilitySort[0], out bool value) && value)
-                    {
+                        break;
+                    case "visibility":
                         mediaList = mediaList.OrderBy(media => media.Public).ToList();
-                    }
+                        break;
                 }
             }
         }

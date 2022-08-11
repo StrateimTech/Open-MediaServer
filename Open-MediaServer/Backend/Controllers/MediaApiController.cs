@@ -174,7 +174,7 @@ public class MediaApiController : ControllerBase
         if (ModelState.IsValid)
         {
             var mediaTable = await Program.Database.MediaDatabase.GetAllWithChildrenAsync<DatabaseSchema.Media>();
-            mediaTable.RemoveAll(media => media.Public == false);
+            mediaTable.RemoveAll(media => !media.Public);
 
             if (parameterMass.Username != null)
             {
@@ -268,10 +268,10 @@ public class MediaApiController : ControllerBase
                     fileName = Path.GetFileNameWithoutExtension(name);
                 }
 
-                if (HttpContext.Request.Form.ContainsKey($"Private {id}"))
+                if (HttpContext.Request.Form.ContainsKey($"Private {id}") &&
+                    HttpContext.Request.Form[$"Private {id}"] == "on")
                 {
-                    if (HttpContext.Request.Form[$"Private {id}"] == "on")
-                        visible = false;
+                    visible = false;
                 }
 
                 byte[] data = new byte[file.Length];
