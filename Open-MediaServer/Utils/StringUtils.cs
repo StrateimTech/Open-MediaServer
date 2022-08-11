@@ -43,14 +43,14 @@ public static class StringUtils
     {
         var sinceDate = DateTime.UtcNow.Subtract(uploadDate);
 
-        if (sinceDate.TotalDays <= 364)
+        if (sinceDate.TotalDays < 365)
         {
             var avgMonths = sinceDate.Days / 30;
             if (avgMonths <= 0)
             {
-                if (sinceDate.TotalHours <= 23)
+                if (sinceDate.TotalHours < 24)
                 {
-                    if (sinceDate.TotalMinutes <= 59)
+                    if (sinceDate.TotalMinutes < 60)
                     {
                         if (sinceDate.Minutes <= 0)
                         {
