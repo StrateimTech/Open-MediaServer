@@ -1,46 +1,33 @@
 ﻿.content-flex {
     display: flex;
-    align-items: center;
+    height: calc(100vh - 64px);
+
     justify-content: center;
-    height: calc(100vh - 56px);
 }
 
 .content-container {
+    height: calc(100% - 16px);
+
     display: flex;
     flex-direction: column;
+
     background: rgb(4, 8, 8);
     border-radius: 4px;
-    padding: 4px;
-    
-    align-items: center;
-    justify-content: center;
-}
 
-.content-aspect-ratio {
-    height: auto;
-    align-items: center;
-    justify-content: center;
+    padding: 4px;
+    margin: 8px;
 }
 
 .content {
+    height: calc(100vh - (56px * 2) - 8px);
     width: auto;
-    max-width: calc(100vw - 64px);
-    height: calc(100vh - 168px);
-}
-
-@media only screen and (max-width: 600px) {
-    .content {
-        width: auto;
-        height: auto;
-        max-width: 100%;
-        max-height: calc(100vh - 168px);
-    }
+    max-width: 100%;
 }
 
 .no-content-available {
     display: flex;
-    
-    width: 400px; 
+
+    width: 400px;
     height: 400px;
 
     align-items: center;
@@ -57,10 +44,11 @@
 }
 
 .content-text {
+    display: flex;
     width: 100%;
-    
-    padding: 2px;
-    
+
+    padding: 2px 2px 0 2px;
+
     -webkit-user-select: none;
     -moz-user-select: none;
     -ms-user-select: none;
@@ -71,8 +59,9 @@
     color: white;
 }
 
-.content-text > div {
-    display: inline-block
+.content-text-info {
+    display: inline-block;
+    margin-top: auto;
 }
 
 .content-text > form {
@@ -80,11 +69,14 @@
 }
 
 .content-form {
-    float: right;
-    width: 64px;
-    overflow: hidden;
-    
-    margin-right: 4px;
+    display: flex;
+    flex-direction: row;
+    margin: auto 0 0 auto;
+    gap: 4px;
+}
+
+.content-form-item {
+    width: 72px;
 }
 
 .content-button {
@@ -93,6 +85,8 @@
     padding: 4px;
 
     color: white;
+
+    text-align: center;
 
     display: inline-block;
     border: none;
