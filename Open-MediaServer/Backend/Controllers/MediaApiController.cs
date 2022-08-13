@@ -338,6 +338,11 @@ public class MediaApiController : ControllerBase
             }
 
             var mediaExtension = ContentUtils.GetContentExtension(upload.Content, upload.Extension);
+            if (mediaExtension == null)
+            {
+                return StatusCode(StatusCodes.Status400BadRequest);
+            }
+
             var contentType = ContentUtils.GetContentType(mediaExtension);
             if (contentType == null)
             {

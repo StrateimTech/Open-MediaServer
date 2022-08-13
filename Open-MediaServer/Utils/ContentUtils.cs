@@ -52,16 +52,19 @@ public static class ContentUtils
                 UsageType = UsageType.PersonalNonCommercial
             }.Build();
 
-            List<string> list = new List<string>();
-            list.AddRange(Program.ConfigManager.Config.VideoTypes);
-            list.AddRange(Program.ConfigManager.Config.ImageTypes);
-            if (Program.ConfigManager.Config.OtherTypes != null)
+            List<string> extensionList = new List<string>();
+            extensionList.AddRange(Program.ConfigManager.Config.VideoTypes.ToList()
+                .Select(str => str.Replace(".", "").ToUpper()));
+            extensionList.AddRange(Program.ConfigManager.Config.ImageTypes.ToList()
+                .Select(str => str.Replace(".", "").ToUpper()));
+            if (Program.ConfigManager.Config.OtherTypes != null || Program.ConfigManager.Config.OtherTypes?.Length > 0)
             {
-                list.AddRange(Program.ConfigManager.Config.OtherTypes);
+                extensionList.AddRange(Program.ConfigManager.Config.OtherTypes.ToList()
+                    .Select(str => str.Replace(".", "").ToUpper()));
             }
 
             definitions = definitions
-                .ScopeExtensions(list.ToArray())
+                .ScopeExtensions(extensionList)
                 .TrimMeta()
                 .TrimDescription()
                 .TrimMimeType()
@@ -72,13 +75,24 @@ public static class ContentUtils
                 Definitions = definitions
             }.Build();
 
-            var extensionMatch = allCondensedDefinitions.Inspect(data).ByFileExtension()[0];
-            extension = extensionMatch.Extension;
-        }
+            if (extensionList.Count > 0)
+            {
+                var inspection = allCondensedDefinitions.Inspect(data);
+                if (inspection.ByFileExtension().Length > 0)
+                {
+                    var extensionMatch = inspection.ByFileExtension()[0];
+                    extension = extensionMatch.Extension;
 
-        if (!extension.Contains("."))
-        {
-            extension = extension.Insert(0, ".");
+                    if (!extension.Contains("."))
+                    {
+                        extension = extension.Insert(0, ".");
+                    }
+
+                    return extension;
+                }
+            }
+
+            return null;
         }
 
         return extension;
