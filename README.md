@@ -1,5 +1,5 @@
 # Open-MediaServer [![.NET](https://github.com/StrateimTech/Open-MediaServer/actions/workflows/dotnet.yml/badge.svg)](https://github.com/StrateimTech/Open-MediaServer/actions/workflows/dotnet.yml) [![CodeQL](https://github.com/StrateimTech/Open-MediaServer/actions/workflows/codeql.yml/badge.svg)](https://github.com/StrateimTech/Open-MediaServer/actions/workflows/codeql.yml)
-File sharing server application focused on simple video/picture distribution
+Media sharing server application focused on simple video/picture distribution
 
 ## Features
 * Frontend web interface
