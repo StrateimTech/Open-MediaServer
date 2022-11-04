@@ -20,7 +20,7 @@ This project is currently at the stage where it can functionally be run on a pro
 ## Built using
 * .NET 6
 * Swagger
-* SqLite
+* SQLite
 
 ## Supports
 * Windows
