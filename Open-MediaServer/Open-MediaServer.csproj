@@ -29,7 +29,7 @@
       <PackageReference Include="sqlite-net-pcl" Version="1.8.116" />
       <PackageReference Include="SQLiteNetExtensions" Version="2.1.0" />
       <PackageReference Include="SQLiteNetExtensions.Async" Version="2.1.0" />
-      <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
+      <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
     </ItemGroup>
 
     <ItemGroup>
