@@ -6,7 +6,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using HeyRed.ImageSharp.AVCodecFormats;
 using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Primitives;
 using MimeDetective;
 using MimeDetective.Definitions;
 using MimeDetective.Definitions.Licensing;
@@ -177,5 +176,24 @@ public static class ContentUtils
         }
 
         return mediaList;
+    }
+
+    public static bool IsSelectedFromSortQuery(IQueryCollection queryCollection, String sortValue)
+    {
+        if (queryCollection.Count > 0)
+        {
+            foreach (var collection in queryCollection)
+            {
+                if (collection.Key.ToLower() == sortValue.ToLower())
+                {
+                    if (collection.Value[0] == null)
+                        continue;
+                    Boolean.TryParse(collection.Value[0], out bool value);
+                    return value;
+                }
+            }
+        }
+
+        return false;
     }
 }

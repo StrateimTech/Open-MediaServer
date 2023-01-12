@@ -1,8 +1,5 @@
 ﻿.sort-navbar {
-    min-height: 32px;
-    width: 100%;
-
-    margin: 4px 0 4px 0;
+    margin: 8px 0 0 0;
 
     display: flex;
     align-items: center;
@@ -36,43 +33,56 @@
     user-select: none;
 }
 
+.sort-item-selected {
+    background-color: rgb(128, 96, 96);
+}
+
 .content-container {
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
     justify-content: center;
-    gap: 8px;
+    gap: 16px;
     
-    margin: 0 8px 8px 8px;
+    margin: 8px;
 }
 
 .content-item {
     flex: 1 1 288px;
-    background-color: rgb(8, 8, 8);
+    background-color: rgb(24, 24, 24);
+
+    outline: rgb(32, 32, 32) solid 2px;
 
     max-width: 288px;
     max-height: 288px;
 
     box-sizing: border-box;
-    padding: 4px;
+    padding: 8px;
 
-    border-radius: 2px;
+    border-radius: 8px;
     cursor: pointer;
 
     text-decoration: none;
 }
 
 .content-item-text {
-    flex: 0 0 50%;
-    text-align: left;
+    display: flex;
+    flex: 0 0 45%;
+    text-align: center;
+
+    flex-direction: column;
 
     font-family: 'Lato', sans-serif;
     font-size: 12px;
     color: white;
-    margin-left: 4px;
+    margin: 8px 8px 8px 0;
+    justify-content: space-between;
+    
+    overflow-wrap: anywhere;
+}
 
-    word-break: break-all;
-    overflow: hidden;
+.content-item-text > div {
+    text-align: center;
 }
 
 .content-item-thumbnail {
@@ -90,6 +100,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    
+    text-align: center;
 
     font-family: 'Lato', sans-serif;
     font-size: 16px;
@@ -106,6 +118,9 @@
     user-select: none;
 
     text-decoration: none;
+
+    flex-direction: row;
+    gap: 8px;
 }
 
 .main-text {

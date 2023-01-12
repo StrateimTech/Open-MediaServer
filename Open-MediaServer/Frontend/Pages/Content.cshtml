@@ -36,25 +36,61 @@
     }
 }
 <div class="sort-navbar">
-    <a class="sort-item" onclick="updateQueryURL('name', window);">
+    <a class="sort-item
+    @{ 
+        if (ContentUtils.IsSelectedFromSortQuery(Request.Query, "name")) {
+            <text>sort-item-selected</text>
+        }
+    }
+    " onclick="updateQueryURL('name', window);">
         Name
     </a>
-    <a class="sort-item" onclick="updateQueryURL('author', window);">
+    <a class="sort-item
+    @{
+        if (ContentUtils.IsSelectedFromSortQuery(Request.Query, "author")) {
+            <text>sort-item-selected</text>
+        }
+    }
+    " onclick="updateQueryURL('author', window);">
         Author
     </a>
-    <a class="sort-item" onclick="updateQueryURL('date', window);">
+    <a class="sort-item
+    @{
+        if (ContentUtils.IsSelectedFromSortQuery(Request.Query, "date")) {
+            <text>sort-item-selected</text>
+        }
+    }
+    " onclick="updateQueryURL('date', window);">
         Date
     </a>
-    <a class="sort-item" onclick="updateQueryURL('type', window);">
+    <a class="sort-item
+    @{
+        if (ContentUtils.IsSelectedFromSortQuery(Request.Query, "type")) {
+            <text>sort-item-selected</text>
+        }
+    }
+    " onclick="updateQueryURL('type', window);">
         Type
     </a>
-    <a class="sort-item" onclick="updateQueryURL('size', window);">
+    <a class="sort-item
+    @{
+        if (ContentUtils.IsSelectedFromSortQuery(Request.Query, "size")) {
+            <text>sort-item-selected</text>
+        }
+    }
+    " onclick="updateQueryURL('size', window);">
         Size
     </a>
     @{
         if (user != null)
         {
-            <a class="sort-item" onclick="updateQueryURL('visibility', window);">
+            <a class="sort-item
+            @{
+                if (ContentUtils.IsSelectedFromSortQuery(Request.Query, "visibility")) {
+                    <text>sort-item-selected</text>
+                }
+            }
+            " onclick="updateQueryURL('visibility', window);">
                 Visibility
             </a>
         }
@@ -87,43 +123,43 @@
             mediaList = mediaList.SortMediaFromQuery(Request.Query);
             foreach (var media in mediaList)
             {
-                var author = await Program.Database.UserDatabase.FindAsync<DatabaseSchema.User>(dbUser => dbUser.Id == media.AuthorId);
-                if (media.ThumbnailPath != null)
-                {
-                    <div class="content-item">
-                        <a class="content-href" href="/@media.Id/@media.Name@media.Extension">
-                            <img class="content-item-thumbnail" src="@Url.Action("GetThumbnail", "MediaApi", new {Id = media.Id, Name = media.Name}, Request.Scheme, Program.ConfigManager.Config.FrontendDomain)" alt="@media.Name"/>
-                            <div class="content-item-text">
-                                @Uri.UnescapeDataString(media.Name).FirstCharToUpper()@media.Extension<br/>
-                                @{
-                                    <div>
-                                        @(author.Username.FirstCharToUpper() ?? "Account Deleted") • @media.UploadDate.ToFormattedString()
+                <div class="content-item">
+                    <a class="content-href" href="/@media.Id/@media.Name@media.Extension" draggable="false">
+                        @{
+                            var author = await Program.Database.UserDatabase.FindAsync
+                                <DatabaseSchema.User>(dbUser => dbUser.Id == media.AuthorId);
+                            if (media.ThumbnailPath != null)
+                            {
+                                <img class="content-item-thumbnail" src="@Url.Action("GetThumbnail", "MediaApi", new {Id = media.Id, Name = media.Name}, Request.Scheme, Program.ConfigManager.Config.FrontendDomain)" 
+                                     alt="@media.Name" draggable="false"/>
+                                <div class="content-item-text">
+                                    @Uri.UnescapeDataString(media.Name).FirstCharToUpper()<br/>
+                                    @{
+                                        <div>
+                                            @(media.Public ? "Public" : "Private") • @StringUtils.FormatBytesWithIdentifier(media.ContentSize)<br/>
+                                            @(author.Username.FirstCharToUpper() ?? "Account Deleted") • @media.UploadDate.ToFormattedString()
+                                            </div>
+                                    }
                                     </div>
-                                }
-                                @(media.Public ? "Public" : "Private") • @StringUtils.FormatBytesWithIdentifier(media.ContentSize)<br/>
-                            </div>
-                        </a>
-                    </div>
-                }
-                else
-                {
-                    <div class="content-item">
-                        <a class="content-href" href="/@media.Id/@media.Name@media.Extension">
-                            <div class="content-item-no-thumbnail">
-                                No Thumbnail
-                            </div>
-                            <div class="content-item-text">
-                                @Uri.UnescapeDataString(media.Name).FirstCharToUpper()@media.Extension<br/>
-                                @{
-                                    <div>
-                                        @(author.Username.FirstCharToUpper() ?? "Account Deleted") • @media.UploadDate.ToFormattedString()
-                                    </div>
-                                }
-                                @(media.Public ? "Public" : "Private") • @StringUtils.FormatBytesWithIdentifier(media.ContentSize)<br/>
-                            </div>
-                        </a>
-                    </div>
-                }
+                            }
+                            else
+                            {
+                                <div class="content-item-no-thumbnail">
+                                    No Thumbnail Available
+                                </div>
+                                <div class="content-item-text">
+                                    @Uri.UnescapeDataString(media.Name).FirstCharToUpper()<br/>
+                                    @{
+                                        <div>
+                                            @(media.Public ? "Public" : "Private") • @StringUtils.FormatBytesWithIdentifier(media.ContentSize)<br/>
+                                            @(author.Username.FirstCharToUpper() ?? "Account Deleted") • @media.UploadDate.ToFormattedString()
+                                        </div>
+                                    }
+                                </div>
+                            }
+                        }
+                    </a>
+                </div>
             }
         }
     }

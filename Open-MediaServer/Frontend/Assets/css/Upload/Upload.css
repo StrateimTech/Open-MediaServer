@@ -19,16 +19,25 @@
     
     flex-shrink: 1;
 
-    height: 200px;
+    height: 250px;
     width: 100%;
-    max-width: 500px;
+    max-width: 600px;
 
     box-sizing: border-box;
     background: rgb(8, 8, 8);
-    border-radius: 4px;
-    padding: 4px;
+    border-radius: 8px;
+    padding: 8px;
     
     gap: 4px;
+
+    outline: rgb(32, 32, 32) solid 2px;
+}
+
+@media screen and (max-width: 576px) {
+    .file-upload {
+        height: 200px;
+        max-width: 500px;
+    }
 }
 
 .file-upload > div {
@@ -109,6 +118,7 @@
     box-sizing: border-box;
     
     width: calc(100% - 4px);
+    resize: none;
 }
 
 .file-private-input-label {

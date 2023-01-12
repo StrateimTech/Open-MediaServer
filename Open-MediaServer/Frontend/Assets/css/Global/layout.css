@@ -1,5 +1,5 @@
 ﻿.navbar {
-    height: 56px;
+    height: 48px;
     width: 100%;
     background-color: rgb(32, 24, 24);
     
@@ -33,11 +33,11 @@
 
 .navbar-item:first-of-type {
     margin-right: auto;
-    margin-left: 24px;
+    margin-left: 12px;
 }
 
 .navbar-item:last-of-type {
-    margin-right: 24px;
+    margin-right: 12px;
 }
 
 .background {

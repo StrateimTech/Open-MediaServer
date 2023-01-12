@@ -12,10 +12,12 @@
     flex-direction: column;
 
     background: rgb(4, 8, 8);
-    border-radius: 4px;
+    border-radius: 8px;
 
-    padding: 4px;
+    padding: 8px;
     margin: 8px;
+
+    outline: rgb(32, 32, 32) solid 2px;
 }
 
 .content {
