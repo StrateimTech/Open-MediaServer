@@ -1,6 +1,11 @@
 # Open-MediaServer [![.NET](https://github.com/StrateimTech/Open-MediaServer/actions/workflows/dotnet.yml/badge.svg)](https://github.com/StrateimTech/Open-MediaServer/actions/workflows/dotnet.yml) [![CodeQL](https://github.com/StrateimTech/Open-MediaServer/actions/workflows/codeql.yml/badge.svg)](https://github.com/StrateimTech/Open-MediaServer/actions/workflows/codeql.yml)
 Media sharing server application focused on simple video/picture distribution
 
+## Note
+This project is currently at the stage where it can functionally be run on a production server without too many hiccups. 
+<br>Examples:
+ * https://media.strateim.tech/
+
 ## Features
 * Frontend web interface
 * Individual user accounts
@@ -15,7 +20,7 @@ Media sharing server application focused on simple video/picture distribution
 ## Built using
 * .NET 6
 * Swagger
-* SqLite
+* SQLite
 
 ## Supports
 * Windows
