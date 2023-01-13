@@ -74,6 +74,11 @@ public class Config
         ".txt"
     };
 
+    /// <summary>
+    /// Falls back to request provided file extension in the case MimeDetective does not work
+    /// </summary>
+    public bool FallBackToFileExtension { get; set; } = true;
+
     // Note: since this uses TrID file signatures' you can only use it personally or for non commercial, you'll have you buy a commercial license if not
     public bool UseMimeDetective { get; set; } = true;
 

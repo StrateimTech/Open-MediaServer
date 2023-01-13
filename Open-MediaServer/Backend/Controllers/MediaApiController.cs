@@ -205,7 +205,7 @@ public class MediaApiController : ControllerBase
                 Id = media.Id
             }).ToList();
 
-            return new MediaSchema.MediaReturnMass()
+            return new MediaSchema.MediaReturnMass
             {
                 Media = mediaIdentities
             };
@@ -222,7 +222,7 @@ public class MediaApiController : ControllerBase
         var totalContent = await mediaTableQuery.CountAsync();
         var totalContentSize = (await mediaTableQuery.ToListAsync()).Sum(media => media.ContentSize);
 
-        var statSchema = new MediaSchema.MediaStats()
+        var statSchema = new MediaSchema.MediaStats
         {
             ContentCount = totalContent,
             ContentTotalSize = totalContentSize,
@@ -277,7 +277,7 @@ public class MediaApiController : ControllerBase
                 byte[] data = new byte[file.Length];
                 if (file.Length > 0)
                 {
-                    using var memStream = new MemoryStream(data);
+                    await using var memStream = new MemoryStream(data);
                     await file.CopyToAsync(memStream);
                 }
                 else
@@ -304,7 +304,7 @@ public class MediaApiController : ControllerBase
                 var safeFileName =
                     Uri.EscapeDataString(Uri.UnescapeDataString(fileName.Trim()));
 
-                var upload = new MediaSchema.MediaUpload()
+                var upload = new MediaSchema.MediaUpload
                 {
                     Name = safeFileName,
                     Extension = fileExtension,
@@ -375,7 +375,7 @@ public class MediaApiController : ControllerBase
                 contentCompressed = false;
             }
 
-            var mediaSchema = new DatabaseSchema.Media()
+            var mediaSchema = new DatabaseSchema.Media
             {
                 Id = await Program.Database.MediaDatabase.GenerateUniqueMediaId(Program.ConfigManager.Config
                     .UniqueIdLength),
@@ -420,7 +420,7 @@ public class MediaApiController : ControllerBase
 
             await Program.Database.MediaDatabase.InsertWithChildrenAsync(mediaSchema);
 
-            user.Uploads.Add(new MediaSchema.MediaIdentity()
+            user.Uploads.Add(new MediaSchema.MediaIdentity
             {
                 Id = mediaSchema.Id,
                 Name = mediaSchema.Name
@@ -464,7 +464,7 @@ public class MediaApiController : ControllerBase
 
             if (Program.ContentManager.DeleteContent(media.Id, media.Name, media.Extension, media.ContentType))
             {
-                user.Uploads.Remove(new MediaSchema.MediaIdentity()
+                user.Uploads.Remove(new MediaSchema.MediaIdentity
                 {
                     Id = media.Id,
                     Name = media.Name

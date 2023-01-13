@@ -44,57 +44,88 @@ public static class ContentUtils
 
     public static string GetContentExtension(byte[] data, string extension)
     {
+        List<string> extensionList = new List<string>();
+        extensionList.AddRange(Program.ConfigManager.Config.VideoTypes.ToList()
+            .Select(str => str.Replace(".", "").ToUpper()));
+        extensionList.AddRange(Program.ConfigManager.Config.ImageTypes.ToList()
+            .Select(str => str.Replace(".", "").ToUpper()));
+        if (Program.ConfigManager.Config.OtherTypes != null || Program.ConfigManager.Config.OtherTypes?.Length > 0)
+        {
+            extensionList.AddRange(Program.ConfigManager.Config.OtherTypes.ToList()
+                .Select(str => str.Replace(".", "").ToUpper()));
+        }
+        
         if (Program.ConfigManager.Config.UseMimeDetective)
         {
-            var definitions = new ExhaustiveBuilder()
+            var definitions = new ExhaustiveBuilder
             {
                 UsageType = UsageType.PersonalNonCommercial
             }.Build();
 
-            List<string> extensionList = new List<string>();
-            extensionList.AddRange(Program.ConfigManager.Config.VideoTypes.ToList()
-                .Select(str => str.Replace(".", "").ToUpper()));
-            extensionList.AddRange(Program.ConfigManager.Config.ImageTypes.ToList()
-                .Select(str => str.Replace(".", "").ToUpper()));
-            if (Program.ConfigManager.Config.OtherTypes != null || Program.ConfigManager.Config.OtherTypes?.Length > 0)
+            if (extensionList.Count > 0)
             {
-                extensionList.AddRange(Program.ConfigManager.Config.OtherTypes.ToList()
-                    .Select(str => str.Replace(".", "").ToUpper()));
+                definitions = definitions
+                    .ScopeExtensions(extensionList)
+                    .ToImmutableArray();
             }
-
-            definitions = definitions
-                .ScopeExtensions(extensionList)
+            
+            definitions
                 .TrimMeta()
                 .TrimDescription()
                 .TrimMimeType()
                 .ToImmutableArray();
-
-            var allCondensedDefinitions = new ContentInspectorBuilder()
+            
+            var allCondensedDefinitions = new ContentInspectorBuilder
             {
                 Definitions = definitions
             }.Build();
-
-            if (extensionList.Count > 0)
+            
+            var inspection = allCondensedDefinitions.Inspect(data);
+            
+            if (inspection.ByFileExtension().Length > 0)
             {
-                var inspection = allCondensedDefinitions.Inspect(data);
-                if (inspection.ByFileExtension().Length > 0)
+                var extensionMatch = inspection.ByFileExtension()[0];
+                extension = extensionMatch.Extension;
+            
+                if (!extension.Contains("."))
                 {
-                    var extensionMatch = inspection.ByFileExtension()[0];
-                    extension = extensionMatch.Extension;
+                    extension = extension.Insert(0, ".");
+                }
+            
+                return extension;
+            }
 
-                    if (!extension.Contains("."))
+            if (Program.ConfigManager.Config.FallBackToFileExtension)
+            {
+                if (extensionList.Count > 0)
+                {
+                    if (extensionList.Contains(extension.Replace(".", "").ToUpper()))
                     {
-                        extension = extension.Insert(0, ".");
+                        return extension;
                     }
-
+                }
+                else
+                {
                     return extension;
                 }
             }
-
+            
             return null;
         }
+        
+        if (extensionList.Count > 0)
+        {
+            if (extensionList.Contains(extension.Replace(".", "").ToUpper()))
+            {
+                return extension;
+            }
+        }
+        else
+        {
+            return extension;
+        }
 
-        return extension;
+        return null;
     }
 
     public static (int, int) GetDimensions(byte[] data, ContentType contentType)
