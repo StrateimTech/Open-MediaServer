@@ -13,6 +13,16 @@ public class Config
 
     public string FrontendDomain { get; set; } = String.Empty;
 
+    /// <summary>
+    /// Associated instances in the form of URLs
+    /// </summary>
+    public string[] AssociatedInstances { get; set; } = {};
+    
+    /// <summary>
+    /// Index page stats' container footer
+    /// </summary>
+    public string StatsFooterText { get; set; } = "Empty Footer!";
+
     public (short http, short https) FrontendPorts { get; set; } = (80, 443);
     public (short http, short https) BackendPorts { get; set; } = (2000, 2001);
 

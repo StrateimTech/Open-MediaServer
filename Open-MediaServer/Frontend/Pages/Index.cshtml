@@ -25,36 +25,75 @@
 
 <html lang="en">
 <body>
-<div class="fade-div">
-    <div style="animation: fade-in-move-down 2s;" class="fade-text loading-text">
-        SERVING @uploadCount UPLOAD@{
-                                       if (uploadCount > 1 || uploadCount <= 0)
-                                       {
-                                           <text>S</text>
-                                       }
-                                   }
-    </div>
-    <div style="animation: fade-in-move-down 1.5s;" class="fade-text loading-text">
-        HANDLING @userCount USER@{
-                                    if (userCount > 1 || userCount <= 0)
+<div class="window-container">
+    <div class="index-container">
+        <div class="index-container-children-flex">
+            <div class="index-container-children index-container-children-start">
+                <div class="stats-items-container stats-fade-text loading-text">
+                    <div style="animation: fade-in-move-down 2s;">
+                        SERVING @uploadCount UPLOAD@{
+                            if (uploadCount > 1 || uploadCount <= 0)
+                            {
+                                <text>S</text>
+                            }
+                        }
+                    </div>
+                    <div style="animation: fade-in-move-down 1.5s;">
+                        HANDLING @userCount USER@{
+                            if (userCount > 1 || userCount <= 0)
+                            {
+                                <text>S</text>
+                            }
+                        }
+                    </div>
+                    <div style="animation: fade-in-move-down 1s;">
+                        STORING
+                        @{
+                            if (totalContentSize <= 0)
+                            {
+                                <text>NOTHING</text>
+                            }
+                            else
+                            {
+                                <text>@contentSize</text>
+                            }
+                        }
+                    </div>
+                </div>
+                <div class="stats-footer-text">
+                    @Program.ConfigManager.Config.StatsFooterText
+                </div>
+            </div>
+            <div class="index-container-children sub-instance-container">
+                <div class="instance-container-text">
+                    INSTANCES
+                </div>
+                <div class="instance-container-list">
+                    @{
+                        if (Program.ConfigManager.Config.AssociatedInstances.Length == 0)
+                        {
+                            <div class="instance-container-empty">
+                                No other avaliable instances!
+                            </div>
+                        }
+                        else
+                        {
+                            <ul class="instance-container-item">
+                                @{
+                                    foreach (var url in Program.ConfigManager.Config.AssociatedInstances)
                                     {
-                                        <text>S</text>
+                                        <li>
+                                            <a class="instance-container-item-link" href="@url">@url</a>
+                                        </li>
                                     }
                                 }
-    </div>
-    <div style="animation: fade-in-move-down 1s;" class="fade-text loading-text">
-        STORING @{
-                    if (totalContentSize <= 0)
-                    {
-                        <text>NOTHING</text>
+                            </ul>
+                        }
                     }
-                    else
-                    {
-                        <text>@contentSize</text>
-                    }
-                }
+                </div>
+            </div>
+        </div>
     </div>
-    
     <footer>
         2023 @@ <a href="https://github.com/StrateimTech">StrateimTech</a> - <a href="https://github.com/StrateimTech/Open-MediaServer">Open-MediaServer Instance</a>
     </footer>
