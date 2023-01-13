@@ -26,6 +26,11 @@
     max-width: 100%;
 }
 
+.no-content-available-container {
+    height: 100%; 
+    max-height: 435px;
+}
+
 .no-content-available {
     display: flex;
 
