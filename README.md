@@ -2,9 +2,11 @@
 Media sharing server application focused on simple video/picture distribution
 
 ## Note
-This project is currently at the stage where it can functionally be run on a production server without too many hiccups. 
+This project is currently at the stage where it can functionally be run on a production server without too many hiccups.
 <br>Examples:
  * https://media.strateim.tech/
+ 
+As a side note for the time being I wouldn't allow public signups (can be disabled through the config) until admin tools and account preventions are in place.
 
 ## Features
 * Frontend web interface
