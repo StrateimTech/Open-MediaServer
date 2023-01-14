@@ -361,6 +361,16 @@ public class MediaApiController : ControllerBase
                 return StatusCode(StatusCodes.Status400BadRequest);
             }
 
+            if (contentType == ContentType.Image && Program.ConfigManager.Config.Watermark != String.Empty)
+            {
+                var watermarkedContent = await ContentUtils.WatermarkContent(upload.Content);
+
+                if (watermarkedContent != null)
+                {
+                    upload.Content = watermarkedContent;
+                }
+            }
+
             bool contentCompressed = Program.ConfigManager.Config.LosslessCompression;
             byte[] content;
 

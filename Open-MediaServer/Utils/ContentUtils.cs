@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using HeyRed.ImageSharp.AVCodecFormats;
+using HeyRed.ImageSharp.AVCodecFormats.Mp4;
 using Microsoft.AspNetCore.Http;
 using MimeDetective;
 using MimeDetective.Definitions;
@@ -12,8 +13,12 @@ using MimeDetective.Definitions.Licensing;
 using MimeDetective.Storage;
 using Open_MediaServer.Content;
 using Open_MediaServer.Database.Schema;
+using SixLabors.Fonts;
 using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.Advanced;
+using SixLabors.ImageSharp.Drawing.Processing;
 using SixLabors.ImageSharp.Formats;
+using SixLabors.ImageSharp.Formats.Png;
 using SixLabors.ImageSharp.PixelFormats;
 using SixLabors.ImageSharp.Processing;
 
@@ -165,7 +170,55 @@ public static class ContentUtils
             image.Mutate(x => x.Resize((int) width, (int) (image.Height / image.Width * width)));
         }
 
-        using var ms = new MemoryStream();
+        await using var ms = new MemoryStream();
+        await image.SaveAsync(ms, format);
+        return ms.ToArray();
+    }
+
+    public static async Task<byte[]> WatermarkContent(byte[] data)
+    {
+        Image<Rgba32> image = Image.Load<Rgba32>(data);
+        IImageFormat format = Image.DetectFormat(data);
+
+        if (format == null)
+        {
+            return null;
+        }
+        
+        SystemFonts.TryGet("Lato", out FontFamily fontFamily);
+        
+        var font = fontFamily.CreateFont(96, FontStyle.Regular);
+        
+        var textOptions = new TextOptions(font)
+        {
+            KerningMode = KerningMode.Normal
+        };
+        
+        var text = Program.ConfigManager.Config.Watermark;
+        
+        var fontRectangle = TextMeasurer.Measure(text, textOptions);
+        
+        float scalingFactor = Math.Min(image.Width / fontRectangle.Width, image.Height / fontRectangle.Height);
+        var factor = scalingFactor / 4.5;
+        var fontFactored = factor * 96;
+        
+        var scaledFont = new Font(font, (int)fontFactored);
+        
+        var scaledTextOptions = new TextOptions(scaledFont)
+        {
+            KerningMode = KerningMode.Normal
+        };
+        
+        var scaledFontRectangle = TextMeasurer.Measure(text, scaledTextOptions);
+        
+        image.Mutate(x => x.DrawText(
+            text,
+            scaledFont,
+            Color.White,
+            new PointF(image.Width - scaledFontRectangle.Width - 16, image.Height - scaledFontRectangle.Height - 16)
+        ));
+        
+        await using var ms = new MemoryStream();
         await image.SaveAsync(ms, format);
         return ms.ToArray();
     }

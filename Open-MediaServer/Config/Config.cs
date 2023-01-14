@@ -75,6 +75,13 @@ public class Config
     };
 
     /// <summary>
+    /// ATM it only works with image forms of content because the ImageSharp associated libraries cannot add text to video.
+    /// Kinda unstable because of dynamic scaling (may look worse or better on different images)
+    /// Lato font needs to be installed on the system for it to work.
+    /// </summary>
+    public string Watermark { get; set; } = String.Empty;
+    
+    /// <summary>
     /// Falls back to request provided file extension in the case MimeDetective does not work
     /// </summary>
     public bool FallBackToFileExtension { get; set; } = true;
