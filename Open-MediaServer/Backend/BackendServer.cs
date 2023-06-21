@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
+using Open_MediaServer.Analytics;
 
 namespace Open_MediaServer.Backend;
 
@@ -51,6 +52,11 @@ public class BackendServer
         var app = builder.Build();
 
         app.UseDeveloperExceptionPage();
+        
+        if (Program.ConfigManager.Config.AnalyticalApi != null)
+        {
+            app.UseAnalyticsMiddleware(Program.ConfigManager.Config.AnalyticalApi);
+        }
 
         if (Program.ConfigManager.Config.ShowSwaggerUi)
         {

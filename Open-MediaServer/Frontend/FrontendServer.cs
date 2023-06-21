@@ -7,6 +7,7 @@ using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
+using Open_MediaServer.Analytics;
 
 namespace Open_MediaServer.Frontend;
 
@@ -63,6 +64,11 @@ public class FrontendServer
         {
             app.UseExceptionHandler("/Error");
             app.UseHsts();
+        }
+
+        if (Program.ConfigManager.Config.AnalyticalApi != null)
+        {
+            app.UseAnalyticsMiddleware(Program.ConfigManager.Config.AnalyticalApi);
         }
 
         if (Program.ConfigManager.Config.ShowSwaggerUi)
