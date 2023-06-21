@@ -23,7 +23,22 @@ public class AnalyticsMiddleware
     public async Task InvokeAsync(HttpContext context)
     {
         string hostname = context.Request.GetDisplayUrl();
-        string ipAddress = context.Connection.RemoteIpAddress?.ToString() ?? String.Empty;
+        string ipAddress = context.Request.Headers["CF-CONNECTING-IP"];
+        if (ipAddress == null)
+        {
+            var forwardedAddresses = context.GetServerVariable("HTTP_X_FORWARDED_FOR");
+            if (forwardedAddresses != null)
+            {
+                var addresses = forwardedAddresses.Split(",");
+                if (addresses.Length > 0)
+                {
+                    ipAddress = addresses[0];
+                }
+            }
+
+            ipAddress ??= context.Connection.RemoteIpAddress?.ToString() ?? String.Empty;
+        }
+        
         string method = context.Request.Method;
         string userAgent = context.Request.Headers.UserAgent;
         string path = context.Request.Path;
