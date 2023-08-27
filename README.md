@@ -18,6 +18,7 @@ As a side note for the time being I wouldn't allow public signups (can be disabl
 * Configurable domain support
 * Configurable file upload size limit
 * Discord meta tags supported (OpenGraph)
+* [API Analytics](https://www.apianalytics.dev/) (https://github.com/tom-draper/api-analytics)
 
 ## Built using
 * .NET 6
