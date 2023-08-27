@@ -42,6 +42,9 @@ public class Config
 
     public bool ForceHttpsRedirection { get; set; } = false;
 
+    // Analytics api provided by https://github.com/tom-draper/api-analytics
+    public string? AnalyticalApi { get; set; } = null;
+
     public bool AllowRegistering { get; set; } = true;
     public bool AllowImages { get; set; } = true;
     public bool AllowVideos { get; set; } = true;
