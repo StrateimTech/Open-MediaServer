@@ -36,3 +36,8 @@ git clone https://github.com/StrateimTech/Open-MediaServer.git
 cd Open-MediaServer
 dotnet run --project Open-MediaServer
 ```
+
+### Setting up Analytics
+1. Generate a (**FREE & No Account**) API key from https://www.apianalytics.dev/generate
+2. Place key inside config ("AnalyticalApi")
+3. Done & restart
