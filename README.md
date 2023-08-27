@@ -3,10 +3,8 @@ Media sharing server application focused on simple video/picture distribution
 
 ## Note
 This project is currently at the stage where it can functionally be run on a production server without too many hiccups.
-<br>Examples:
- * https://media.strateim.tech/
- 
-As a side note for the time being I wouldn't allow public signups (can be disabled through the config) until admin tools and account preventions are in place.
+<br>Example's running O.M.S.:
+* https://media.strateim.tech/ (Personal production instance)
 
 ## Features
 * Frontend web interface
@@ -14,7 +12,7 @@ As a side note for the time being I wouldn't allow public signups (can be disabl
 * LZ4 lossless media compression on large files
 * Dynamic media id's to keep file name integrity
 * Unlisted media (Like youtube)
-* Large variety of file format support (Not just media)
+* Large variety of file format support (Not just videos/images)
 * Configurable domain support
 * Configurable file upload size limit
 * Discord meta tags supported (OpenGraph)
@@ -36,8 +34,3 @@ git clone https://github.com/StrateimTech/Open-MediaServer.git
 cd Open-MediaServer
 dotnet run --project Open-MediaServer
 ```
-
-### Setting up Analytics
-1. Generate a (**FREE & No Account**) API key from https://www.apianalytics.dev/generate
-2. Place key inside config ("AnalyticalApi")
-3. Done & restart
