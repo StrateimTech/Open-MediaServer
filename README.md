@@ -3,8 +3,6 @@ Media sharing server application focused on simple video/picture distribution
 
 ## Note
 This project is currently at the stage where it can functionally be run on a production server without too many hiccups.
-<br>Example's running O.M.S.:
-* https://media.strateim.tech/ (Personal production instance)
 
 ## Features
 * Frontend web interface
